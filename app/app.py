@@ -14,7 +14,7 @@ config = {
     'port': 3306,
     'user': os.environ['MYSQL_USER'],
     'password': os.environ['MYSQL_PASSWORD'],
-    'database': os.environ['MYSQL_DATABASE'],
+    'database': 'matcha',
 }
 
 
@@ -38,13 +38,15 @@ def dbtest():
     cur = conn.cursor()
     # execute a SQL statement
     cur.execute("select * from users")
+    # get headers
     header = [item[0] for item in cur.description]
+    # get all matches
     res = cur.fetchall()
+    # jsonify
     json_data=[]
     for item in res:
         json_data.append(dict(zip(header,item)))
-
-    # return the results!
+    # DUMP !
     return json.dumps(json_data)
 
 
