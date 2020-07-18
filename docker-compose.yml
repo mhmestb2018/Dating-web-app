@@ -10,6 +10,7 @@ services:
       - "5000"
     environment: 
       FLASK_ENV: development
+      FLASK_APP: matcha.py
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
     volumes:

@@ -3,11 +3,7 @@
 import os
 import mariadb
 import json
-from flask import Flask
-
-from app.models import Schema
-
-app = Flask(__name__)
+from app import app
 
 # configuration used to connect to MariaDB
 config = {
@@ -49,8 +45,3 @@ def dbtest():
         json_data.append(dict(zip(header,item)))
     # DUMP !
     return json.dumps(json_data)
-
-
-if __name__ == "__main__":
-    Schema()
-    app.run() 
