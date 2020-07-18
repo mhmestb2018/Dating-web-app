@@ -1,0 +1,22 @@
+version: "2"
+services:
+  app:
+    build: ./dockerfiles/flask
+    links:
+      - db
+    ports:
+      - "80:5000"
+    volumes:
+      - ./app:/app/:ro
+
+  db:
+    image: mariadb:latest
+    ports:
+      - "32000:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: users
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/:ro
