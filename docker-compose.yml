@@ -28,8 +28,6 @@ services:
       MYSQL_DATABASE: matcha
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
-    volumes:
-      - ./db:/docker-entrypoint-initdb.d/:ro
     networks:
       - backend
 

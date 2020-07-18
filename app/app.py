@@ -5,6 +5,7 @@ import mariadb
 import json
 from flask import Flask
 
+from app.models import Schema
 
 app = Flask(__name__)
 
@@ -51,4 +52,5 @@ def dbtest():
 
 
 if __name__ == "__main__":
+    Schema()
     app.run() 
