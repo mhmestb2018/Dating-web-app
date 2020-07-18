@@ -8,6 +8,11 @@ services:
       - "80:5000"
     expose:
       - "5000"
+    environment: 
+      FLASK_ENV: development
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: users
     volumes:
       - ./app:/app/:ro
     networks:
