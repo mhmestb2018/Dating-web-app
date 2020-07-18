@@ -19,13 +19,16 @@ config = {
 def Coucou():
     return "Coucou moi"
 
+
 @app.route("/route")
 def CoucouRoute():
     return "Encore moi"
 
+
 @app.route("/users/<user>")
 def user_page(user):
     return "Coucou " + user
+
 
 @app.route("/dbtest")
 def dbtest():
@@ -40,8 +43,8 @@ def dbtest():
     # get all matches
     res = cur.fetchall()
     # jsonify
-    json_data=[]
+    json_data = []
     for item in res:
-        json_data.append(dict(zip(header,item)))
+        json_data.append(dict(zip(header, item)))
     # DUMP !
     return json.dumps(json_data)

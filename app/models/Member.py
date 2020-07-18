@@ -1,21 +1,8 @@
-class Member():
-    _class_id = 0
-    
-    def __init__(self):
-        self._id = self._class_id
-        Member._class_id += 1
-        self._name = str(self.id)
-
-    @property
-    def name(self):
-        return self._name
-
-    @property
-    def id(self):
-        return self._id
+from app import db
 
 
-if __name__ == "__main__":
-    test = Member()
-    test2 = Member()
-    print(test.id, test2.name)
+class Member(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=False, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    picture_url = db.Column(db.String(2048), unique=True, nullable=True)
