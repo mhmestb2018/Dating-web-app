@@ -38,7 +38,7 @@ def dbtest():
     # create a connection cursor
     cur = conn.cursor()
     # execute a SQL statement
-    cur.execute("select * from user")
+    cur.execute("select * from users")
     # get headers
     header = [item[0] for item in cur.description]
     # get all matches
