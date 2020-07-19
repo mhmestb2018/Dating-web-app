@@ -14,10 +14,3 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
     + '@db:3306/matcha')
 db = SQLAlchemy(app)
 db.create_all()
-
-
-from app.models import User
-
-me = User(name='john', email='vhjbhb')
-db.session.add(me)
-db.commit(me)

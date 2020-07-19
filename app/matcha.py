@@ -1,5 +1,9 @@
-from app import app
-from app import routes
+from app import routes, db
+from app.models import User
 
 routes
-app
+
+
+me = User(name='john', email='vhjbhb')
+db.session.add(me)
+db.commit(me)
