@@ -11,6 +11,7 @@ services:
     environment: 
       FLASK_ENV: development
       FLASK_APP: matcha.py
+      SQLALCHEMY_POOL_RECYCLE: 599
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
     volumes:
@@ -29,6 +30,8 @@ services:
       MYSQL_DATABASE: matcha
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
+    volumes:
+      - ./db:/var/lib/mysql
     networks:
       - backend
 

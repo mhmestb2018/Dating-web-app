@@ -1,18 +1,9 @@
 #! /usr/bin/env python3
 
-import os
-import mariadb
 import json
 from app import app
 
 # configuration used to connect to MariaDB
-config = {
-    'host': 'db',
-    'port': 3306,
-    'user': os.environ['MYSQL_USER'],
-    'password': os.environ['MYSQL_PASSWORD'],
-    'database': 'matcha',
-}
 
 
 @app.route("/")
@@ -22,7 +13,7 @@ def Coucou():
 
 @app.route("/route")
 def CoucouRoute():
-    return "Encore moi"
+    return app.config['SQLALCHEMY_DATABASE_URI']
 
 
 @app.route("/users/<user>")
@@ -32,12 +23,22 @@ def user_page(user):
 
 @app.route("/dbtest")
 def dbtest():
+    import os
+    import mariadb
+    config = {
+        'host': 'db',
+        'port': 3306,
+        'user': os.environ['MYSQL_USER'],
+        'password': os.environ['MYSQL_PASSWORD'],
+        'database': 'matcha',
+    }
+
     # connection for MariaDB
     conn = mariadb.connect(**config)
     # create a connection cursor
     cur = conn.cursor()
     # execute a SQL statement
-    cur.execute("select * from users")
+    cur.execute("select * from user")
     # get headers
     header = [item[0] for item in cur.description]
     # get all matches
