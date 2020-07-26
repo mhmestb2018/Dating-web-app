@@ -5,13 +5,15 @@ services:
     links:
       - db
     ports:
-      - "80:5000"
+      - "5000:5000"
     expose:
       - "5000"
     environment: 
       FLASK_ENV: development
       FLASK_APP: matcha.py
       SQLALCHEMY_POOL_RECYCLE: 599
+      SQLALCHEMY_ECHO: 1
+      SQLALCHEMY_TRACK_MODIFICATIONS: 0
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
     volumes:
