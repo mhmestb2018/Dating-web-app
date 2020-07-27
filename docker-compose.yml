@@ -12,8 +12,8 @@ services:
       FLASK_ENV: development
       FLASK_APP: matcha.py
       SQLALCHEMY_POOL_RECYCLE: 599
-      SQLALCHEMY_ECHO: 1
-      SQLALCHEMY_TRACK_MODIFICATIONS: 0
+      SQLALCHEMY_ECHO: 'true'
+      SQLALCHEMY_TRACK_MODIFICATIONS: 'false'
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
     volumes:

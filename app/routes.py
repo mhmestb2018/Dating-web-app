@@ -1,17 +1,18 @@
 #! /usr/bin/env python3
 
 import json
-from app import app
+from flask import current_app as app
+from flask import render_template
 
 # configuration used to connect to MariaDB
 
 
 @app.route("/")
-def Coucou():
-    return "Coucou moi"
+def home():
+    return render_template("index.html")
 
 
-@app.route("/route")
+@app.route("/uri")
 def CoucouRoute():
     return app.config['SQLALCHEMY_DATABASE_URI']
 
@@ -20,6 +21,24 @@ def CoucouRoute():
 def user_page(user):
     return "Coucou " + user
 
+
+@app.route('/testadd', methods=['GET'])
+def user_records():
+    """Create a user via query string parameters."""
+    username = request.args.get('user')
+    email = request.args.get('email')
+    if username and email:
+        new_user = User(
+            username=username,
+            email=email,
+            created=dt.now(),
+            bio="In West Philadelphia born and raised, \
+            on the playground is where I spent most of my days",
+            admin=False
+        )
+        db.session.add(new_user)  # Adds new User record to database
+        db.session.commit()  # Commits all changes
+    return make_response(f"{new_user} successfully created!")
 
 @app.route("/dbtest")
 def dbtest():

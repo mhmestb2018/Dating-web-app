@@ -1,8 +1,6 @@
-from app import app, db, routes
-from app.models import User
+from . import create_app
 
-routes
-
+app = create_app()
 
 # me = User(name='john', email='vhjbhb')
 # db.session.add(me)
