@@ -2,7 +2,7 @@
 
 import json
 from flask import current_app as app
-from flask import render_template
+from flask import render_template, request
 
 # configuration used to connect to MariaDB
 
@@ -11,18 +11,24 @@ from flask import render_template
 def home():
     return render_template("index.html")
 
+@app.route("/login/", methods=["POST", "GET"])
+def login():
+    if request.method == "POST":
+        pass
+    else:
+        return render_template("login.html")
 
-@app.route("/uri")
+
+@app.route("/uri/")
 def CoucouRoute():
     return app.config['SQLALCHEMY_DATABASE_URI']
 
+@app.route("/users/<user>/")
+def users(user):
+    return render_template("base.html", title=f"{user}", body=f"<p>Bonjour {user}</p>")
 
-@app.route("/users/<user>")
-def user_page(user):
-    return "Coucou " + user
 
-
-@app.route('/testadd', methods=['GET'])
+@app.route('/testadd/', methods=['GET'])
 def user_records():
     """Create a user via query string parameters."""
     username = request.args.get('user')
