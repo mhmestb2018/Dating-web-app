@@ -2,7 +2,7 @@
 
 import json
 from flask import current_app as app
-from flask import render_template, request, redirect, url_for, session
+from flask import render_template, request, redirect, url_for, session, flash
 
 # configuration used to connect to MariaDB
 
@@ -17,8 +17,19 @@ def login():
         user = request.form["nm"]
         if user is not None and user is not "":
             session["user"] = user
+            #if cookies accepted:
+            session.permanent = True
+            flash(f"Welcome {user}")
             return redirect(url_for("profile"))
+    if "user" in session:
+        return redirect(url_for("profile"))
     return render_template("login.html")
+
+@app.route("/logout/")
+def logout():
+    session.pop("user", None)
+    flash("Vous êtes déconnecté", "info")
+    return redirect(url_for("login"))
 
 
 @app.route("/uri/")
