@@ -51,3 +51,8 @@ def dbtest():
         json_data.append(dict(zip(header, [str(x) for x in item])))
     # DUMP !
     return json.dumps(json_data)
+
+@app.route('/allusers/')
+def all_users():
+    """Show a formatted list of all users"""
+    return render_template("users_list.html", values=User.query.all())
