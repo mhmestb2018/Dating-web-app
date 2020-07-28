@@ -22,13 +22,15 @@ def login():
             flash(f"Welcome {user}")
             return redirect(url_for("profile"))
     if "user" in session:
+        flash("Vous êtes déjà connecté !", "info")
         return redirect(url_for("profile"))
     return render_template("login.html")
 
 @app.route("/logout/")
 def logout():
-    session.pop("user", None)
-    flash("Vous êtes déconnecté", "info")
+    if "user" in session:
+        flash(f"{session['user']} déconnecté", "info")
+        session.pop("user", None)
     return redirect(url_for("login"))
 
 
@@ -37,7 +39,7 @@ def CoucouRoute():
     return app.config['SQLALCHEMY_DATABASE_URI']
 
 def profile_page(user):
-    return render_template("base.html", title=f"{user}", body=f"<p>Bonjour {user}</p>")
+    return render_template("user.html", user=user)
 
 @app.route("/users/<user>/")
 def users(user):
@@ -47,7 +49,8 @@ def users(user):
 def profile():
     if "user" in session:
         return profile_page(session["user"])
-    return redirect(url_for("index"))
+    flash("Vous n'êtes pas connecté", "info")
+    return redirect(url_for("login"))
 
 
 @app.route('/testadd/', methods=['GET'])
