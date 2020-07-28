@@ -1,6 +1,8 @@
 from sqlalchemy.ext.associationproxy import association_proxy
 
-from app import db
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 # https://stackoverflow.com/questions/37972778/sqlalchemy-symmetric-many-to-one-friendship
 
@@ -17,8 +19,8 @@ class User(Base):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    profile = db.Column(db.Text, nullable=True)
+    email = db.Column(db.String(120), unique=True, nullable=True)
+    bio = db.Column(db.Text, nullable=True)
     picture_url = db.Column(db.String(2048), unique=True, nullable=True)
     # sent_likes_rels = db.relationship(
     #     'Like',
@@ -41,6 +43,11 @@ class User(Base):
     # # matches = (association_proxy('matches_rels', 'user1_id')
     # #            + association_proxy('matches_rels_2', 'user2_id'))
     # matches = db.relationship("Match")
+
+    def __init__(self, name, email, bio=""):
+        self.name = name
+        self.email = email
+        self.bio = bio
 
     def __repr__(self):
         return '<User %r>' % self.name

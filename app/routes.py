@@ -1,11 +1,10 @@
-#! /usr/bin/env python3
-
 import json
 from flask import current_app as app
-from flask import render_template, request, redirect, url_for, session, flash
+from flask import render_template, request, redirect, url_for, session, flash, make_response
 
-# configuration used to connect to MariaDB
-
+from . import db
+from .models import User
+from .test_routes import *
 
 @app.route("/")
 def index():
@@ -14,12 +13,22 @@ def index():
 @app.route("/login/", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
-        user = request.form["nm"]
-        if user is not None and user is not "":
-            session["user"] = user
+        name = request.form["nm"]
+        if name is not None and name is not "":
+            session["user"] = name
             #if cookies accepted:
             session.permanent = True
-            flash(f"Welcome {user}")
+
+            found = User.query.filter_by(name=name).first()
+            if found:
+                session["email"] = found.email
+            else:
+                user = User(name, "")
+                db.session.add(user)
+                db.session.commit()
+
+
+            flash(f"Welcome {name}")
             return redirect(url_for("profile"))
     if "user" in session:
         flash("Vous êtes déjà connecté !", "info")
@@ -34,11 +43,6 @@ def logout():
         session.pop("email", None)
     return redirect(url_for("login"))
 
-
-@app.route("/uri/")
-def CoucouRoute():
-    return app.config['SQLALCHEMY_DATABASE_URI']
-
 @app.route("/users/<user>/")
 def users(user):
     return render_template("profile.html", user=user)
@@ -48,9 +52,11 @@ def profile():
     if "user" in session:
         email = None
         if request.method == "POST":
+            found = User.query.filter_by(name=session["user"]).first()
             if "email" in request.form and request.form["email"] is not "":
-                email = request.form["email"]
-                session["email"] = email
+                found.email = request.form["email"]
+                db.session.commit()
+                email = found.email
                 flash("Email enregistré", "info")
         else:
             if "email" in session:
@@ -58,51 +64,3 @@ def profile():
         return render_template("profile_edit.html", user=session["user"], email=email)
     flash("Vous n'êtes pas connecté", "info")
     return redirect(url_for("login"))
-
-
-@app.route('/testadd/', methods=['GET'])
-def user_records():
-    """Create a user via query string parameters."""
-    username = request.args.get('user')
-    email = request.args.get('email')
-    if username and email:
-        new_user = User(
-            username=username,
-            email=email,
-            created=dt.now(),
-            bio="In West Philadelphia born and raised, \
-            on the playground is where I spent most of my days",
-            admin=False
-        )
-        db.session.add(new_user)  # Adds new User record to database
-        db.session.commit()  # Commits all changes
-    return make_response(f"{new_user} successfully created!")
-
-@app.route("/dbtest")
-def dbtest():
-    import os
-    import mariadb
-    config = {
-        'host': 'db',
-        'port': 3306,
-        'user': os.environ['MYSQL_USER'],
-        'password': os.environ['MYSQL_PASSWORD'],
-        'database': 'matcha',
-    }
-
-    # connection for MariaDB
-    conn = mariadb.connect(**config)
-    # create a connection cursor
-    cur = conn.cursor()
-    # execute a SQL statement
-    cur.execute("select * from users")
-    # get headers
-    header = [item[0] for item in cur.description]
-    # get all matches
-    res = cur.fetchall()
-    # jsonify
-    json_data = []
-    for item in res:
-        json_data.append(dict(zip(header, item)))
-    # DUMP !
-    return json.dumps(json_data)

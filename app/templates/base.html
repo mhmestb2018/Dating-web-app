@@ -19,17 +19,6 @@
                 <li class="nav-item">
                   <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Matchs</a>
                 </li>
-                <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Tests
-                  </a>
-                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="/testadd?user=roger&password=moore">test user get</a>
-                    <a class="dropdown-item" href="/uri">SQLAlchemy uri</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/users/roger">test user profile url</a>
-                  </div>
-                </li>
                 {% if "user" in session %}
                 <li class="nav-item active">
                   <a class="nav-link active" href="/profile" tabindex="-1" aria-disabled="true">{{ session["user"] }}</a>
@@ -45,11 +34,23 @@
                   <a class="nav-link active" href="/signin" tabindex="-1" aria-disabled="true">S'inscrire</a>
                 </li>
                 {% endif %}
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Tests
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/testadd?user=roger&email=moore">Test CREATE user roger (GET)</a>
+                    <a class="dropdown-item" href="/dbtest">Full JSON dump</a>
+                    <a class="dropdown-item" href="/allusers">All users</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/users/roger">Roger user profile url</a>
+                  </div>
+                </li>
               </ul>
-              <form class="form-inline my-2 my-lg-0">
+              <!-- <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Recherche</button>
-              </form>
+              </form> -->
             </div>
           </nav>
           <div class="container-fluid">
