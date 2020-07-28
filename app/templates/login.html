@@ -2,8 +2,10 @@
 {% block title %}Login{% endblock %}
 {% block body %}
 <form action="#" method="post">
-    <p>Name:</p>
-    <p><input type="text" name="nm"></p>
+    <p>Email:</p>
+    <p><input type="email" name="email" required></p>
+    <p>Mot de passe:</p>
+    <p><input type="password" name="password" required></p>
     <p><input type="submit" value="Log in"></p>
 </form>
 {% endblock %}
