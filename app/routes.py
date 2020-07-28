@@ -31,6 +31,7 @@ def logout():
     if "user" in session:
         flash(f"{session['user']} déconnecté", "info")
         session.pop("user", None)
+        session.pop("email", None)
     return redirect(url_for("login"))
 
 
@@ -38,17 +39,23 @@ def logout():
 def CoucouRoute():
     return app.config['SQLALCHEMY_DATABASE_URI']
 
-def profile_page(user):
-    return render_template("user.html", user=user)
-
 @app.route("/users/<user>/")
 def users(user):
-    return profile_page(user)
+    return render_template("profile.html", user=user)
 
-@app.route("/profile/")
+@app.route("/profile/", methods=["POST", "GET"])
 def profile():
     if "user" in session:
-        return profile_page(session["user"])
+        email = None
+        if request.method == "POST":
+            if "email" in request.form and request.form["email"] is not "":
+                email = request.form["email"]
+                session["email"] = email
+                flash("Email enregistré", "info")
+        else:
+            if "email" in session:
+                email = session["email"]
+        return render_template("profile_edit.html", user=session["user"], email=email)
     flash("Vous n'êtes pas connecté", "info")
     return redirect(url_for("login"))
 
