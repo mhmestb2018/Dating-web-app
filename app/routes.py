@@ -39,8 +39,12 @@ def login():
         email = request.form["email"]
         found = User.query.filter_by(email=email).first()
         if found:
-            session["user"] = found
-            #if GDPR accepted ?:
+            session["user"] = found.id
+            session["name"] = found.name
+            session["email"] = found.email
+            # session["password"] = found.password
+            session["user_picture"] = found.picture_url
+        
             session.permanent = True
         else:
             flash("Ce compte n'existe pas")
@@ -54,24 +58,23 @@ def login():
 @app.route("/logout/")
 def logout():
     if "user" in session:
-        flash(f"{session['user'].name} déconnecté", "info")
+        flash(f"{session['name']} déconnecté", "info")
         session.pop("user", None)
     return redirect(url_for("login"))
 
 @app.route("/users/<user>/")
 def users(user):
-    return render_template("profile.html", user=user)
+    return render_template("profile.html", name=user)
 
 @app.route("/profile/", methods=["POST", "GET"])
 def profile():
     if "user" in session:
-        user = session["user"]
         if request.method == "POST":
-            found = User.query.filter_by(name=session["user"]).first()
+            found = User.query.filter_by(id=session["user"]).first()
             if "email" in request.form:
-                user.email = request.form["email"]
-                flash("Email enregistré", "info")
+                found.email = request.form["email"]
+                flash(f"Email {request.form['email']} enregistré", "info")
             db.session.commit()
-        return render_template("profile_edit.html", user=session["user"])
+        return render_template("profile_edit.html", name=session["name"], email=session["email"])
     flash("Vous n'êtes pas connecté", "info")
     return redirect(url_for("login"))

@@ -2,9 +2,11 @@
 <html>
     <head>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+        
         <title>{% block title %}{% endblock %}</title>
     </head>
-    <body>
+    <body class="text-center">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" href="/">Matcha</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,7 +23,7 @@
                 </li>
                 {% if "user" in session %}
                 <li class="nav-item active">
-                  <a class="nav-link active" href="/profile" tabindex="-1" aria-disabled="true">{{ session["user"] }}</a>
+                  <a class="nav-link active" href="/profile" tabindex="-1" aria-disabled="true">{{ session["name"] }}</a>
                 </li>
                 <li class="nav-item active">
                   <a class="nav-link active" href="/logout" tabindex="-1" aria-disabled="true">Déconnexion</a>
