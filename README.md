@@ -7,10 +7,15 @@ As this was mostly an API oriented project, don't expect too much of the fronten
 - Docker
 - docker-compose
 
-## Database
-The MariaDB SQL database will be created locally in the db folder
 
 ## Run
 ```bash
 docker-compose up
+```
+
+## Database
+The MariaDB SQL database will be created in a local docker volume.
+To reset the database, while in this folder:
+```bash
+docker volume rm matcha_db-data
 ```
