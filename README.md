@@ -1,12 +1,13 @@
 # A Dockerized Flask dating app
 ### Using Flask, SQLAlchemy and Bootstrap
 
-As this was mostly an API oriented project, don't expect too much of the frontend, mostly here as an user-friendly way to test the beast.
+As I was working on the API side of things, don't expect too much of the frontend, mostly here as an user-friendly way to test the beast.
+
+Everything is served on port 5000 on your machine ([link](http://0.0.0.0:5000)).
 
 ### Requirements
 - Docker
 - docker-compose
-
 
 ## Run
 ```bash
