@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Profil de {{user}}{% endblock %}
+{% block body %}
+<h1>Créer un compte:</h1>
+<form class="form-signin" action="#" method="post">
+    <img class="mb-4" src="https://image.flaticon.com/icons/svg/3237/3237429.svg" alt="" width="72" height="72">
+    <h1 class="h3 mb-3 font-weight-normal">Vos informations</h1>
+    <label for="inputName" class="sr-only">Votre nom sur la plateforme</label>
+    <input type="text" name="name" id="inputName" class="form-control" placeholder="Nom sur la plateforme" required autofocus>
+    <label for="inputEmail" class="sr-only">Email</label>
+    <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Adresse email" required autofocus>
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Mot de passe" required>
+    <div class="checkbox mb-3">
+        <label>
+          <input name="tos" type="checkbox" value="tos"> J'accepte les termes et conditions d'utilisation du service (lien en bas de page)
+        </label>
+    </div>
+    <div class="checkbox mb-3">
+        <label>
+          <input name="mailling" type="checkbox" value="mailling"> J'accepte de recevoir des email de communication
+        </label>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Valider mon inscription</button>
+</form>
+{% endblock %}

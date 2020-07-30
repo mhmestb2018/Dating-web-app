@@ -7,10 +7,8 @@ As this was mostly an API oriented project, don't expect too much of the fronten
 - Docker
 - docker-compose
 
-## First run
-(Will be fixed later)
-Uncomment the "db.create_all()" in app/__init__.py to properly initialize the database (which is not tracked by git)
-Comment-it back after the first start, once you've seen the table creation in your terminal output
+## Database
+The MariaDB SQL database will be created locally in the db folder
 
 ## Run
 ```bash
