@@ -18,7 +18,7 @@ def login():
         m.update(b)
         if m.digest() == found.password:
             m = hashlib.sha256()
-            m.update((found.email + found.id + "pcachin" + str(time.now())).encode('utf-8'))
+            m.update((found.password + str(time.now())).encode('utf-8'))
             session["token"] = m.digest()
             session["user"] = found.id
             session["name"] = found.name
