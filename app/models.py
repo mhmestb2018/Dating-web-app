@@ -1,4 +1,4 @@
-import mariadb
+import json, mariadb
 
 class Schema:
     def __init__(self, config):

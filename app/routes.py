@@ -8,6 +8,9 @@ from .test_routes import *
 
 ############ DUMMIES #########################
 
+
+############ NEW CODE ########################
+
 @app.route("/login/", methods=["POST"])
 def login():
     email = request.form["email"]
@@ -29,7 +32,15 @@ def login():
                 session.permanent = True
             return json.dumps({"token": session["token"]})
     return ""
-    # Left to check password
+
+@app.route("/logout/")
+def logout():
+    if "user" in session:
+        session.pop("user", None)
+        # Left to po stuff
+    return
+
+
 
 ############ OLD CODE ########################
 
@@ -86,11 +97,11 @@ def login_page():
 def logout_page():
     if "user" in session:
         flash(f"{session['name']} déconnecté", "info")
-        session.pop("user", None)
+        logout()
     return redirect(url_for("login"))
 
-@app.route("/users/<user>/")
-def users(user):
+@app.route("/users_page/<user>/")
+def users_page(user):
     return render_template("profile.html", name=user)
 
 @app.route("/profile/", methods=["POST", "GET"])
