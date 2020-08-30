@@ -40,18 +40,20 @@ services:
       - backend
 
   front:
-    build: ./dockerfiles/npm
+    image: "node:latest"
     links:
       - app
+    expose:
+      - "3000"
+    user: node 
+    working_dir: /home/node/app
+    environment:
+      NODE_ENV: production
     ports:
       - "3000:3000"
-    # environment:
-    #   MYSQL_ROOT_PASSWORD: admin
-    #   MYSQL_DATABASE: matcha
-    #   MYSQL_USER: admin
-    #   MYSQL_PASSWORD: admin
-    # volumes:
-    #   - db-data:/var/lib/mysql # To override random volume name
+    volumes:
+      - ./front:/home/node/app
+    command: "npm start"
     networks:
       - frontend
 
