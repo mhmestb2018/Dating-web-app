@@ -1,7 +1,7 @@
 version: "2"
 services:
   app:
-    build: ./dockerfiles/flask
+    build: ./back
     links:
       - db
     ports:
@@ -40,7 +40,7 @@ services:
       - backend
 
   front:
-    image: "node:latest"
+    build: ./front
     links:
       - app
     expose:
@@ -52,7 +52,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./front:/home/node/app
+      - ./front/public:/home/node/app/public
+      - ./front/src:/home/node/app/src
     command: "npm start"
     networks:
       - frontend
