@@ -26,11 +26,11 @@
                   <a class="nav-link active" href="/profile" tabindex="-1" aria-disabled="true">{{ session["name"] }}</a>
                 </li>
                 <li class="nav-item active">
-                  <a class="nav-link active" href="/logout" tabindex="-1" aria-disabled="true">Déconnexion</a>
+                  <a class="nav-link active" href="/logout_page" tabindex="-1" aria-disabled="true">Déconnexion</a>
                 </li>
                 {% else %}
                 <li class="nav-item active">
-                  <a class="nav-link active" href="/login" tabindex="-1" aria-disabled="true">Se connecter</a>
+                  <a class="nav-link active" href="/login_page" tabindex="-1" aria-disabled="true">Se connecter</a>
                 </li>
                 <li class="nav-item active">
                   <a type="button" class="btn btn-outline-danger" href="/signin" tabindex="-1" aria-disabled="true">S'inscrire</a>
@@ -45,7 +45,7 @@
                     <a class="dropdown-item" href="/dbtest">Full JSON dump</a>
                     <a class="dropdown-item" href="/allusers">All users</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/users/roger">Roger user profile url</a>
+                    <a class="dropdown-item" href="/users_page/roger">Roger user profile url</a>
                   </div>
                 </li>
               </ul>

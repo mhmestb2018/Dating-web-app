@@ -1,27 +1,57 @@
-from sqlalchemy.ext.associationproxy import association_proxy
+import json, mariadb
 
-from flask_sqlalchemy import SQLAlchemy
+class Schema:
+    def __init__(self, config):
+        self.conn = False
+        while not self.conn:
+            self.conn = mariadb.connect(**config)
+        self.cur = self.conn.cursor()
+        # Create users first as other tables will refer to it
+        self.create_users_table()
+        self.populate_users_table()
 
-db = SQLAlchemy()
+    def create_users_table(self):
 
-# https://stackoverflow.com/questions/37972778/sqlalchemy-symmetric-many-to-one-friendship
+        self.cur.execute("DROP TABLE IF EXISTS users")
 
-class Base(db.Model):
+        query = """
+        CREATE TABLE IF NOT EXISTS users (
+        id int NOT NULL AUTO_INCREMENT,
+        name varchar(255) NOT NULL,
+        picture_url varchar(2083),
+        PRIMARY KEY (id)
+        );
+        """
 
-    __abstract__  = True
+        self.cur.execute(query)
 
-    id            = db.Column(db.Integer, primary_key=True)
-    date_created  = db.Column(db.DateTime,  default=db.func.current_timestamp())
-    date_modified = db.Column(db.DateTime,  default=db.func.current_timestamp(),
-                                           onupdate=db.func.current_timestamp())
+    def populate_users_table(self):
+        query = """
+        INSERT INTO users (name, picture_url) VALUES
+        ('Toto', 'gjhh'),
+        ('Jack', 'gjgh'),
+        ('Titi', 'ghgh');
+        """
+        self.cur.execute(query)
 
-class User(Base):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=True)
-    bio = db.Column(db.Text, nullable=True)
-    picture_url = db.Column(db.String(2048), unique=True, nullable=True)
+    def exec(self, query):
+        if mariadb.mysql_ping(self.conn):
+            self.cur.execute(query)
+            return True
+        return False
+
+
+class Base():
+
+    pass
+
+class User():
+    # __tablename__ = 'users'
+    # id = db.Column(db.Integer, primary_key=True)
+    # name = db.Column(db.String(80), nullable=False)
+    # email = db.Column(db.String(120), unique=True, nullable=True)
+    # bio = db.Column(db.Text, nullable=True)
+    # picture_url = db.Column(db.String(2048), unique=True, nullable=True)
     # sent_likes_rels = db.relationship(
     #     'Like',
     #     foreign_keys='Like.emitting_user_id',
@@ -46,8 +76,13 @@ class User(Base):
 
     def __init__(self, name, email, bio=""):
         self.name = name
+        self.password = ""
+        self.picture_url= None
         self.email = email
         self.bio = bio
+
+    def commit(self):
+        pass
 
     def __repr__(self):
         return '<User %r>' % self.name

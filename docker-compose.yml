@@ -21,6 +21,7 @@ services:
       - ./app:/app/:ro
     networks:
       - backend
+      - frontend
 
   db:
     image: mariadb:latest
@@ -38,8 +39,25 @@ services:
     networks:
       - backend
 
+  front:
+    build: ./dockerfiles/npm
+    links:
+      - app
+    ports:
+      - "3000:3000"
+    # environment:
+    #   MYSQL_ROOT_PASSWORD: admin
+    #   MYSQL_DATABASE: matcha
+    #   MYSQL_USER: admin
+    #   MYSQL_PASSWORD: admin
+    # volumes:
+    #   - db-data:/var/lib/mysql # To override random volume name
+    networks:
+      - frontend
+
 volumes:
   db-data:
 
 networks:
   backend:
+  frontend:
