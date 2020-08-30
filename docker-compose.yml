@@ -48,7 +48,7 @@ services:
     user: node 
     working_dir: /home/node/app
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
     ports:
       - "3000:3000"
     volumes:
