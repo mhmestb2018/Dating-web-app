@@ -1,3 +1,0 @@
-[submodule "front"]
-	path = dockerfiles/npm/front
-	url = https://github.com/guyb27/matcha

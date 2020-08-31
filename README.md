@@ -1,12 +1,10 @@
-# A Dockerized Flask dating app
-### Using Flask, MariaDB and Bootstrap
+# A Dockerized dating app
+### Using Flask, MariaDB, Node, React.js and Bootstrap
 
-As I was working on the API side of things, don't expect too much of the frontend, mostly here as an user-friendly way to test the beast.
-
-Everything is served on port 5000 on your machine ([link](http://0.0.0.0:5000)).
+Everything is served on port 5000 on your machine ([link](http://0.0.0.0:3000)).
 
 ### Requirements
-- WSL (Windows)
+- WSL 2 (Windows)
 - Docker
 - docker-compose (Windows Server/Linux)
 
@@ -17,7 +15,7 @@ docker-compose up
 
 ## Database
 The MariaDB SQL database will be created in a local docker volume.
-To reset the database, while in this folder:
+To reset the database:
 ```bash
 docker volume rm matcha_db-data
 ```

@@ -18,7 +18,7 @@ services:
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
     volumes:
-      - ./app:/app/:ro
+      - ./back:/app/:ro
     networks:
       - backend
       - frontend
@@ -54,12 +54,14 @@ services:
     volumes:
       - ./front/public:/home/node/app/public
       - ./front/src:/home/node/app/src
+      - user-pictures:/data # To store users pictures in persistent storage
     command: "npm start"
     networks:
       - frontend
 
 volumes:
   db-data:
+  user-pictures:
 
 networks:
   backend:
