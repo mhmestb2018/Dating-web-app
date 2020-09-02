@@ -1,44 +1,6 @@
 import json, mariadb
 
-class Schema:
-    def __init__(self, config):
-        self.conn = False
-        while not self.conn:
-            self.conn = mariadb.connect(**config)
-        self.cur = self.conn.cursor()
-        # Create users first as other tables will refer to it
-        self.create_users_table()
-        self.populate_users_table()
-
-    def create_users_table(self):
-
-        self.cur.execute("DROP TABLE IF EXISTS users")
-
-        query = """
-        CREATE TABLE IF NOT EXISTS users (
-        id int NOT NULL AUTO_INCREMENT,
-        name varchar(255) NOT NULL,
-        picture_url varchar(2083),
-        PRIMARY KEY (id)
-        );
-        """
-
-        self.cur.execute(query)
-
-    def populate_users_table(self):
-        query = """
-        INSERT INTO users (name, picture_url) VALUES
-        ('Toto', 'gjhh'),
-        ('Jack', 'gjgh'),
-        ('Titi', 'ghgh');
-        """
-        self.cur.execute(query)
-
-    def exec(self, query):
-        if mariadb.mysql_ping(self.conn):
-            self.cur.execute(query)
-            return True
-        return False
+from . import db
 
 
 class Base():
@@ -46,6 +8,55 @@ class Base():
     pass
 
 class User():
+    __fields__ = ("id", "first_name", "last_name", "email", "password")
+
+    @staticmethod
+    def get_user(**kwargs):
+        if "email" in kwargs:
+            query = "SELECT * FROM users WHERE email=?"
+            db.exec(query,  (kwargs['email'],))
+        elif "user_id" in kwargs:
+            query = "SELECT * FROM users WHERE id=?"
+            db.exec(query,  (kwargs['user_id'],))
+        else:
+            return json.dumps({"error": "La recherche d'utilisateur demande un email ou un id en paramètre de get_user()"})
+
+        print(db.cur, flush=True)
+        print(list(db.cur), flush=True)
+
+        for val in db.cur:
+            print(f"Val: {val}", flush=True)
+        values = zip(User.__fields__, list(db.cur)[0])
+        found = User()
+        for f, v in values:
+            setattr(found, f, v)
+        return found
+
+    def __init__(self, user_id=None, first_name=None, last_name=None, email=None, password=None):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+        self.password = password
+        self.id = user_id
+
+    @staticmethod
+    def create_user(first_name, last_name, email, hashed_password):
+        # Left to do: send mail
+
+        query = "INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)"
+        db.exec(query, (first_name, last_name, email, hashed_password))
+        db.conn.commit()
+        
+        return User(db.cur.lastrowid, first_name, last_name, email, hashed_password)
+
+    def __dict__(self):
+        return vars(self)
+
+    def toJSON(self):
+        return json.dumps(dict(self))
+
+
+        
     # __tablename__ = 'users'
     # id = db.Column(db.Integer, primary_key=True)
     # name = db.Column(db.String(80), nullable=False)
@@ -73,19 +84,6 @@ class User():
     # # matches = (association_proxy('matches_rels', 'user1_id')
     # #            + association_proxy('matches_rels_2', 'user2_id'))
     # matches = db.relationship("Match")
-
-    def __init__(self, name, email, bio=""):
-        self.name = name
-        self.password = ""
-        self.picture_url= None
-        self.email = email
-        self.bio = bio
-
-    def commit(self):
-        pass
-
-    def __repr__(self):
-        return '<User %r>' % self.name
 
 
 # class Like(Base):

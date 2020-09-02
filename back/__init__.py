@@ -1,5 +1,5 @@
 from flask import Flask
-from app.models import Schema
+from .schema import Schema
 import os
 
 config = {

@@ -1,48 +1,76 @@
-import json, hashlib, time
+import json, time
 from flask import current_app as app
 from flask import render_template, request, redirect, url_for, session, flash, make_response
+from mariadb import Error as Dberror
 
 from . import db
 from .models import User
 from .test_routes import *
+from .utils import salt, generate_token
 
 ############ DUMMIES #########################
 
 
-############ NEW CODE ########################
+############ NEW CODE (API) ########################
 
 @app.route("/login/", methods=["POST"])
 def login():
     email = request.form["email"]
-    found = db.get_user(email=email).first()
+    found = User.get_user(email=email).first()
     if found:
-        b = ("pcachin" + request.form["password"]).encode('utf-8')
-        m = hashlib.sha256()
-        m.update(b)
-        if m.digest() == found.password:
-            m = hashlib.sha256()
-            m.update((found.password + str(time.now())).encode('utf-8'))
-            session["token"] = m.digest()
+        if salt(request.form["password"]) == found.password:
+            session["token"] = generate_token(found.email, found.password)
             session["user"] = found.id
-            session["name"] = found.name
+            session["first_name"] = found.first_name
+            session["last_name"] = found.last_name
             session["email"] = found.email
-            session["password"] = found.password
-            session["user_picture"] = found.picture_url
-            if session["remember_me"] == "true":
+            session["picture_url"] = found.picture_url
+            if request.form["remember_me"] == "true":
                 session.permanent = True
-            return json.dumps({"token": session["token"]})
-    return ""
+            return json.dumps({"token": session["token"]} + dict(found))
+        else:
+            return json.dumps({"error": "Mot de passe incorrect"})
+    return json.dumps({"error": "Utilisateur introuvable"})
 
-@app.route("/logout/")
+@app.route("/logout/", methods=["POST", "GET"])
 def logout():
     if "user" in session:
         session.pop("user", None)
-        # Left to po stuff
-    return
+        session.pop("token", None)
+        session.pop("first_name", None)
+        session.pop("last_name", None)
+        session.pop("email", None)
+        session.pop("picture_url", None)
+        # Left to pop stuff (to check and recheck)
+    return json.dumps({"pcachin": True})
 
+@app.route("/signin/", methods=["POST"])
+def signin():
+    print(f"\tEMAIL: {request.form['email']}", flush=True)
+    if "user" in session:
+        return json.dumps({"error": "Vous êtes déjà connecté"})
+    hashed_password = salt(request.form["password"])
+    # try:
+    User.create_user(request.form["first_name"], request.form["last_name"], request.form["email"], hashed_password)
+    # except Dberror as e:
+        # return json.dumps({"error": f"While creating user: {e}"})
+    return json.dumps({"pcachin": True})
 
+@app.route("/my_profile/", methods=["POST"])
+def my_profile():
+    if not "email" in session:
+        return json.dumps({"error": "Vous n'êtes pas connecté"})
+    found = User.get_user(email=session["email"])
+    return json.dumps(dict(found))
 
-############ OLD CODE ########################
+@app.route("/user/<user_id>", methods=["POST"])
+def user_profile(user_id):
+    if not "email" in session:
+        return json.dumps({"error": "Vous n'êtes pas connecté"})
+    found = User.get_user(user_id=user_id)
+    return json.dumps(dict(found))
+
+############ OLD CODE (UI) ########################
 
 @app.route("/")
 def index():
