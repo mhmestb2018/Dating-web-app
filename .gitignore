@@ -4,6 +4,7 @@ db/*
 __pycache__
 __pytest__
 .pytest_cache
+private.sh
 
 # Logs
 logs

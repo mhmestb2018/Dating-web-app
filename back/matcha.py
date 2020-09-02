@@ -1,6 +1,6 @@
 from . import create_app
 
-app = create_app()
+app, mail = create_app()
 
 
 from . import routes  # Import routes

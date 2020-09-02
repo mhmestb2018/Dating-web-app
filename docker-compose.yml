@@ -11,11 +11,11 @@ services:
     environment: 
       FLASK_ENV: development
       FLASK_APP: matcha.py
-      SQLALCHEMY_POOL_RECYCLE: 599
-      SQLALCHEMY_ECHO: 'true'
-      SQLALCHEMY_TRACK_MODIFICATIONS: 'false'
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
+      FLASK_GMAIL:
+      FLASK_GMAIL_PASSWORD:
+      FLASK_HOST:
     volumes:
       - ./back:/app/:ro
     networks:

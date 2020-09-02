@@ -1,11 +1,12 @@
-import json, time
+import json, time, os
 from flask import current_app as app
 from flask import render_template, request, redirect, url_for, session, flash, make_response
+from flask_mail import Message
 from mariadb import Error as Dberror
 
-from . import db
+from . import db, host
+from .matcha import mail
 from .models import User
-from .test_routes import *
 from .utils import salt, generate_token
 
 ############ DUMMIES #########################
@@ -55,9 +56,16 @@ def signin():
         return json.dumps({"error": "Vous êtes déjà connecté"})
     hashed_password = salt(request.form["password"])
     # try:
-    User.create_user(request.form["first_name"], request.form["last_name"], request.form["email"], hashed_password)
+    new = User.create_user(request.form["first_name"], request.form["last_name"], request.form["email"], hashed_password)
     # except Dberror as e:
         # return json.dumps({"error": f"While creating user: {e}"})
+
+    validation_id = os.urandom(12).hex()
+    link = f"{host}/validation/{validation_id}"
+    msg = Message("Confirmation d'inscription", sender=("Matcha Headquarters", os.environ['FLASK_GMAIL']), recipients=[new.email])
+    msg.html = render_template("validation_email.html", link=link)
+    mail.send(msg)
+    
     return json.dumps({"pcachin": True})
 
 @app.route("/my_profile/", methods=["POST"])
