@@ -15,6 +15,8 @@ from .utils import salt, generate_token
 
 @app.route("/login/", methods=["POST"])
 def login():
+    if "user" in session:
+        return json.dumps({"error": "Vous êtes déjà connecté"})
     email = request.form["email"]
     found = User.get_user(email=email)
     if found:
@@ -44,7 +46,8 @@ def logout():
         session.pop("email", None)
         session.pop("picture_url", None)
         # Left to pop stuff (to check and recheck)
-    return json.dumps({"pcachin": True})
+        return json.dumps({"pcachin": True})
+    return json.dumps({"error": "Vous n'êtes pas connecté"})
 
 @app.route("/signin/", methods=["POST"])
 def signin():
