@@ -55,6 +55,12 @@ class User():
     def to_JSON(self):
         return json.dumps(self.to_dict())
 
+    @property
+    def public(self):
+        return {
+            "first_name": self.first_name,
+        }
+
 
         
     # __tablename__ = 'users'

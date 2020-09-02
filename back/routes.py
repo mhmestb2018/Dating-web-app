@@ -68,12 +68,12 @@ def my_profile():
     delattr(found, "password")
     return found.to_JSON()
 
-@app.route("/user/<user_id>", methods=["POST"])
+@app.route("/user/<user_id>/", methods=["POST"])
 def user_profile(user_id):
     if not "email" in session:
         return json.dumps({"error": "Vous n'êtes pas connecté"})
     found = User.get_user(user_id=user_id)
-    return json.dumps(dict(found))
+    return json.dumps(found.public)
 
 ############ OLD CODE (UI) ########################
 
