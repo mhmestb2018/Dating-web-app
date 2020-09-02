@@ -65,7 +65,8 @@ def my_profile():
     if not "email" in session:
         return json.dumps({"error": "Vous n'êtes pas connecté"})
     found = User.get_user(email=session["email"])
-    return json.dumps(dict(found))
+    delattr(found, "password")
+    return found.to_JSON()
 
 @app.route("/user/<user_id>", methods=["POST"])
 def user_profile(user_id):
