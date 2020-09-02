@@ -11,7 +11,6 @@ services:
     environment: 
       FLASK_ENV: development
       FLASK_APP: matcha.py
-      SECRET_KEY: "J'aime manger des pommes"
       SQLALCHEMY_POOL_RECYCLE: 599
       SQLALCHEMY_ECHO: 'true'
       SQLALCHEMY_TRACK_MODIFICATIONS: 'false'

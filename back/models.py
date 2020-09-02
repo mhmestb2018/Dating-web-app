@@ -13,20 +13,20 @@ class User():
     @staticmethod
     def get_user(**kwargs):
         if "email" in kwargs:
+            print(f"\tEMAIL: {kwargs['email']}", flush=True)
             query = "SELECT * FROM users WHERE email=?"
             db.exec(query,  (kwargs['email'],))
         elif "user_id" in kwargs:
             query = "SELECT * FROM users WHERE id=?"
             db.exec(query,  (kwargs['user_id'],))
         else:
-            return json.dumps({"error": "La recherche d'utilisateur demande un email ou un id en paramètre de get_user()"})
+            return json.dumps({"error": "La recherche d'utilisateur demande un email ou un user_id en paramètre"})
 
-        print(db.cur, flush=True)
-        print(list(db.cur), flush=True)
-
-        for val in db.cur:
+        rows = db.cur.fetchall()
+        print(f"Rows: {rows}", flush=True)
+        for val in rows:
             print(f"Val: {val}", flush=True)
-        values = zip(User.__fields__, list(db.cur)[0])
+        values = zip(User.__fields__, rows[0])
         found = User()
         for f, v in values:
             setattr(found, f, v)
@@ -49,11 +49,11 @@ class User():
         
         return User(db.cur.lastrowid, first_name, last_name, email, hashed_password)
 
-    def __dict__(self):
+    def to_dict(self):
         return vars(self)
 
-    def toJSON(self):
-        return json.dumps(dict(self))
+    def to_JSON(self):
+        return json.dumps(self.to_dict())
 
 
         

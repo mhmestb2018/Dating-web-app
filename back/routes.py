@@ -16,7 +16,7 @@ from .utils import salt, generate_token
 @app.route("/login/", methods=["POST"])
 def login():
     email = request.form["email"]
-    found = User.get_user(email=email).first()
+    found = User.get_user(email=email)
     if found:
         if salt(request.form["password"]) == found.password:
             session["token"] = generate_token(found.email, found.password)
@@ -24,10 +24,12 @@ def login():
             session["first_name"] = found.first_name
             session["last_name"] = found.last_name
             session["email"] = found.email
-            session["picture_url"] = found.picture_url
+            #session["picture_url"] = found.picture_url
             if request.form["remember_me"] == "true":
                 session.permanent = True
-            return json.dumps({"token": session["token"]} + dict(found))
+            setattr(found, "token", session["token"])
+            delattr(found, "password")
+            return found.to_JSON()
         else:
             return json.dumps({"error": "Mot de passe incorrect"})
     return json.dumps({"error": "Utilisateur introuvable"})
@@ -46,7 +48,6 @@ def logout():
 
 @app.route("/signin/", methods=["POST"])
 def signin():
-    print(f"\tEMAIL: {request.form['email']}", flush=True)
     if "user" in session:
         return json.dumps({"error": "Vous êtes déjà connecté"})
     hashed_password = salt(request.form["password"])

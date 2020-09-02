@@ -8,5 +8,5 @@ def salt(param):
 
 def generate_token(email, password):
     m = hashlib.sha256()
-    m.update(f"{password}{email}{time.now()}".encode('utf-8'))
+    m.update(f"{password}{email}{time.time()}".encode('utf-8'))
     return str(m.digest())
