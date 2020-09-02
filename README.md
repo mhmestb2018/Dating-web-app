@@ -10,10 +10,12 @@ The frontend is accessible on port 3000 on your machine ([link](http://0.0.0.0:3
 
 ## Run
 You will need to set up two environment variables in order to send confirmation emails. At this stage, only Gmail addresses are supported.
+Create/manage your Google Account application passwords at ([link](https://myaccount.google.com/apppasswords)).
+These variables should be set or specified in a *private.env* file.
 ```bash
- export FLASK_GMAIL=XXXX@gmail.com
- export FLASK_GMAIL_PASSWORD=XXXX
- export FLASK_HOST='http://0.0.0.0:3000'
+ echo "FLASK_GMAIL=XXXX@gmail.com
+FLASK_GMAIL_PASSWORD=XXXX
+FLASK_HOST='http://0.0.0.0:3000'" > private.env
 docker-compose up
 ```
 

@@ -2,6 +2,7 @@ version: "2"
 services:
   app:
     build: ./back
+    env_file: .env
     links:
       - db
     ports:
