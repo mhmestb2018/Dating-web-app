@@ -12,7 +12,9 @@ The frontend is accessible on port 3000 on your machine ([link](http://0.0.0.0:3
 ### Emails (optional)
 You will set two environment variables in order to send confirmation emails. At this stage, only Gmail addresses are supported.
 Without email configuration, users will not be able to reset their password.
+
 Create/manage your Google Account application passwords on [Google App Passwords page](https://myaccount.google.com/apppasswords).
+
 Edit your credentials in *config/local.env* file.
 
 Afterwards, to stop tracking this file:
@@ -33,6 +35,7 @@ docker-compose up
 
 ## Database
 MariaDB data and user pictures will be stored in local docker volumes.
+
 To reset the database and/or clear pictures storage:
 ```bash
 docker-compose down -v
