@@ -12,12 +12,12 @@ For test purposes, you can query mySQL on port 32000.
 
 ### Emails (optional)
 You will set two environment variables in order to send confirmation emails. At this stage, only Gmail addresses are supported.
+Without email configuration, users will not be able to reset their password.
 Create/manage your Google Account application passwords on [Google App Passwords page](https://myaccount.google.com/apppasswords).
-These variables should be set or specified in a *.env* file.
-The local.env file will not be tracked by git afterwards.
+Edit your credentials in *config/local.env* file.
+
+Afterwards, to stop tracking this file:
 ```bash
- echo "FLASK_GMAIL=XXXX@gmail.com
-FLASK_GMAIL_PASSWORD=XXXX" >> config/local.env
 git update-index --assume-unchanged config/local.env
 ```
 
