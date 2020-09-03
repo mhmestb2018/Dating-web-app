@@ -1,5 +1,5 @@
-import json, time, os
-from flask import current_app as app
+import time, os
+from flask import current_app as app, jsonify
 from flask import render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Message
@@ -12,7 +12,7 @@ from .utils import user_required, error, success
 
 ############ NEW CODE (API) ########################
 
-@app.route("/login/", methods=["POST"])
+@app.route("/login", methods=["POST"])
 def login():
     """
     Expects an 'email' and 'password' form field as well as
@@ -29,9 +29,9 @@ def login():
     if request.form["remember_me"] == "true":
         session.permanent = True
     delattr(user, "password")
-    return user.to_JSON()
+    return user.jsonify()
 
-@app.route("/logout/", methods=["POST", "GET"])
+@app.route("/logout", methods=["POST", "GET"])
 def logout():
     """
     reset the cookie
@@ -41,7 +41,7 @@ def logout():
     session.pop("user", None)
     return success()
 
-@app.route("/signin/", methods=["POST"])
+@app.route("/signin", methods=["POST"])
 def signin():
     """
     Register a new user.
@@ -71,7 +71,7 @@ def signin():
     print(found, flush=True)
     return success()
 
-@app.route("/update/", methods=["POST"])
+@app.route("/update", methods=["POST"])
 @user_required
 def update_user(user):
     """
@@ -83,9 +83,9 @@ def update_user(user):
     user.update(request.form)
     # except Dberror as e:
         # return json.dumps({"error": f"While creating user: {e}"})
-    return user.to_JSON()
+    return user.jsonify()
 
-@app.route("/delete/", methods=["POST"])
+@app.route("/delete", methods=["POST"])
 @user_required
 def delete_user(user):
     """
@@ -97,15 +97,15 @@ def delete_user(user):
         # return json.dumps({"error": f"While creating user: {e}"})
     return redirect(url_for("logout"))
 
-@app.route("/my_profile/", methods=["POST"])
+@app.route("/my_profile", methods=["POST"])
 @user_required
 def my_profile(user):
     """
     Returns full profile data of the currently logged user
     """
-    return user.to_JSON()
+    return user.jsonify()
 
-@app.route("/user/<user_id>/", methods=["POST"])
+@app.route("/user/<user_id>", methods=["POST"])
 @user_required
 def user_profile(user_id, user):
     """
@@ -114,4 +114,4 @@ def user_profile(user_id, user):
     found = User.get_user(user_id=user_id)
     if not found:
         return error("Utilisateur introuvable")
-    return json.dumps(found.public)
+    return jsonify(found.public)

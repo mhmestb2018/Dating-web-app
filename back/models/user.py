@@ -1,4 +1,5 @@
-import json, mariadb
+import mariadb
+from flask import jsonify
 
 from .. import db
 
@@ -16,7 +17,7 @@ class User():
             query = "SELECT * FROM users WHERE id=?"
             db.exec(query,  (kwargs['user_id'],))
         else:
-            return json.dumps({"error": "La recherche d'utilisateur demande un email ou un user_id en paramètre"})
+            return jsonify({"error": "La recherche d'utilisateur demande un email ou un user_id en paramètre"})
 
         rows = db.cur.fetchall()
         if len(rows) is 0:
@@ -71,8 +72,8 @@ class User():
     def to_dict(self):
         return vars(self)
 
-    def to_JSON(self):
-        return json.dumps(self.to_dict())
+    def jsonify(self):
+        return jsonify(self.to_dict())
 
     @property
     def public(self):
