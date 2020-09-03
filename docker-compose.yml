@@ -2,7 +2,10 @@ version: "2"
 services:
   app:
     build: ./back
-    env_file: .env
+    env_file:
+      - config/flask.env
+      - config/mysql.env
+      - config/local.env
     links:
       - db
     ports:
@@ -10,13 +13,13 @@ services:
     expose:
       - "5000"
     environment: 
-      FLASK_ENV: development
-      FLASK_APP: matcha.py
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin
+      FLASK_ENV:
+      FLASK_APP:
+      MYSQL_USER:
+      MYSQL_PASSWORD:
       FLASK_GMAIL:
       FLASK_GMAIL_PASSWORD:
-      FLASK_HOST:
+      REACHABLE_HOST:
     volumes:
       - ./back:/app/:ro
     networks:
@@ -25,15 +28,18 @@ services:
 
   db:
     image: mariadb:latest
+    env_file:
+      - config/mysql.env
+      - config/mysql_root.env
     ports:
       - "32000:3306"
     expose:
       - "3306"
     environment:
-      MYSQL_ROOT_PASSWORD: admin
-      MYSQL_DATABASE: matcha
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_DATABASE:
+      MYSQL_USER:
+      MYSQL_PASSWORD:
     volumes:
       - db-data:/var/lib/mysql # To override random volume name
     networks:
@@ -41,6 +47,7 @@ services:
 
   front:
     build: ./front
+    env_file: config/node.env
     links:
       - app
     expose:
@@ -48,7 +55,8 @@ services:
     user: node 
     working_dir: /home/node/app
     environment:
-      NODE_ENV: development
+      NODE_ENV:
+      REACHABLE_HOST:
     ports:
       - "3000:3000"
     volumes:

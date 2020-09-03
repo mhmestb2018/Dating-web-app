@@ -14,8 +14,7 @@ Create/manage your Google Account application passwords on [Google App Passwords
 These variables should be set or specified in a *.env* file.
 ```bash
  echo "FLASK_GMAIL=XXXX@gmail.com
-FLASK_GMAIL_PASSWORD=XXXX
-FLASK_HOST='http://0.0.0.0:3000'" > .env
+FLASK_GMAIL_PASSWORD=XXXX" >> config/local.env
 docker-compose up
 ```
 

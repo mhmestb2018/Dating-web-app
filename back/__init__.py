@@ -14,7 +14,7 @@ config = {
 
 db = Schema(config)
 
-host = os.environ['FLASK_HOST']
+host = os.environ['REACHABLE_HOST']
 
 def create_app():
     """Construct the core application."""
