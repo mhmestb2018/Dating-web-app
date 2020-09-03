@@ -4,7 +4,6 @@ db/*
 __pycache__
 __pytest__
 .pytest_cache
-config/local.env
 
 # Logs
 logs
