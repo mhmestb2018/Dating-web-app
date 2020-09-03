@@ -59,10 +59,10 @@ services:
     networks:
       - frontend
 
-volumes:
-  db-data:
-  user-pictures:
-
 networks:
   backend:
   frontend:
+
+volumes:
+  user-pictures:
+  db-data:
