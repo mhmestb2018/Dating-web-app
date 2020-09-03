@@ -22,6 +22,12 @@ class Schema:
         last_name varchar(255) NOT NULL,
         email varchar(255) NOT NULL,
         password varchar(255) NOT NULL,
+        sex varchar(63),
+        orientation varchar(63),
+        bio text,
+        views_count int,
+        likes_count int,
+        main_picture varchar(1024),
         PRIMARY KEY (id)
         ) ENGINE=InnoDB;
         """
