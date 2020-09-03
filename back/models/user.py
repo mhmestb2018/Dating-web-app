@@ -2,11 +2,6 @@ import json, mariadb
 
 from . import db
 
-
-class Base():
-
-    pass
-
 class User():
     __fields__ = ("id", "first_name", "last_name", "email", "password", "sex", "orientation", "bio", "views_count", "likes_count", "main_picture", "validated")
     __restricted_fields__ = ("id", "validated")

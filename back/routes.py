@@ -1,22 +1,23 @@
 import json, time, os
 from flask import current_app as app
-from flask import render_template, request, redirect, url_for, session, flash, make_response
+from flask import render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Message
 from mariadb import Error as Dberror
 
 from . import db, host
 from .matcha import mail
-from .models import User
+from .models.user import User
 from .utils import user_required, error, success
-
-############ DUMMIES #########################
-
 
 ############ NEW CODE (API) ########################
 
 @app.route("/login/", methods=["POST"])
 def login():
+    """
+    Expects an 'email' and 'password' form field as well as
+    a 'remember_me' boolean (expected at 'true' to be set) 
+    """
     if "user" in session:
         return error("Vous êtes déjà connecté")
     user = User.get_user(email=request.form["email"])
@@ -32,6 +33,9 @@ def login():
 
 @app.route("/logout/", methods=["POST", "GET"])
 def logout():
+    """
+    reset the cookie
+    """
     if "user" not in session:
         return error("Vous êtes déjà déconnecté")
     session.pop("user", None)
@@ -39,6 +43,13 @@ def logout():
 
 @app.route("/signin/", methods=["POST"])
 def signin():
+    """
+    Register a new user.
+    Expects 'first_name', 'last_name', 'email' and 'password' form fields.
+    This function will send a confirmation email if mail is configured.
+    Assert success by fetching user in database.
+    returns profile data
+    """
     if "user" in session:
         return error("Vous êtes déjà connecté")
     hashed_password = generate_password_hash(request.form["password"])
@@ -63,6 +74,11 @@ def signin():
 @app.route("/update/", methods=["POST"])
 @user_required
 def update_user(user):
+    """
+    Use all profided form fields to update a user.
+    This function first checks that every requested field is editable.
+    It then update the user and returns updated profile data. 
+    """
     # try:
     user.update(request.form)
     # except Dberror as e:
@@ -72,6 +88,9 @@ def update_user(user):
 @app.route("/delete/", methods=["POST"])
 @user_required
 def delete_user(user):
+    """
+    Delete an user and redirect to lougout endpoint
+    """
     # try:
     user.delete()
     # except Dberror as e:
@@ -81,11 +100,17 @@ def delete_user(user):
 @app.route("/my_profile/", methods=["POST"])
 @user_required
 def my_profile(user):
+    """
+    Returns full profile data of the currently logged user
+    """
     return user.to_JSON()
 
 @app.route("/user/<user_id>/", methods=["POST"])
 @user_required
 def user_profile(user_id, user):
+    """
+    Returns public profile data of requested user_id
+    """
     found = User.get_user(user_id=user_id)
     if not found:
         return error("Utilisateur introuvable")
