@@ -5,8 +5,6 @@ services:
     env_file:
       - config/mysql.env
       - config/mysql_root.env
-    ports:
-      - "32000:3306"
     expose:
       - "3306"
     volumes:

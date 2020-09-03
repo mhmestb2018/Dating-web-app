@@ -39,6 +39,13 @@ To reset the database and/or clear pictures storage:
 docker-compose down -v
 ```
 
+To inspect the database, you can jump in the running container with:
+```bash
+docker ps
+docker exec -it XXXXXXX_db_1 mysql --database=matcha --user=admin --password=admin
+```
+
+
 ## Uninstall
 To delete all user data and docker images
 ```bash
