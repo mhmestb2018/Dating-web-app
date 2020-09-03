@@ -28,6 +28,7 @@ class Schema:
         views_count int,
         likes_count int,
         main_picture varchar(1024),
+        validated bit,
         PRIMARY KEY (id)
         ) ENGINE=InnoDB;
         """

@@ -50,11 +50,12 @@ def signin():
     # except Dberror as e:
         # return json.dumps({"error": f"While creating user: {e}"})
 
-    validation_id = os.urandom(12).hex()
-    link = f"{host}/validation/{validation_id}"
-    msg = Message("Confirmation d'inscription", sender=("Matcha Headquarters", os.environ['FLASK_GMAIL']), recipients=[new.email])
-    msg.html = render_template("validation_email.html", link=link)
-    mail.send(msg)
+    if mail:
+        validation_id = os.urandom(12).hex()
+        link = f"{host}/validation/{validation_id}"
+        msg = Message("Confirmation d'inscription", sender=("Matcha Headquarters", os.environ['FLASK_GMAIL']), recipients=[new.email])
+        msg.html = render_template("validation_email.html", link=link)
+        mail.send(msg)
     
     return success()
 

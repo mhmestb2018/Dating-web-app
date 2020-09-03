@@ -12,14 +12,6 @@ services:
       - "5000:5000"
     expose:
       - "5000"
-    environment: 
-      FLASK_ENV:
-      FLASK_APP:
-      MYSQL_USER:
-      MYSQL_PASSWORD:
-      FLASK_GMAIL:
-      FLASK_GMAIL_PASSWORD:
-      REACHABLE_HOST:
     volumes:
       - ./back:/app/:ro
     networks:
@@ -35,11 +27,6 @@ services:
       - "32000:3306"
     expose:
       - "3306"
-    environment:
-      MYSQL_ROOT_PASSWORD:
-      MYSQL_DATABASE:
-      MYSQL_USER:
-      MYSQL_PASSWORD:
     volumes:
       - db-data:/var/lib/mysql # To override random volume name
     networks:
@@ -54,9 +41,6 @@ services:
       - "3000"
     user: node 
     working_dir: /home/node/app
-    environment:
-      NODE_ENV:
-      REACHABLE_HOST:
     ports:
       - "3000:3000"
     volumes:

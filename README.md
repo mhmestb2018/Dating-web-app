@@ -9,6 +9,8 @@ For test purposes, you can query mySQL on port 32000.
 - WSL 2 (Windows)
 - Docker
 - docker-compose (Windows Server/Linux)
+
+### Emails (optional)
 You will set two environment variables in order to send confirmation emails. At this stage, only Gmail addresses are supported.
 Create/manage your Google Account application passwords on [Google App Passwords page](https://myaccount.google.com/apppasswords).
 These variables should be set or specified in a *.env* file.

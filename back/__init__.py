@@ -28,7 +28,11 @@ def create_app():
     app.config['MAIL_USE_TLS'] = False
     app.config['MAIL_USE_SSL'] = True
 
-    mail = Mail(app)
+    print(os.environ['FLASK_GMAIL'], flush=True)
+    if os.environ['FLASK_GMAIL'] is "":
+        mail = False
+    else:
+        mail = Mail(app)
 
     app.app_context().push()    
     return app, mail

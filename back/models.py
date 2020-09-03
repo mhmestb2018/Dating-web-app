@@ -8,7 +8,7 @@ class Base():
     pass
 
 class User():
-    __fields__ = ("id", "first_name", "last_name", "email", "password", "sex", "orientation", "bio", "views_count", "likes_count", "main_picture")
+    __fields__ = ("id", "first_name", "last_name", "email", "password", "sex", "orientation", "bio", "views_count", "likes_count", "main_picture", "validated")
 
     @staticmethod
     def get_user(**kwargs):
