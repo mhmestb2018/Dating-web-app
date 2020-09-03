@@ -24,11 +24,9 @@ def login():
         return error("Utilisateur introuvable")
     if not check_password_hash(user.password, request.form["password"]):
         return error("Mot de passe incorrect")
-    # session["token"] = generate_token(user)
     session["user"] = user.id
     if request.form["remember_me"] == "true":
         session.permanent = True
-    # setattr(user, "token", session["token"])
     delattr(user, "password")
     return user.to_JSON()
 
@@ -37,7 +35,6 @@ def logout():
     if "user" not in session:
         return error("Vous êtes déjà déconnecté")
     session.pop("user", None)
-    # session.pop("token", None)
     return success()
 
 @app.route("/signin/", methods=["POST"])
@@ -57,16 +54,29 @@ def signin():
         msg.html = render_template("validation_email.html", link=link)
         mail.send(msg)
     
+    found = User.get_user(email=request.form["email"])
+    if not found:
+        return error("Failed to create user")
+    print(found, flush=True)
     return success()
 
 @app.route("/update/", methods=["POST"])
 @user_required
-def update(user):
+def update_user(user):
     # try:
     user.update(request.form)
     # except Dberror as e:
         # return json.dumps({"error": f"While creating user: {e}"})
     return user.to_JSON()
+
+@app.route("/delete/", methods=["POST"])
+@user_required
+def delete_user(user):
+    # try:
+    user.delete()
+    # except Dberror as e:
+        # return json.dumps({"error": f"While creating user: {e}"})
+    return redirect(url_for("logout"))
 
 @app.route("/my_profile/", methods=["POST"])
 @user_required

@@ -24,14 +24,13 @@ class User():
             return json.dumps({"error": "La recherche d'utilisateur demande un email ou un user_id en paramètre"})
 
         rows = db.cur.fetchall()
-        print(f"Rows: {rows}", flush=True)
-        for val in rows:
-            print(f"Val: {val}", flush=True)
+        if len(rows) is 0:
+            return False
         values = zip(User.__fields__, rows[0])
-        found = User()
+        user = User()
         for f, v in values:
-            setattr(found, f, v)
-        return found
+            setattr(user, f, v)
+        return user
 
     def __init__(self, user_id=None, first_name=None, last_name=None, email=None, password=None):
         self.first_name = first_name
@@ -46,7 +45,6 @@ class User():
 
         query = "INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)"
         db.exec(query, (first_name, last_name, email, hashed_password))
-        # db.conn.commit()
         
         return User(db.cur.lastrowid, first_name, last_name, email, hashed_password)
 
@@ -64,10 +62,16 @@ class User():
             setattr(self, k, v)
         return True
 
-    def __del__(self):
+    def delete(self):
         query = "DELETE FROM users WHERE id=" + str(self.id)
         db.exec(query)
         return True
+
+    def __str__(self):
+        return self.to_JSON()
+
+    def __repr__(self):
+        return self.__str__()
 
     def to_dict(self):
         return vars(self)
