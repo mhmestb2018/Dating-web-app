@@ -1,6 +1,6 @@
 import json, mariadb
 
-from . import db
+from .. import db
 
 class User():
     __fields__ = ("id", "first_name", "last_name", "email", "password", "sex", "orientation", "bio", "views_count", "likes_count", "main_picture", "validated")

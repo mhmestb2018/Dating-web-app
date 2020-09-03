@@ -1,7 +1,7 @@
 import hashlib, time, types, json
 from flask import session
 
-from .models import User
+from .models.user import User
 
 def error(msg):
     return json.dumps({"error": msg})
