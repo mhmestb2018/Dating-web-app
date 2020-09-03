@@ -10,7 +10,7 @@ The frontend is accessible on port 3000 on your machine ([link](http://0.0.0.0:3
 
 ## Run
 You will need to set up two environment variables in order to send confirmation emails. At this stage, only Gmail addresses are supported.
-Create/manage your Google Account application passwords at ([link](https://myaccount.google.com/apppasswords)).
+Create/manage your Google Account application passwords on [Google App Passwords page](https://myaccount.google.com/apppasswords).
 These variables should be set or specified in a *private.env* file.
 ```bash
  echo "FLASK_GMAIL=XXXX@gmail.com
