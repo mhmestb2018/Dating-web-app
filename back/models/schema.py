@@ -13,8 +13,6 @@ class Schema:
 
     def create_users_table(self):
 
-        self.cur.execute("DROP TABLE IF EXISTS users")
-
         query = """
         CREATE TABLE IF NOT EXISTS users (
         id int NOT NULL AUTO_INCREMENT,
