@@ -1,5 +1,19 @@
 version: "2"
 services:
+  db:
+    image: mariadb:latest
+    env_file:
+      - config/mysql.env
+      - config/mysql_root.env
+    ports:
+      - "32000:3306"
+    expose:
+      - "3306"
+    volumes:
+      - db-data:/var/lib/mysql # To override random volume name
+    networks:
+      - backend
+
   app:
     build: ./back
     env_file:
@@ -17,20 +31,6 @@ services:
     networks:
       - backend
       - frontend
-
-  db:
-    image: mariadb:latest
-    env_file:
-      - config/mysql.env
-      - config/mysql_root.env
-    ports:
-      - "32000:3306"
-    expose:
-      - "3306"
-    volumes:
-      - db-data:/var/lib/mysql # To override random volume name
-    networks:
-      - backend
 
   front:
     build: ./front

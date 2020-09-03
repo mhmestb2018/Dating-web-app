@@ -9,6 +9,7 @@ class Base():
 
 class User():
     __fields__ = ("id", "first_name", "last_name", "email", "password", "sex", "orientation", "bio", "views_count", "likes_count", "main_picture", "validated")
+    __restricted_fields__ = ("id", "validated")
 
     @staticmethod
     def get_user(**kwargs):
@@ -45,9 +46,28 @@ class User():
 
         query = "INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)"
         db.exec(query, (first_name, last_name, email, hashed_password))
-        db.conn.commit()
+        # db.conn.commit()
         
         return User(db.cur.lastrowid, first_name, last_name, email, hashed_password)
+
+    def update(self, new_values:dict):
+        reqs = []
+        params = []
+        for k in new_values.keys():
+            if k not in User.__fields__ or k in User.__restricted_fields__:
+                raise Exception(f"field {k} doesn't exist")
+            reqs += [f"{k}=?"]
+        req = ", ".join(reqs)
+        query = "UPDATE users SET " + req + " WHERE id=" + str(self.id)
+        db.exec(query, tuple(new_values.values()))
+        for (k, v) in new_values.items():
+            setattr(self, k, v)
+        return True
+
+    def __del__(self):
+        query = "DELETE FROM users WHERE id=" + str(self.id)
+        db.exec(query)
+        return True
 
     def to_dict(self):
         return vars(self)

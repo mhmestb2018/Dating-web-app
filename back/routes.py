@@ -59,6 +59,15 @@ def signin():
     
     return success()
 
+@app.route("/update/", methods=["POST"])
+@user_required
+def update(user):
+    # try:
+    user.update(request.form)
+    # except Dberror as e:
+        # return json.dumps({"error": f"While creating user: {e}"})
+    return user.to_JSON()
+
 @app.route("/my_profile/", methods=["POST"])
 @user_required
 def my_profile(user):
