@@ -2,7 +2,6 @@
 ### Using Flask, MariaDB, Node, React.js and Bootstrap
 
 The frontend is accessible on port 3000 on your machine ([link](http://0.0.0.0:3000)).
-For test purposes, you can query mySQL on port 32000.
 
 ## Setup
 ### Requirements
