@@ -1,18 +1,8 @@
-import hashlib, time, types, json
+import types
 from flask import session
 
-from .models.user import User
-
-def error(msg):
-    return json.dumps({"error": msg})
-
-def success():
-    return json.dumps({"pcachin": True})
-
-# def generate_token(user):
-#     m = hashlib.sha256()
-#     m.update(f"{user.password}{user.email}{time.time()}".encode('utf-8'))
-#     return str(m.digest())
+from ..models.user import User
+from .misc import error
 
 def user_required(fun):
     """

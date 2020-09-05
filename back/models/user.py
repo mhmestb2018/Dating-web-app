@@ -64,7 +64,7 @@ class User():
         return True
 
     def __str__(self):
-        return self.to_JSON()
+        return str(vars(self))
 
     def __repr__(self):
         return self.__str__()
