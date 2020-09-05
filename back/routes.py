@@ -11,6 +11,7 @@ from .utils.decorators import user_required, payload_required, jsonify_output, c
 from .utils import error, success
 
 ############ NEW CODE (API) ########################
+# https://www.restapitutorial.com/lessons/httpmethods.html
 
 @app.route("/login", methods=["POST"])
 @jsonify_output
@@ -25,7 +26,7 @@ def login(payload):
         return error("Vous êtes déjà connecté", 400)
     user = User.get_user(email=payload["email"])
     if not user:
-        return error("Utilisateur introuvable", 400)
+        return error("Utilisateur introuvable", 404)
     if not user.check_password(payload["password"]):
         return error("Mot de passe incorrect")
     session["user"] = user.id
@@ -34,7 +35,7 @@ def login(payload):
     delattr(user, "password")
     return success(user.dict)
 
-@app.route("/logout", methods=["POST", "GET"])
+@app.route("/logout", methods=["POST"])
 @jsonify_output
 def logout():
     """
@@ -45,11 +46,11 @@ def logout():
     session.pop("user", None)
     return success()
 
-@app.route("/signin", methods=["POST"])
+@app.route("/signup", methods=["POST"])
 @jsonify_output
 @payload_required
 @catcher
-def signin(payload):
+def signup(payload):
     """
     Register a new user.
     Expects 'first_name', 'last_name', 'email' and 'password' in payload.
@@ -77,9 +78,9 @@ def signin(payload):
     
     if not User.get_user(email=payload["email"]):
         return error("Failed to create user")
-    return success({"validation_id": validation_id})
+    return success({"validation_id": validation_id}, 201)
 
-@app.route("/update", methods=["POST"])
+@app.route("/update", methods=["PUT"])
 @jsonify_output
 @user_required
 @payload_required
@@ -96,21 +97,21 @@ def update_user(user, payload):
         # return json.dumps({"error": f"While creating user: {e}"})
     return success(user.dict)
 
-@app.route("/delete", methods=["POST"])
+@app.route("/delete", methods=["DELETE"])
 @jsonify_output
 @user_required
 def delete_user(user):
     """
-    Delete an user and redirect to lougout endpoint
+    Delete an user and return his public profile
     """
     # try:
     user.delete()
     # except Dberror as e:
         # return json.dumps({"error": f"While creating user: {e}"})
     session.pop("user", None)
-    return success()
+    return success(user.public)
 
-@app.route("/my_profile", methods=["POST"])
+@app.route("/my_profile", methods=["GET"])
 @jsonify_output
 @user_required
 def my_profile(user):
@@ -119,7 +120,7 @@ def my_profile(user):
     """
     return success(user.dict)
 
-@app.route("/user/<user_id>", methods=["POST"])
+@app.route("/user/<user_id>", methods=["GET"])
 @jsonify_output
 @user_required
 def user_profile(user_id, user):
@@ -128,5 +129,5 @@ def user_profile(user_id, user):
     """
     found = User.get_user(user_id=user_id)
     if not found:
-        return error("Utilisateur introuvable", 400)
+        return error("Utilisateur introuvable", 404)
     return success(found.public)
