@@ -1,10 +1,8 @@
-from flask import jsonify
-
 def error(msg):
-    return jsonify({"error": msg})
+    return {"error": msg}
 
 def success():
-    return jsonify({"pcachin": True})
+    return {"pcachin": True}
 
 # def generate_token(user):
 #     m = hashlib.sha256()

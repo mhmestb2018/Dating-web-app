@@ -1,17 +1,18 @@
 import time, os
-from flask import current_app as app, jsonify, render_template, request, redirect, url_for, session
+from flask import current_app as app, render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Message
 from mariadb import Error as Dberror
 
 from . import db, host
 from .matcha import mail
-from .models import User
-from .utils import user_required, payload_required, error, success
+from .models.user import User
+from .utils import user_required, payload_required, jsonify_output, error, success
 
 ############ NEW CODE (API) ########################
 
 @app.route("/login", methods=["POST"])
+@jsonify_output
 @payload_required
 def login(payload):
     """
@@ -29,9 +30,10 @@ def login(payload):
     if payload["remember_me"] == "true":
         session.permanent = True
     delattr(user, "password")
-    return user.jsonify()
+    return user.dict
 
 @app.route("/logout", methods=["POST", "GET"])
+@jsonify_output
 def logout():
     """
     reset the cookie
@@ -42,6 +44,7 @@ def logout():
     return success()
 
 @app.route("/signin", methods=["POST"])
+@jsonify_output
 @payload_required
 def signin(payload):
     """
@@ -53,6 +56,8 @@ def signin(payload):
     """
     if "user" in session:
         return error("Vous êtes déjà connecté")
+    if User.get_user(email=payload["email"]) is not None:
+        return error("L'utilisateur existe déjà")
     hashed_password = generate_password_hash(payload["password"])
     # try:
     new = User.create_user(payload["first_name"], payload["last_name"], payload["email"], hashed_password)
@@ -73,6 +78,7 @@ def signin(payload):
     return success()
 
 @app.route("/update", methods=["POST"])
+@jsonify_output
 @user_required
 @payload_required
 def update_user(user, payload):
@@ -85,9 +91,10 @@ def update_user(user, payload):
     user.update(payload)
     # except Dberror as e:
         # return json.dumps({"error": f"While creating user: {e}"})
-    return user.jsonify()
+    return user.dict
 
 @app.route("/delete", methods=["POST"])
+@jsonify_output
 @user_required
 def delete_user(user):
     """
@@ -97,17 +104,20 @@ def delete_user(user):
     user.delete()
     # except Dberror as e:
         # return json.dumps({"error": f"While creating user: {e}"})
-    return redirect(url_for("logout"))
+    session.pop("user", None)
+    return success()
 
 @app.route("/my_profile", methods=["POST"])
+@jsonify_output
 @user_required
 def my_profile(user):
     """
     Returns full profile data of the currently logged user
     """
-    return user.jsonify()
+    return user.dict
 
 @app.route("/user/<user_id>", methods=["POST"])
+@jsonify_output
 @user_required
 def user_profile(user_id, user):
     """
@@ -116,4 +126,4 @@ def user_profile(user_id, user):
     found = User.get_user(user_id=user_id)
     if not found:
         return error("Utilisateur introuvable")
-    return jsonify(found.public)
+    return found.public

@@ -1,5 +1,5 @@
 import types
-from flask import session, request
+from flask import session, request, jsonify
 
 from ..models.user import User
 from .misc import error
@@ -44,6 +44,21 @@ def payload_required(fun):
         if len(payload) is 0:
             return error("This endpoint requires a payload")
         return fun(*args, **kwargs, payload=payload)
+
+    if type(fun) is not types.FunctionType:
+        raise ValueError()
+    # To carry the name over and be able to register more than one route with this decorator
+    wrapper.__name__ = fun.__name__
+    return wrapper
+
+def jsonify_output(fun):
+    """
+    jsonify_output decorator:
+        1. jsonify the return value of the function
+    """
+
+    def wrapper(*args, **kwargs):
+        return jsonify(fun(*args, **kwargs))
 
     if type(fun) is not types.FunctionType:
         raise ValueError()

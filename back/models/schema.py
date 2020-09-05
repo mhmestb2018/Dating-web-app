@@ -1,10 +1,14 @@
-import json, mariadb
+import json, mariadb, time
 
 class Schema:
     def __init__(self, config):
         self.conn = False
         while not self.conn:
-            self.conn = mariadb.connect(**config)
+            try:
+                self.conn = mariadb.connect(**config)
+            except mariadb.Error as e:
+                print(f"Connection to database failed: {e}", flush=True)
+                time.sleep(1)
         # autocommit = True by default
         self.cur = self.conn.cursor()
         # Create users first as other tables will refer to it

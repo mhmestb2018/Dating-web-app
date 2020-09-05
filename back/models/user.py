@@ -17,11 +17,13 @@ class User():
             query = "SELECT * FROM users WHERE id=?"
             db.exec(query,  (kwargs['user_id'],))
         else:
-            return jsonify({"error": "La recherche d'utilisateur demande un email ou un user_id en paramètre"})
+            print("get_user: missing parameters", flush=True)
+            return None
 
         rows = db.cur.fetchall()
         if len(rows) is 0:
-            return False
+            print("get_user: no results", flush=True)
+            return None
         values = zip(User.__fields__, rows[0])
         user = User()
         for f, v in values:
@@ -69,11 +71,9 @@ class User():
     def __repr__(self):
         return self.__str__()
 
-    def to_dict(self):
+    @property
+    def dict(self):
         return vars(self)
-
-    def jsonify(self):
-        return jsonify(self.to_dict())
 
     @property
     def public(self):
