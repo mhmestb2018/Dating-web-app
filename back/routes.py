@@ -80,7 +80,7 @@ def signup(payload):
         return error("Failed to create user")
     return success({"validation_id": validation_id}, 201)
 
-@app.route("/update", methods=["PUT"])
+@app.route("/profile", methods=["PUT"])
 @jsonify_output
 @user_required
 @payload_required
@@ -97,7 +97,7 @@ def update_user(user, payload):
         # return json.dumps({"error": f"While creating user: {e}"})
     return success(user.dict)
 
-@app.route("/delete", methods=["DELETE"])
+@app.route("/profile", methods=["DELETE"])
 @jsonify_output
 @user_required
 def delete_user(user):
@@ -111,7 +111,7 @@ def delete_user(user):
     session.pop("user", None)
     return success(user.public)
 
-@app.route("/my_profile", methods=["GET"])
+@app.route("/profile", methods=["GET"])
 @jsonify_output
 @user_required
 def my_profile(user):
@@ -131,3 +131,13 @@ def user_profile(user_id, user):
     if not found:
         return error("Utilisateur introuvable", 404)
     return success(found.public)
+
+
+@app.route("/user/<user_id>", methods=["POST"])
+@jsonify_output
+@user_required
+def user_profile(user_id, user):
+    """
+    Likes and matches
+    """
+    pass
