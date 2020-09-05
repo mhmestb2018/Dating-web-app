@@ -114,7 +114,7 @@ def delete_user(user):
 @app.route("/profile", methods=["GET"])
 @jsonify_output
 @user_required
-def my_profile(user):
+def profile(user):
     """
     Returns full profile data of the currently logged user
     """
@@ -136,7 +136,7 @@ def user_profile(user_id, user):
 @app.route("/user/<user_id>", methods=["POST"])
 @jsonify_output
 @user_required
-def user_profile(user_id, user):
+def like_user(user_id, user):
     """
     Likes and matches
     """
