@@ -1,5 +1,5 @@
 import types
-from flask import session
+from flask import session, request
 
 from ..models.user import User
 from .misc import error
@@ -20,6 +20,30 @@ def user_required(fun):
             return error("Votre compte a été supprimé")
         delattr(found, "password")
         return fun(*args, **kwargs, user=found)
+
+    if type(fun) is not types.FunctionType:
+        raise ValueError()
+    # To carry the name over and be able to register more than one route with this decorator
+    wrapper.__name__ = fun.__name__
+    return wrapper
+
+def payload_required(fun):
+    """
+    Payload can either be form data or json payload
+    Payload_required decorator:
+        1. Check if form data provided
+        2. Otherwise load JSON data
+        3. If payload not empty, add the payload to function parameters
+    """
+
+    def wrapper(*args, **kwargs):
+        payload = request.form
+        if len(payload) is 0:
+            payload = request.get_json()
+        
+        if len(payload) is 0:
+            return error("This endpoint requires a payload")
+        return fun(*args, **kwargs, payload=payload)
 
     if type(fun) is not types.FunctionType:
         raise ValueError()

@@ -1,6 +1,5 @@
 import time, os
-from flask import current_app as app, jsonify
-from flask import render_template, request, redirect, url_for, session
+from flask import current_app as app, jsonify, render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Message
 from mariadb import Error as Dberror
@@ -8,25 +7,26 @@ from mariadb import Error as Dberror
 from . import db, host
 from .matcha import mail
 from .models.user import User
-from .utils import user_required, error, success
+from .utils import user_required, payload_required, error, success
 
 ############ NEW CODE (API) ########################
 
 @app.route("/login", methods=["POST"])
-def login():
+@payload_required
+def login(payload):
     """
-    Expects an 'email' and 'password' form field as well as
+    Expects 'email' and 'password' in payload as well as
     a 'remember_me' boolean (expected at 'true' to be set) 
     """
     if "user" in session:
         return error("Vous êtes déjà connecté")
-    user = User.get_user(email=request.form["email"])
+    user = User.get_user(email=payload["email"])
     if not user:
         return error("Utilisateur introuvable")
-    if not check_password_hash(user.password, request.form["password"]):
+    if not check_password_hash(user.password, payload["password"]):
         return error("Mot de passe incorrect")
     session["user"] = user.id
-    if request.form["remember_me"] == "true":
+    if payload["remember_me"] == "true":
         session.permanent = True
     delattr(user, "password")
     return user.jsonify()
@@ -42,19 +42,20 @@ def logout():
     return success()
 
 @app.route("/signin", methods=["POST"])
-def signin():
+@payload_required
+def signin(payload):
     """
     Register a new user.
-    Expects 'first_name', 'last_name', 'email' and 'password' form fields.
+    Expects 'first_name', 'last_name', 'email' and 'password' in payload.
     This function will send a confirmation email if mail is configured.
     Assert success by fetching user in database.
     returns profile data
     """
     if "user" in session:
         return error("Vous êtes déjà connecté")
-    hashed_password = generate_password_hash(request.form["password"])
+    hashed_password = generate_password_hash(payload["password"])
     # try:
-    new = User.create_user(request.form["first_name"], request.form["last_name"], request.form["email"], hashed_password)
+    new = User.create_user(payload["first_name"], payload["last_name"], payload["email"], hashed_password)
     # except Dberror as e:
         # return json.dumps({"error": f"While creating user: {e}"})
 
@@ -65,7 +66,7 @@ def signin():
         msg.html = render_template("validation_email.html", link=link)
         mail.send(msg)
     
-    found = User.get_user(email=request.form["email"])
+    found = User.get_user(email=payload["email"])
     if not found:
         return error("Failed to create user")
     print(found, flush=True)
@@ -73,14 +74,15 @@ def signin():
 
 @app.route("/update", methods=["POST"])
 @user_required
-def update_user(user):
+@payload_required
+def update_user(user, payload):
     """
-    Use all profided form fields to update a user.
+    Use all provided fields in payload to update a user.
     This function first checks that every requested field is editable.
     It then update the user and returns updated profile data. 
     """
     # try:
-    user.update(request.form)
+    user.update(payload)
     # except Dberror as e:
         # return json.dumps({"error": f"While creating user: {e}"})
     return user.jsonify()
