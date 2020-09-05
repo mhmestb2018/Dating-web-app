@@ -13,7 +13,8 @@ class Schema:
         self.cur = self.conn.cursor()
         # Create users first as other tables will refer to it
         self.create_users_table()
-        self.populate_users_table()
+        
+        # self.populate_users_table()
 
     def create_users_table(self):
 

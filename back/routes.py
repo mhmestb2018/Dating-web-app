@@ -1,13 +1,14 @@
 import time, os
 from flask import current_app as app, render_template, request, redirect, url_for, session
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 from flask_mail import Message
 from mariadb import Error as Dberror
 
 from . import db, host
 from .matcha import mail
 from .models.user import User
-from .utils import user_required, payload_required, jsonify_output, error, success
+from .utils.decorators import user_required, payload_required, jsonify_output
+from .utils import error, success
 
 ############ NEW CODE (API) ########################
 
@@ -24,7 +25,7 @@ def login(payload):
     user = User.get_user(email=payload["email"])
     if not user:
         return error("Utilisateur introuvable")
-    if not check_password_hash(user.password, payload["password"]):
+    if not user.check_password(payload["password"]):
         return error("Mot de passe incorrect")
     session["user"] = user.id
     if payload["remember_me"] == "true":
@@ -52,7 +53,7 @@ def signin(payload):
     Expects 'first_name', 'last_name', 'email' and 'password' in payload.
     This function will send a confirmation email if mail is configured.
     Assert success by fetching user in database.
-    returns profile data
+    returns validation_id for mail validation
     """
     if "user" in session:
         return error("Vous êtes déjà connecté")
@@ -64,6 +65,7 @@ def signin(payload):
     # except Dberror as e:
         # return json.dumps({"error": f"While creating user: {e}"})
 
+    validation_id = False
     if mail:
         validation_id = os.urandom(12).hex()
         link = f"{host}/validation/{validation_id}"
@@ -75,7 +77,7 @@ def signin(payload):
     if not found:
         return error("Failed to create user")
     print(found, flush=True)
-    return success()
+    return {"validation_id": validation_id}
 
 @app.route("/update", methods=["POST"])
 @jsonify_output

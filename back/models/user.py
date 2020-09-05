@@ -1,18 +1,20 @@
 import mariadb
 from flask import jsonify
+from werkzeug.security import check_password_hash
 
 from .. import db
+from ..utils import Validator
 
 class User():
     __fields__ = ("id", "first_name", "last_name", "email", "password", "sex", "orientation", "bio", "views_count", "likes_count", "main_picture", "validated")
-    __restricted_fields__ = ("id", "validated")
+    __restricted_fields__ = ("id", "validated", "views_count", "likes_count", "id")
 
     @staticmethod
     def get_user(**kwargs):
         if "email" in kwargs:
-            print(f"\tEMAIL: {kwargs['email']}", flush=True)
+            email = Validator.email(kwargs['email'])
             query = "SELECT * FROM users WHERE email=?"
-            db.exec(query,  (kwargs['email'],))
+            db.exec(query,  (email,))
         elif "user_id" in kwargs:
             query = "SELECT * FROM users WHERE id=?"
             db.exec(query,  (kwargs['user_id'],))
@@ -25,26 +27,28 @@ class User():
             print("get_user: no results", flush=True)
             return None
         values = zip(User.__fields__, rows[0])
-        user = User()
+        user = User(empty=True)
         for f, v in values:
             setattr(user, f, v)
         return user
 
-    def __init__(self, user_id=None, first_name=None, last_name=None, email=None, password=None):
-        self.first_name = first_name
-        self.last_name = last_name
-        self.email = email
-        self.password = password
-        self.id = user_id
+    def __init__(self, user_id=None, first_name=None, last_name=None, email=None, password=None, empty=False):
+        if not empty:
+            self.first_name = Validator.name(first_name)
+            self.last_name = Validator.name(last_name)
+            self.email = Validator.email(email)
+            self.password = Validator.password(password)
+            self.id = user_id
 
     @staticmethod
     def create_user(first_name, last_name, email, hashed_password):
         # Left to do: send mail
 
+        user = User(db.cur.lastrowid, first_name, last_name, email, hashed_password)
         query = "INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)"
         db.exec(query, (first_name, last_name, email, hashed_password))
         
-        return User(db.cur.lastrowid, first_name, last_name, email, hashed_password)
+        return user
 
     def update(self, new_values:dict):
         reqs = []
@@ -57,13 +61,17 @@ class User():
         query = "UPDATE users SET " + req + " WHERE id=" + str(self.id)
         db.exec(query, tuple(new_values.values()))
         for (k, v) in new_values.items():
-            setattr(self, k, v)
+            checker = getattr(Validator, k)
+            setattr(self, k, checker(v))
         return True
 
     def delete(self):
         query = "DELETE FROM users WHERE id=" + str(self.id)
         db.exec(query)
         return True
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
     def __str__(self):
         return str(vars(self))
