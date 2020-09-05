@@ -6,7 +6,7 @@ from mariadb import Error as Dberror
 
 from . import db, host
 from .matcha import mail
-from .models.user import User
+from .models import User
 from .utils import user_required, payload_required, error, success
 
 ############ NEW CODE (API) ########################

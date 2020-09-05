@@ -2,7 +2,7 @@ from flask import Flask
 from flask_mail import Mail
 import os
 
-from .models.schema import Schema
+from .models import Schema
 
 config = {
     'host': 'db',
