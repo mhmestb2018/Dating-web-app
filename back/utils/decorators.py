@@ -1,8 +1,9 @@
 import types
-from flask import session, request, jsonify
+from flask import session, request, jsonify, make_response
 
 from ..models.user import User
 from .misc import error
+from .errors import InvalidData
 
 def user_required(fun):
     """
@@ -14,10 +15,10 @@ def user_required(fun):
 
     def wrapper(*args, **kwargs):
         if not "user" in session:
-            return error("Vous n'êtes pas connecté")
+            return error("Vous n'êtes pas connecté", 403)
         found = User.get_user(user_id=session["user"])
         if not found:
-            return error("Votre compte a été supprimé")
+            return error("Votre compte a été supprimé", 403)
         delattr(found, "password")
         return fun(*args, **kwargs, user=found)
 
@@ -42,7 +43,7 @@ def payload_required(fun):
             payload = request.get_json()
         
         if len(payload) is 0:
-            return error("This endpoint requires a payload")
+            return error("This endpoint requires a payload", 400)
         return fun(*args, **kwargs, payload=payload)
 
     if type(fun) is not types.FunctionType:
@@ -58,7 +59,27 @@ def jsonify_output(fun):
     """
 
     def wrapper(*args, **kwargs):
-        return jsonify(fun(*args, **kwargs))
+        ret = [fun(*args, **kwargs)]
+        print(ret, flush=True)
+        return make_response(jsonify(ret[0]), ret[1] if len(ret) > 1  else 200)
+
+    if type(fun) is not types.FunctionType:
+        raise ValueError()
+    # To carry the name over and be able to register more than one route with this decorator
+    wrapper.__name__ = fun.__name__
+    return wrapper
+
+def catcher(fun):
+    """
+    catcher decorator:
+        1. catches all custom exceptions
+    """
+
+    def wrapper(*args, **kwargs):
+        try:
+            return fun(*args, **kwargs)
+        except InvalidData as e:
+            return error(f"{e}", 400)
 
     if type(fun) is not types.FunctionType:
         raise ValueError()

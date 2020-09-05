@@ -1,7 +1,6 @@
 import types
 
-class InvalidData(Exception):
-    pass
+from .errors import InvalidData
 
 def printable(fun):
     """
@@ -9,10 +8,10 @@ def printable(fun):
         1. raise exception if non printable parameter
     """
 
-    def wrapper(val):
+    def wrapper(val, **kwargs):
         if not val.isprintable():
             raise InvalidData(f"{fun.__name__}: caractères non-imprimables")
-        return fun(val)
+        return fun(val, **kwargs)
 
     if type(fun) is not types.FunctionType:
         raise ValueError()
@@ -97,9 +96,9 @@ class Validator():
     @staticmethod
     @printable
     def first_name(val, limit=32):
-        return Validator.name(val, limit)
+        return Validator.name(val=val, limit=limit)
 
     @staticmethod
     @printable
     def last_name(val, limit=32):
-        return Validator.name(val, limit)
+        return Validator.name(val=val, limit=limit)

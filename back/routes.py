@@ -7,7 +7,7 @@ from mariadb import Error as Dberror
 from . import db, host
 from .matcha import mail
 from .models.user import User
-from .utils.decorators import user_required, payload_required, jsonify_output
+from .utils.decorators import user_required, payload_required, jsonify_output, catcher
 from .utils import error, success
 
 ############ NEW CODE (API) ########################
@@ -15,23 +15,24 @@ from .utils import error, success
 @app.route("/login", methods=["POST"])
 @jsonify_output
 @payload_required
+@catcher
 def login(payload):
     """
     Expects 'email' and 'password' in payload as well as
     a 'remember_me' boolean (expected at 'true' to be set) 
     """
     if "user" in session:
-        return error("Vous êtes déjà connecté")
+        return error("Vous êtes déjà connecté", 400)
     user = User.get_user(email=payload["email"])
     if not user:
-        return error("Utilisateur introuvable")
+        return error("Utilisateur introuvable", 400)
     if not user.check_password(payload["password"]):
         return error("Mot de passe incorrect")
     session["user"] = user.id
     if payload["remember_me"] == "true":
         session.permanent = True
     delattr(user, "password")
-    return user.dict
+    return success(user.dict)
 
 @app.route("/logout", methods=["POST", "GET"])
 @jsonify_output
@@ -40,13 +41,14 @@ def logout():
     reset the cookie
     """
     if "user" not in session:
-        return error("Vous êtes déjà déconnecté")
+        return error("Vous êtes déjà déconnecté", 400)
     session.pop("user", None)
     return success()
 
 @app.route("/signin", methods=["POST"])
 @jsonify_output
 @payload_required
+@catcher
 def signin(payload):
     """
     Register a new user.
@@ -56,9 +58,9 @@ def signin(payload):
     returns validation_id for mail validation
     """
     if "user" in session:
-        return error("Vous êtes déjà connecté")
+        return error("Vous êtes déjà connecté", 400)
     if User.get_user(email=payload["email"]) is not None:
-        return error("L'utilisateur existe déjà")
+        return error("L'utilisateur existe déjà", 409)
     hashed_password = generate_password_hash(payload["password"])
     # try:
     new = User.create_user(payload["first_name"], payload["last_name"], payload["email"], hashed_password)
@@ -73,16 +75,15 @@ def signin(payload):
         msg.html = render_template("validation_email.html", link=link)
         mail.send(msg)
     
-    found = User.get_user(email=payload["email"])
-    if not found:
+    if not User.get_user(email=payload["email"]):
         return error("Failed to create user")
-    print(found, flush=True)
-    return {"validation_id": validation_id}
+    return success({"validation_id": validation_id})
 
 @app.route("/update", methods=["POST"])
 @jsonify_output
 @user_required
 @payload_required
+@catcher
 def update_user(user, payload):
     """
     Use all provided fields in payload to update a user.
@@ -93,7 +94,7 @@ def update_user(user, payload):
     user.update(payload)
     # except Dberror as e:
         # return json.dumps({"error": f"While creating user: {e}"})
-    return user.dict
+    return success(user.dict)
 
 @app.route("/delete", methods=["POST"])
 @jsonify_output
@@ -116,7 +117,7 @@ def my_profile(user):
     """
     Returns full profile data of the currently logged user
     """
-    return user.dict
+    return success(user.dict)
 
 @app.route("/user/<user_id>", methods=["POST"])
 @jsonify_output
@@ -127,5 +128,5 @@ def user_profile(user_id, user):
     """
     found = User.get_user(user_id=user_id)
     if not found:
-        return error("Utilisateur introuvable")
-    return found.public
+        return error("Utilisateur introuvable", 400)
+    return success(found.public)

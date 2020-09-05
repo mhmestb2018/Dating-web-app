@@ -1,8 +1,8 @@
-def error(msg):
-    return {"error": msg}
+def error(msg, status=500):
+    return {"error": msg}, status
 
-def success():
-    return {"pcachin": True}
+def success(body={"pcachin": True}, status=200):
+    return body, status
 
 # def generate_token(user):
 #     m = hashlib.sha256()
