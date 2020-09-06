@@ -1,16 +1,18 @@
 import React, { FunctionComponent } from 'react';
-  
-const Home: FunctionComponent = () => {
 
+type Props = {
+    login: () => void;
+};
+
+const Home: FunctionComponent<Props> = ({login}) => {
+    console.log(login);
   return (
     <div>
         <br/>
         <div className="text-center row">
             <div className="col">
-                <img src={process.env.PUBLIC_URL + '/asset/matcha_rose.jpg'} width="30" height="30" alt="Matcha_rose" className="d-inline-block align-top"/>
                 <img src={process.env.PUBLIC_URL + '/asset/matcha.png'} width="60" height="60" alt="Matcha" className="d-inline-block align-top" style={{marginTop:-10}}/>
                 <h1  className="d-inline-block align-top">atcha </h1>
-                <img src={process.env.PUBLIC_URL + '/asset/matcha_rose.jpg'} width="30" height="30" alt="Matcha_rose" className="d-inline-block align-top"/>
             </div>
             <div className="col">
                 <button type="button" className="btn btn-danger" data-toggle="modal" data-target="#modal_login">Connecte-toi !</button>
@@ -22,16 +24,14 @@ const Home: FunctionComponent = () => {
                                 <button type="button" className="close" data-dismiss="modal">&times;</button>
                             </div>
                             <div className="modal-body">
-                                <form>
                                     <input type="text" className="form-control" placeholder="Email" name="email"/>
                                     <br/>
                                     <input type="password" className="form-control" placeholder="Mot de passe" name="password"/>
                                     <br/>
-                                </form> 
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-success" data-dismiss="modal">Valider</button>
-                            </div>
+                                <button onClick={() => login()} type="button" className="btn btn-success" data-dismiss="modal">Valider</button>
+                            </div> 
                         </div>
                     </div>
                 </div>
