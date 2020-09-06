@@ -59,9 +59,13 @@ def jsonify_output(fun):
     """
 
     def wrapper(*args, **kwargs):
-        ret = [fun(*args, **kwargs)]
-        print(ret, flush=True)
-        return make_response(jsonify(ret[0]), ret[1] if len(ret) > 1  else 200)
+        ret = fun(*args, **kwargs)
+        code = 200
+        if isinstance(ret, tuple):
+            code = ret[1]
+            ret = ret[0]
+        return jsonify(ret), code
+        
 
     if type(fun) is not types.FunctionType:
         raise ValueError()
