@@ -11,6 +11,7 @@ services:
       - db-data:/var/lib/mysql # To override random volume name
     networks:
       - backend
+    restart: on-failure
 
   app:
     build: ./back
@@ -29,6 +30,7 @@ services:
     networks:
       - backend
       - frontend
+    restart: on-failure
 
   front:
     build: ./front
@@ -48,6 +50,7 @@ services:
     command: "npm start"
     networks:
       - frontend
+    restart: on-failure
 
 networks:
   backend:

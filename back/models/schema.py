@@ -1,15 +1,20 @@
-import json, mariadb
+import json, mariadb, time
 
 class Schema:
     def __init__(self, config):
         self.conn = False
         while not self.conn:
-            self.conn = mariadb.connect(**config)
+            try:
+                self.conn = mariadb.connect(**config)
+            except mariadb.Error as e:
+                print(f"Connection to database failed: {e}", flush=True)
+                time.sleep(1)
         # autocommit = True by default
         self.cur = self.conn.cursor()
         # Create users first as other tables will refer to it
         self.create_users_table()
-        self.populate_users_table()
+
+        # self.populate_users_table()
 
     def create_users_table(self):
 
@@ -22,11 +27,15 @@ class Schema:
         password varchar(255) NOT NULL,
         sex varchar(63),
         orientation varchar(63),
-        bio text,
-        views_count int,
-        likes_count int,
-        main_picture varchar(1024),
-        validated bit,
+        bio text DEFAULT '' NOT NULL,
+        views_count int DEFAULT 0 NOT NULL,
+        likes_count int DEFAULT 0 NOT NULL,
+        picture_1 varchar(1024),
+        picture_2 varchar(1024),
+        picture_3 varchar(1024),
+        picture_4 varchar(1024),
+        picture_5 varchar(1024),
+        validated tinyint DEFAULT 0 NOT NULL,
         PRIMARY KEY (id)
         ) ENGINE=InnoDB;
         """
