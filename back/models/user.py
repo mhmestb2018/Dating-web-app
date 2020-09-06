@@ -38,7 +38,7 @@ class User():
                 if "views" in f:
                     tmp = v
                 elif "likes" in f and tmp is not None:
-                    user.score = 0#v / max(tmp, 1E-7)
+                    user.score = v / max(tmp, 1E-7)
             else:
                 setattr(user, f, v)
         return user
@@ -72,8 +72,8 @@ class User():
         params = []
 
         # Unpack pictures array:
-        pictures = new_values["pictures"]
-        if pictures:
+        if "pictures" in new_values:
+            pictures = new_values["pictures"]
             self.pictures = []
             for i, path in enumerate(pictures):
                 path = Validator.path(path)
