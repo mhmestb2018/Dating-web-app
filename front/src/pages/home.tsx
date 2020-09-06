@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 
 type Props = {
-    login: () => void;
+    login: (email:String, password:String) => void;
 };
 
 const Home: FunctionComponent<Props> = ({login}) => {
@@ -30,7 +30,7 @@ const Home: FunctionComponent<Props> = ({login}) => {
                                     <br/>
                             </div>
                             <div className="modal-footer">
-                                <button onClick={() => login()} type="button" className="btn btn-success" data-dismiss="modal">Valider</button>
+                                <button onClick={() => login("gdssgs","sgsssg")} type="button" className="btn btn-success" data-dismiss="modal">Valider</button>
                             </div> 
                         </div>
                     </div>

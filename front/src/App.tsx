@@ -12,7 +12,7 @@ import PageNotFound from './pages/page-not-found'
 import axios from 'axios';
 
 const App: FunctionComponent = () => {
-    const login = () => setIsLogged(true);
+    const login = (email:String, password:String) => {alert(email);setIsLogged(true);}
     const [IsLogged, setIsLogged] = useState<Boolean>(false);
     /*axios.post(`app:5000/login`, { 'email':'gdssgs', 'password':'sgsssg' })
     .then(res => {
