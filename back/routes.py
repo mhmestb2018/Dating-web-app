@@ -10,7 +10,6 @@ from .models.user import User
 from .utils.decorators import user_required, payload_required, jsonify_output, catcher
 from .utils import error, success
 
-############ NEW CODE (API) ########################
 # https://www.restapitutorial.com/lessons/httpmethods.html
 
 @app.route("/login", methods=["POST"])
