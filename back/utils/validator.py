@@ -89,16 +89,19 @@ class Validator():
         raise InvalidData(f"password is too short ({len(val)}<{limit} chars)")
 
     @staticmethod
-    @printable
-    def main_picture(val):
+    def path(val, limit=1024):
+        if len(val.split('\x00')) > 1:
+            raise InvalidData(f"image: adresse invalide")
+        if len(val) > limit:
+            raise InvalidData(f"path is too long ({len(val)}>{limit} chars)")
         return val
+    
+    picture_1 = picture_2 = picture_3 = picture_4 = picture_5 = path
 
     @staticmethod
-    @printable
     def first_name(val, limit=32):
         return Validator.name(val=val, limit=limit)
 
     @staticmethod
-    @printable
     def last_name(val, limit=32):
         return Validator.name(val=val, limit=limit)

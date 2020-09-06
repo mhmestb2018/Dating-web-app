@@ -35,7 +35,7 @@ class Schema:
         picture_3 varchar(1024),
         picture_4 varchar(1024),
         picture_5 varchar(1024),
-        validated bit DEFAULT 0 NOT NULL,
+        validated tinyint DEFAULT 0 NOT NULL,
         PRIMARY KEY (id)
         ) ENGINE=InnoDB;
         """

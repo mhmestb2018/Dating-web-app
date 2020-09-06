@@ -6,7 +6,7 @@ from .. import db
 from ..utils import Validator
 
 class User():
-    __fields__ = ("id", "first_name", "last_name", "email", "password", "sex", "orientation", "bio", "views_count", "likes_count", "main_picture", "validated")
+    __fields__ = ("id", "first_name", "last_name", "email", "password", "sex", "orientation", "bio", "views_count", "likes_count", "picture_1", "picture_2", "picture_3", "picture_4", "picture_5", "validated")
     __restricted_fields__ = ("id", "validated", "views_count", "likes_count", "id")
 
     @staticmethod
@@ -26,13 +26,30 @@ class User():
         if len(rows) is 0:
             print("get_user: no results", flush=True)
             return None
+        
         values = zip(User.__fields__, rows[0])
         user = User(empty=True)
         for f, v in values:
-            setattr(user, f, v)
+            if "picture" in f:
+                if v:
+                    user.pictures.append(v)
+            elif "count" in f:
+                tmp = None
+                if "views" in f:
+                    tmp = v
+                elif "likes" in f and tmp is not None:
+                    user.score = 0#v / max(tmp, 1E-7)
+            else:
+                setattr(user, f, v)
         return user
 
     def __init__(self, user_id=None, first_name=None, last_name=None, email=None, password=None, empty=False):
+        self.pictures = []
+        self.orientation = None
+        self.sex = None
+        self.bio = None
+        self.score = 0
+        self.validated = 0
         if not empty:
             self.first_name = Validator.name(first_name)
             self.last_name = Validator.name(last_name)
@@ -53,16 +70,28 @@ class User():
     def update(self, new_values:dict):
         reqs = []
         params = []
+
+        # Unpack pictures array:
+        pictures = new_values["pictures"]
+        if pictures:
+            self.pictures = []
+            for i, path in enumerate(pictures):
+                path = Validator.path(path)
+                setattr(new_values, f"picture_{i}", path)
+                self.pictures.append(path)
+
         for k in new_values.keys():
             if k not in User.__fields__ or k in User.__restricted_fields__:
                 raise Exception(f"field {k} doesn't exist")
             reqs += [f"{k}=?"]
         req = ", ".join(reqs)
         query = "UPDATE users SET " + req + " WHERE id=" + str(self.id)
-        db.exec(query, tuple(new_values.values()))
         for (k, v) in new_values.items():
+            if "picture" in k:
+                continue
             checker = getattr(Validator, k)
             setattr(self, k, checker(v))
+        db.exec(query, tuple(new_values.values()))
         return True
 
     def delete(self):
@@ -87,6 +116,10 @@ class User():
     def public(self):
         return {
             "first_name": self.first_name,
+            "pictures": self.pictures,
+            "orientation": self.orientation,
+            "bio": "",
+            "score": self.score,
         }
 
 
