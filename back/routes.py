@@ -127,8 +127,38 @@ def user_profile(user_id, user):
 @app.route("/user/<user_id>", methods=["POST"])
 @jsonify_output
 @user_required
-def like_user(user_id, user):
+@payload_required
+def like_user(user_id, user, payload):
     """
     Likes and matches
     """
-    pass
+    if "block" in payload:
+        if payload["block"]:
+            user.block(user_id)  ##### Left to write user.block
+        else:
+            user.unblock(user_id)  ##### Left to write user.unblock
+        return success()
+    elif "like" in payload:
+        match = False
+        if payload["like"]:
+            match = user.like(user_id)  ##### Left to write user.like
+        else:
+            user.dislike(user_id)  ##### Left to write user.dislike
+        return ({"match": match})
+    return error("Aucune action demandée", 400)
+
+@app.route("/users", methods=["GET"])
+@jsonify_output
+@user_required
+@payload_required
+def like_user(user_id, user, payload):
+    """
+    Likes and matches
+    """
+    if "like" in payload:
+        match = False
+        if payload["like"]:
+            match = user.like(user_id)  ##### Left to write user.like
+        else:
+            user.dislike(user_id)  ##### Left to write user.dislike
+    return ({"match": match})

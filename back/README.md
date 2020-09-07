@@ -225,8 +225,8 @@ Content-Length: xy
 }
 ```
 
-## Like (TO DO)
-**You send:**  Your `session` cookie and the json encoded action to execute.  
+## Actions (TO DO)
+**You send:**  Your `session` cookie and the json encoded action (`like` or `block`) to execute.  
 **You get:** The full JSON encoded profile of the connected user.
 
 **Request:**
@@ -237,7 +237,7 @@ Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0
 Content-Type: application/json
 Content-Length: xy
 {
-    "like": false, 
+    "like": false,
 }
 ```
 **Successful Response:**
