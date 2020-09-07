@@ -1,16 +1,25 @@
 import json, mariadb, time
+from retrying import retry
+
+from ..utils.misc import retry_on_db_error
 
 class Schema:
-    def __init__(self, config):
+    def connect(self):
         self.conn = False
         while not self.conn:
             try:
-                self.conn = mariadb.connect(**config)
+                self.conn = mariadb.connect(**self.config)
             except mariadb.Error as e:
                 print(f"Connection to database failed: {e}", flush=True)
                 time.sleep(1)
-        # autocommit = True by default
+        self.conn.auto_reconnect = True
         self.cur = self.conn.cursor()
+
+    def __init__(self, config):
+        self.config = config
+        self.connect()
+        # autocommit = True by default
+
         # Create users first as other tables will refer to it
         self.create_users_table()
 
@@ -51,15 +60,10 @@ class Schema:
         """
         self.cur.execute(query)
 
+    @retry(retry_on_exception=retry_on_db_error, wait_fixed=1000)
     def exec(self, query, args=()):
-        # if mariadb.mysql_ping(self.conn):
         self.cur.execute(query, args)
-
-        ### DEBUG ###
-        # for val in self.cur.fetchall()[0]:
-        #     print(val, flush=True)
         return True
-        # return False
 
     # Not used yet
     def insert(self, table, fields, **kwargs):
@@ -68,5 +72,3 @@ class Schema:
             data += ["'" + kwargs[f] + "'"]
         query = f"INSERT INTO {table} ({','.join(fields)}) VALUES ({','.join(data)})"
         return self.exec(query)
-
-    

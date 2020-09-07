@@ -116,6 +116,7 @@ class User():
     def public(self):
         return {
             "first_name": self.first_name,
+            "id": self.id,
             "pictures": self.pictures,
             "orientation": self.orientation,
             "bio": "",

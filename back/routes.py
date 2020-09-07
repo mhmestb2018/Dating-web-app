@@ -1,5 +1,5 @@
 import time, os
-from flask import current_app as app, render_template, request, redirect, url_for, session
+from flask import current_app as app, render_template, request, session
 from werkzeug.security import generate_password_hash
 from flask_mail import Message
 from mariadb import Error as Dberror
@@ -7,8 +7,8 @@ from mariadb import Error as Dberror
 from . import db, host
 from .matcha import mail
 from .models.user import User
-from .utils.decorators import user_required, payload_required, jsonify_output, catcher
 from .utils import error, success
+from .utils.decorators import user_required, payload_required, jsonify_output, catcher
 
 # https://www.restapitutorial.com/lessons/httpmethods.html
 
@@ -62,10 +62,8 @@ def signup(payload):
     if User.get_user(email=payload["email"]) is not None:
         return error("L'utilisateur existe déjà", 409)
     hashed_password = generate_password_hash(payload["password"])
-    # try:
+
     new = User.create_user(payload["first_name"], payload["last_name"], payload["email"], hashed_password)
-    # except Dberror as e:
-        # return json.dumps({"error": f"While creating user: {e}"})
 
     validation_id = False
     if mail:
@@ -90,10 +88,7 @@ def update_user(user, payload):
     This function first checks that every requested field is editable.
     It then update the user and returns updated profile data. 
     """
-    # try:
     user.update(payload)
-    # except Dberror as e:
-        # return json.dumps({"error": f"While creating user: {e}"})
     return success(user.dict)
 
 @app.route("/profile", methods=["DELETE"])
@@ -103,10 +98,7 @@ def delete_user(user):
     """
     Delete an user and return his public profile
     """
-    # try:
     user.delete()
-    # except Dberror as e:
-        # return json.dumps({"error": f"While creating user: {e}"})
     session.pop("user", None)
     return success(user.public)
 
