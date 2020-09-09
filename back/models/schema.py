@@ -25,7 +25,7 @@ class Schema:
         self.create_likes_table()
         self.create_block_table()
 
-        # self.populate_users_table()
+        self.populate_users_table()
 
     def create_users_table(self):
 
@@ -99,10 +99,9 @@ class Schema:
         self.cur.execute(query, args)
         return True
 
-    # Not used yet
-    def insert(self, table, fields, **kwargs):
-        data = []
-        for f in fields:
-            data += ["'" + kwargs[f] + "'"]
-        query = f"INSERT INTO {table} ({','.join(fields)}) VALUES ({','.join(data)})"
-        return self.exec(query)
+    # def insert(self, table, fields, **kwargs):
+    #     data = []
+    #     for f in fields:
+    #         data += ["'" + kwargs[f] + "'"]
+    #     query = f"INSERT INTO {table} ({','.join(fields)}) VALUES ({','.join(data)})"
+    #     return self.exec(query)

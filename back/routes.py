@@ -128,24 +128,30 @@ def user_profile(user_id, user):
 @jsonify_output
 @user_required
 @payload_required
-def like_user(user_id, user, payload):
+def user_actions(user_id, user, payload):
     """
-    Likes and matches
+    Likes, blocks and matches
+    Take an action set to a bool and returns the match status
     """
+    found = User.get_user(user_id=user_id)
+    if not found:
+        return error("Utilisateur cible introuvable", 404)
+    if found.id == user.id:
+        return error("You narcicist fuck.", 418)
     if "block" in payload:
         if payload["block"]:
-            user.block(user_id)  ##### Left to write user.block
+            user.block(found)
         else:
-            user.unblock(user_id)  ##### Left to write user.unblock
-        return success()
+            user.unblock(found)
     elif "like" in payload:
         match = False
         if payload["like"]:
-            match = user.like(user_id)  ##### Left to write user.like
+            user.like(found)
         else:
-            user.dislike(user_id)  ##### Left to write user.dislike
-        return ({"match": match})
-    return error("Aucune action demandée", 400)
+            user.unlike(found)
+    else:
+        return error("Aucune action valide demandée", 400)
+    return ({"match": user.matches(found)})
 
 @app.route("/users", methods=["GET"])
 @jsonify_output
@@ -153,12 +159,7 @@ def like_user(user_id, user, payload):
 @payload_required
 def get_users(user_id, user, payload):
     """
-    Likes and matches
+    List users
     """
-    if "like" in payload:
-        match = False
-        if payload["like"]:
-            match = user.like(user_id)  ##### Left to write user.like
-        else:
-            user.dislike(user_id)  ##### Left to write user.dislike
-    return ({"match": match})
+    return success()
+

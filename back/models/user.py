@@ -99,6 +99,30 @@ class User():
         db.exec(query)
         return True
 
+    def like(self, user):
+        query = "INSERT INTO likes (user_id, liked) VALUES (?, ?)"
+        db.exec(query, (self.id, user.id))
+        return True
+
+    def unlike(self, user):
+        query = "DELETE FROM likes WHERE user_id=" + str(self.id) + " AND liked=" + str(user.id)
+        db.exec(query, (self.id, user.id))
+        return True
+
+    def matches(self, user):
+        print("in user.matches function", flush=True)
+        return True
+
+    def block(self, user):
+        query = "INSERT INTO blocks (user_id, blocked) VALUES (?, ?)"
+        db.exec(query, (self.id, user.id))
+        return True
+
+    def unblock(self, user):
+        query = "DELETE FROM blocks WHERE id=" + str(self.id) + " AND liked=" + str(user.id)
+        db.exec(query, (self.id, user.id))
+        return True
+
     def check_password(self, password):
         return check_password_hash(self.password, password)
 

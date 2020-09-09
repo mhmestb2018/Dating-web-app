@@ -14,6 +14,7 @@ This API uses `POST` request to communicate and HTTP [response codes](https://en
 401: Unauthorized
 404: Cannot be found
 405: Method not allowed 
+418: I'm a teapot
 50X: Server Error
 ```
 
