@@ -24,7 +24,25 @@ def user_required(fun):
 
     if type(fun) is not types.FunctionType:
         raise ValueError()
-    # To carry the name over and be able to register more than one route with this decorator
+    wrapper.__name__ = fun.__name__
+    return wrapper
+
+def validated_required(fun):
+    """
+    User_required decorator:
+        1. Check for authentification cookie
+        2. Fetch user in db
+        3. Prepend the User to the function call
+    """
+
+    @user_required
+    def wrapper(*args, **kwargs):
+        if kwargs["user"].validated is not 1:
+            return error("Votre email n'a pas été validé", 403)
+        return fun(*args, **kwargs)
+
+    if type(fun) is not types.FunctionType:
+        raise ValueError()
     wrapper.__name__ = fun.__name__
     return wrapper
 
@@ -39,16 +57,15 @@ def payload_required(fun):
 
     def wrapper(*args, **kwargs):
         payload = request.form
-        if len(payload) is 0:
+        if not payload or len(payload) is 0:
             payload = request.get_json()
         
-        if len(payload) is 0:
+        if not payload or len(payload) is 0:
             return error("This endpoint requires a payload", 400)
         return fun(*args, **kwargs, payload=payload)
 
     if type(fun) is not types.FunctionType:
         raise ValueError()
-    # To carry the name over and be able to register more than one route with this decorator
     wrapper.__name__ = fun.__name__
     return wrapper
 
@@ -69,7 +86,6 @@ def jsonify_output(fun):
 
     if type(fun) is not types.FunctionType:
         raise ValueError()
-    # To carry the name over and be able to register more than one route with this decorator
     wrapper.__name__ = fun.__name__
     return wrapper
 
@@ -87,6 +103,5 @@ def catcher(fun):
 
     if type(fun) is not types.FunctionType:
         raise ValueError()
-    # To carry the name over and be able to register more than one route with this decorator
     wrapper.__name__ = fun.__name__
     return wrapper

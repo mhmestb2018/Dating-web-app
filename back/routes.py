@@ -8,7 +8,8 @@ from . import db, host
 from .matcha import mail
 from .models.user import User
 from .utils import error, success
-from .utils.decorators import user_required, payload_required, jsonify_output, catcher
+from .utils.decorators import (user_required, payload_required,
+                                jsonify_output, catcher, validated_required)
 
 # https://www.restapitutorial.com/lessons/httpmethods.html
 
@@ -64,6 +65,7 @@ def signup(payload):
     hashed_password = generate_password_hash(payload["password"])
 
     new = User.create_user(payload["first_name"], payload["last_name"], payload["email"], hashed_password)
+    new.id = db.cur.lastrowid
 
     validation_id = False
     if mail:
@@ -72,7 +74,8 @@ def signup(payload):
         msg = Message("Confirmation d'inscription", sender=("Matcha Headquarters", os.environ['FLASK_GMAIL']), recipients=[new.email])
         msg.html = render_template("validation_email.html", link=link)
         mail.send(msg)
-    
+    else:
+        new.validate()
     if not User.get_user(email=payload["email"]):
         return error("Failed to create user")
     return success({"validation_id": validation_id}, 201)
@@ -113,22 +116,88 @@ def profile(user):
 
 @app.route("/user/<user_id>", methods=["GET"])
 @jsonify_output
-@user_required
+@validated_required
 def user_profile(user_id, user):
     """
     Returns public profile data of requested user_id
     """
     found = User.get_user(user_id=user_id)
-    if not found:
+    if not found or user.id in found.blocklist:
         return error("Utilisateur introuvable", 404)
-    return success(found.public)
+    return success(found.public_as(user))
 
 
 @app.route("/user/<user_id>", methods=["POST"])
 @jsonify_output
+@validated_required
+@payload_required
+def user_actions(user_id, user, payload):
+    """
+    Likes, blocks and matches
+    Take an action set to a bool and returns the match status
+    """
+    found = User.get_user(user_id=user_id)
+    if not found or user.id in found.blocklist:
+        return error("Utilisateur cible introuvable", 404)
+    if found.id == user.id:
+        return error("You narcicist fuck.", 418)
+    if "block" in payload:
+        if payload["block"]:
+            if not user.block(found):
+                return error("Tu a déjà bloqué cet utilisateur", 400)
+        else:
+            if not user.unblock(found):
+                return error("Tu n'avais pas bloqué cet utilisateur", 400)
+    elif "like" in payload:
+        match = False
+        if payload["like"]:
+            if not user.like(found):
+                return error("Tu a déjà liké cet utilisateur", 400)
+        else:
+            if not user.unlike(found):
+                return error("Tu n'avais pas liké cet utilisateur", 400)
+            return ({"match": False})
+    else:
+        return error("Aucune action valide demandée", 400)
+    return ({"match": user.matches_with(found)})
+
+@app.route("/users", methods=["GET"])
+@jsonify_output
+@validated_required
+def get_users(user):
+    """
+    List unmatched users
+    """
+    payload = request.get_json()
+    return [x.public_as(user) for x in user.list_users()]
+
+@app.route("/matches", methods=["GET"])
+@jsonify_output
+@validated_required
+def get_matches(user):
+    """
+    List matches as an array of full json encoded profiles
+    """
+    return [x.public_as(user) for x in user.matchlist]
+
+########################### DEBUG: TO REMOVE ##########################
+@app.route("/debug/beblocked1", methods=["GET"])
+@jsonify_output
 @user_required
-def like_user(user_id, user):
+def beblocked(user):
     """
-    Likes and matches
+    Block the logged user with user 1
     """
-    pass
+    User.get_user(user_id=1).block(user)
+    return success()
+
+@app.route("/debug/beliked1", methods=["GET"])
+@jsonify_output
+@user_required
+def beliked(user):
+    """
+    Likes the logged user with user 1
+    """
+    User.get_user(user_id=1).like(user)
+    return success()
+

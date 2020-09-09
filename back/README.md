@@ -14,6 +14,7 @@ This API uses `POST` request to communicate and HTTP [response codes](https://en
 401: Unauthorized
 404: Cannot be found
 405: Method not allowed 
+418: I'm a teapot
 50X: Server Error
 ```
 
@@ -89,7 +90,7 @@ Content-Length: xy
         "/data/pcachin.jpg",
         "/data/gikghks.jpg",
     ],
-    "score": 42,
+    "score": 42.0,
     "sex": "m",
     "validated": 1
 }
@@ -146,7 +147,7 @@ Content-Length: xy
         "/data/pcachin.jpg",
         "/data/gikghks.jpg",
     ],
-    "score": 42,
+    "score": 42.0,
     "sex": "m",
     "validated": 1
 }
@@ -172,7 +173,7 @@ Content-Length: xy
     "first_name": "roger",
     "orientation": null,
     "pictures": [],
-    "score": 0
+    "score": 0.0
 }
 ```
 
@@ -196,7 +197,7 @@ Content-Length: xy
     "first_name": "roger",
     "orientation": null,
     "pictures": [],
-    "score": 0
+    "score": 0.0
 }
 ```
 
@@ -216,17 +217,20 @@ Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
 Content-Length: xy
 {
-    "bio": "",
+    "bio": "J'aime manger des pommes",
+    "blocked": false,
     "first_name": "roger",
     "id": 2,
-    "orientation": null,
+    "liked": true,
+    "matches": false,
+    "orientation": "asexual",
     "pictures": [],
-    "score": 0
+    "score": 0.0
 }
 ```
 
-## Like (TO DO)
-**You send:**  Your `session` cookie and the json encoded action to execute.  
+## Actions
+**You send:**  Your `session` cookie and the json encoded action (`like` or `block`) with it's boolean setting.  
 **You get:** The full JSON encoded profile of the connected user.
 
 **Request:**
@@ -237,7 +241,7 @@ Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0
 Content-Type: application/json
 Content-Length: xy
 {
-    "like": false, 
+    "like": false,
 }
 ```
 **Successful Response:**
@@ -251,9 +255,9 @@ Content-Length: xy
 }
 ```
 
-## Matches (To Do)
+## Matches
 **You send:**  Your `session` cookie.  
-**You get:** A JSON encoded list of users `id`
+**You get:** A JSON encoded list of users
 
 **Request:**
 ```json
@@ -268,16 +272,35 @@ Content-Type: application/json
 Content-Length: xy
 {
     "matches": [
-        2,
-        18,
-        243,
+        {
+            "bio": "J'aime manger des pommes",
+            "blocked": false,
+            "first_name": "roger",
+            "id": 2,
+            "liked": true,
+            "matches": true,
+            "orientation": "heterosexual",
+            "pictures": [],
+            "score": 42.101
+        },
+        {
+            "bio": "Je pète au lit",
+            "blocked": false,
+            "first_name": "bertrand",
+            "id": 7,
+            "liked": true,
+            "matches": true,
+            "orientation": "bisexual",
+            "pictures": [],
+            "score": 101.42
+        }
     ],
 }
 ```
 
 ## List users (To Do)
 **You send:**  Your `session` cookie and optional search parameters.  
-**You get:** A JSON encoded list of unseen users `id`
+**You get:** A JSON encoded list of unmatched users
 
 **Request:**
 ```json
@@ -288,7 +311,7 @@ Content-Type: application/json
 Content-Length: xy
 {
     "count": 4,
-    "orientation": "hétéro",
+    "orientation": "other",
     "sex": "m", 
 }
 ```
@@ -299,11 +322,29 @@ Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
 Content-Length: xy
 {
-    "users": [
-        2,
-        18,
-        243,
-        244,
+    "users":  [
+        {
+            "bio": "J'aime manger des pommes",
+            "blocked": false,
+            "first_name": "roger",
+            "id": 2,
+            "liked": true,
+            "matches": false,
+            "orientation": "heterosexual",
+            "pictures": [],
+            "score": 0
+        },
+        {
+            "bio": "Je pète au lit",
+            "blocked": false,
+            "first_name": "bertrand",
+            "id": 7,
+            "liked": false,
+            "matches": false,
+            "orientation": "bisexual",
+            "pictures": [],
+            "score": 0
+        }
     ],
 }
 ```

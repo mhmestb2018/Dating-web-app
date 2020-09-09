@@ -55,7 +55,7 @@ class Validator():
         if val in ("homosexual", "homosexuel", "homosexuelle", "gay", "lesbienne"):
             return "homosexual"
         if val in ("bisexuel", "bisexual"):
-            return "bi"
+            return "bisexual"
         if val in ("asexual", "asexuel"):
             return "asexual"
         if val in ("autre", "other"):

@@ -11,7 +11,7 @@ class Schema:
                 self.conn = mariadb.connect(**self.config)
             except mariadb.Error as e:
                 print(f"Connection to database failed: {e}", flush=True)
-                time.sleep(1)
+                time.sleep(2)
         self.conn.auto_reconnect = True
         self.cur = self.conn.cursor()
 
@@ -22,8 +22,10 @@ class Schema:
 
         # Create users first as other tables will refer to it
         self.create_users_table()
+        self.create_likes_table()
+        self.create_block_table()
 
-        # self.populate_users_table()
+        self.populate_users_table()
 
     def create_users_table(self):
 
@@ -51,6 +53,36 @@ class Schema:
 
         self.cur.execute(query)
 
+    def create_likes_table(self):
+
+        query = """
+        CREATE TABLE IF NOT EXISTS likes (
+        user_id int NOT NULL,
+        liked int NOT NULL,
+        
+        PRIMARY KEY (user_id, liked),
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        FOREIGN KEY (liked) REFERENCES users(id)
+        ) ENGINE=InnoDB;
+        """
+
+        self.cur.execute(query)
+
+    def create_block_table(self):
+
+        query = """
+        CREATE TABLE IF NOT EXISTS blocks (
+        user_id int NOT NULL,
+        blocked int NOT NULL,
+        
+        PRIMARY KEY (user_id, blocked),
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        FOREIGN KEY (blocked) REFERENCES users(id)
+        ) ENGINE=InnoDB;
+        """
+
+        self.cur.execute(query)
+
     def populate_users_table(self):
         query = """
         INSERT INTO users (first_name, last_name, email, password) VALUES
@@ -60,15 +92,7 @@ class Schema:
         """
         self.cur.execute(query)
 
-    @retry(retry_on_exception=retry_on_db_error, wait_fixed=1000)
+    @retry(retry_on_exception=retry_on_db_error, wait_fixed=1000, stop_max_attempt_number=3)
     def exec(self, query, args=()):
         self.cur.execute(query, args)
         return True
-
-    # Not used yet
-    def insert(self, table, fields, **kwargs):
-        data = []
-        for f in fields:
-            data += ["'" + kwargs[f] + "'"]
-        query = f"INSERT INTO {table} ({','.join(fields)}) VALUES ({','.join(data)})"
-        return self.exec(query)
