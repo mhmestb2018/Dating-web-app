@@ -151,7 +151,7 @@ def like_user(user_id, user, payload):
 @jsonify_output
 @user_required
 @payload_required
-def like_user(user_id, user, payload):
+def get_users(user_id, user, payload):
     """
     Likes and matches
     """
