@@ -97,6 +97,10 @@ class User():
     def delete(self):
         query = "DELETE FROM users WHERE id=" + str(self.id)
         db.exec(query)
+        query = "DELETE FROM likes WHERE user_id=? OR liked=?"
+        db.exec(query, (self.id, self.id))
+        query = "DELETE FROM blocks WHERE user_id=? OR blocked=?"
+        db.exec(query, (self.id, self.id))
         return True
 
     def like(self, user):
@@ -162,6 +166,26 @@ class User():
         db.exec(query, (self.id,))
 
         return [int(i[0]) for i in db.cur.fetchall()]
+    
+    @property
+    def matchlist(self):
+        query = """
+            SELECT
+                a.user_id
+            FROM likes a
+            INNER JOIN likes b
+                ON a.user_id = b.liked
+                AND a.liked = b.user_id
+            WHERE
+                b.user_id = ?
+            """
+        db.exec(query, (self.id,))
+
+        rows = db.cur.fetchall()
+        res = []
+        for t in rows:
+            res.append(User.get_user(user_id=t[0]))
+        return res
 
     @property
     def blocked_by(self):

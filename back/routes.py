@@ -161,12 +161,21 @@ def user_actions(user_id, user, payload):
 @app.route("/users", methods=["GET"])
 @jsonify_output
 @user_required
-@payload_required
-def get_users(user_id, user, payload):
+def get_users(user_id, user):
     """
     List users
     """
+    payload = request.get_json()
     return success()
+
+@app.route("/matches", methods=["GET"])
+@jsonify_output
+@user_required
+def get_matches(user):
+    """
+    List matches as an array of full json encoded profiles
+    """
+    return [x.public_as(user) for x in user.matchlist]
 
 ########################### DEBUG: TO REMOVE ##########################
 @app.route("/debug/beblocked1", methods=["GET"])
@@ -177,5 +186,15 @@ def beblocked(user):
     Block the logged user with user 1
     """
     User.get_user(user_id=1).block(user)
+    return success()
+
+@app.route("/debug/beliked1", methods=["GET"])
+@jsonify_output
+@user_required
+def beliked(user):
+    """
+    Likes the logged user with user 1
+    """
+    User.get_user(user_id=1).like(user)
     return success()
 

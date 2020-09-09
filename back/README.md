@@ -217,9 +217,12 @@ Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
 Content-Length: xy
 {
-    "bio": "",
+    "bio": "J'aime manger des pommes",
+    "blocked": false,
     "first_name": "roger",
     "id": 2,
+    "liked": true,
+    "matches": false,
     "orientation": null,
     "pictures": [],
     "score": 0
