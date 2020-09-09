@@ -22,6 +22,8 @@ class Schema:
 
         # Create users first as other tables will refer to it
         self.create_users_table()
+        self.create_likes_table()
+        self.create_block_table()
 
         # self.populate_users_table()
 
@@ -46,6 +48,38 @@ class Schema:
         picture_5 varchar(1024),
         validated tinyint DEFAULT 0 NOT NULL,
         PRIMARY KEY (id)
+        ) ENGINE=InnoDB;
+        """
+
+        self.cur.execute(query)
+
+    def create_likes_table(self):
+
+        query = """
+        CREATE TABLE IF NOT EXISTS likes (
+        id int NOT NULL AUTO_INCREMENT,
+        user_id int NOT NULL,
+        liked int NOT NULL,
+        
+        PRIMARY KEY (id),
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        FOREIGN KEY (liked) REFERENCES users(id)
+        ) ENGINE=InnoDB;
+        """
+
+        self.cur.execute(query)
+
+    def create_block_table(self):
+
+        query = """
+        CREATE TABLE IF NOT EXISTS blocks (
+        id int NOT NULL AUTO_INCREMENT,
+        user_id int NOT NULL,
+        blocked int NOT NULL,
+        
+        PRIMARY KEY (id),
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        FOREIGN KEY (blocked) REFERENCES users(id)
         ) ENGINE=InnoDB;
         """
 
