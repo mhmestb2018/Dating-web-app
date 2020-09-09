@@ -121,9 +121,18 @@ class User():
         db.exec(query, (self.id, user.id))
         return True
 
-    def matches(self, user):
-        print("in user.matches function", flush=True)
+    def liked(self, user):
+        query = "SELECT * FROM likes WHERE user_id=? AND liked=?"
+        db.exec(query, (self.id, user.id))
+        like = db.cur.fetchall()
+        if len(like) is 0:
+            return False
         return True
+
+    def matches(self, user):
+        if self.liked(user) and user.liked(self):
+            return True
+        return False
 
     def block(self, user):
         query = "INSERT INTO blocks (user_id, blocked) VALUES (?, ?)"

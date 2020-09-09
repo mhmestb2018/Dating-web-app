@@ -153,6 +153,7 @@ def user_actions(user_id, user, payload):
         else:
             if not user.unlike(found):
                 return error("Tu n'avais pas liké cet utilisateur", 400)
+            return ({"match": False})
     else:
         return error("Aucune action valide demandée", 400)
     return ({"match": user.matches(found)})
