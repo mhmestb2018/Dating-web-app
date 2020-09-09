@@ -181,7 +181,15 @@ class User():
 
     @property
     def dict(self):
-        return vars(self)
+        d = vars(self)
+        return d
+
+    def public_as(self, user):
+        d = self.public
+        d["liked"] = user.liked(self)
+        d["matches"] = user.matches_with(self)
+        d["blocked"] = self.id in user.blocklist 
+        return d
 
     @property
     def public(self):
@@ -191,7 +199,7 @@ class User():
             "pictures": self.pictures,
             "orientation": self.orientation,
             "bio": "",
-            "score": self.score,
+            "score": self.score
         }
 
 

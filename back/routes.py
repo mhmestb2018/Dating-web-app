@@ -121,7 +121,7 @@ def user_profile(user_id, user):
     found = User.get_user(user_id=user_id)
     if not found or user.id in found.blocklist:
         return error("Utilisateur introuvable", 404)
-    return success(found.public)
+    return success(found.public_as(user))
 
 
 @app.route("/user/<user_id>", methods=["POST"])
@@ -168,7 +168,7 @@ def get_users(user_id, user, payload):
     """
     return success()
 
-###### DEBUG: TO REMOVE ####
+########################### DEBUG: TO REMOVE ##########################
 @app.route("/debug/beblocked1", methods=["GET"])
 @jsonify_output
 @user_required
