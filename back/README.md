@@ -223,7 +223,7 @@ Content-Length: xy
     "id": 2,
     "liked": true,
     "matches": false,
-    "orientation": null,
+    "orientation": "asexual",
     "pictures": [],
     "score": 0
 }
@@ -255,9 +255,9 @@ Content-Length: xy
 }
 ```
 
-## Matches (To Do)
+## Matches
 **You send:**  Your `session` cookie.  
-**You get:** A JSON encoded list of users `id`
+**You get:** A JSON encoded list of users
 
 **Request:**
 ```json
@@ -272,16 +272,35 @@ Content-Type: application/json
 Content-Length: xy
 {
     "matches": [
-        2,
-        18,
-        243,
+        {
+            "bio": "J'aime manger des pommes",
+            "blocked": false,
+            "first_name": "roger",
+            "id": 2,
+            "liked": true,
+            "matches": true,
+            "orientation": "heterosexual",
+            "pictures": [],
+            "score": 0
+        },
+        {
+            "bio": "Je pète au lit",
+            "blocked": false,
+            "first_name": "bertrand",
+            "id": 7,
+            "liked": true,
+            "matches": true,
+            "orientation": "bisexual",
+            "pictures": [],
+            "score": 0
+        }
     ],
 }
 ```
 
 ## List users (To Do)
 **You send:**  Your `session` cookie and optional search parameters.  
-**You get:** A JSON encoded list of unseen users `id`
+**You get:** A JSON encoded list of unmatched users
 
 **Request:**
 ```json
@@ -292,7 +311,7 @@ Content-Type: application/json
 Content-Length: xy
 {
     "count": 4,
-    "orientation": "hétéro",
+    "orientation": "other",
     "sex": "m", 
 }
 ```
@@ -303,11 +322,29 @@ Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
 Content-Length: xy
 {
-    "users": [
-        2,
-        18,
-        243,
-        244,
+    "users":  [
+        {
+            "bio": "J'aime manger des pommes",
+            "blocked": false,
+            "first_name": "roger",
+            "id": 2,
+            "liked": true,
+            "matches": false,
+            "orientation": "heterosexual",
+            "pictures": [],
+            "score": 0
+        },
+        {
+            "bio": "Je pète au lit",
+            "blocked": false,
+            "first_name": "bertrand",
+            "id": 7,
+            "liked": false,
+            "matches": false,
+            "orientation": "bisexual",
+            "pictures": [],
+            "score": 0
+        }
     ],
 }
 ```
