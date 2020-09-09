@@ -10,6 +10,24 @@ class User():
     __restricted_fields__ = ("id", "validated", "views_count", "likes_count", "id")
 
     @staticmethod
+    def build_from_db_tuple(values):
+        values = zip(User.__fields__, values)
+        user = User(empty=True)
+        for f, v in values:
+            if "picture" in f:
+                if v:
+                    user.pictures.append(v)
+            elif "count" in f:
+                tmp = None
+                if "views" in f:
+                    tmp = v
+                elif "likes" in f and tmp is not None:
+                    user.score = v / max(tmp, 1E-7)
+            else:
+                setattr(user, f, v)
+        return user
+
+    @staticmethod
     def get_user(**kwargs):
         if "email" in kwargs:
             email = Validator.email(kwargs['email'])
@@ -26,22 +44,8 @@ class User():
         if len(rows) is 0:
             print("get_user: no results", flush=True)
             return None
-        
-        values = zip(User.__fields__, rows[0])
-        user = User(empty=True)
-        for f, v in values:
-            if "picture" in f:
-                if v:
-                    user.pictures.append(v)
-            elif "count" in f:
-                tmp = None
-                if "views" in f:
-                    tmp = v
-                elif "likes" in f and tmp is not None:
-                    user.score = v / max(tmp, 1E-7)
-            else:
-                setattr(user, f, v)
-        return user
+    
+        return User.build_from_db_tuple(rows[0])
 
     def __init__(self, user_id=None, first_name=None, last_name=None, email=None, password=None, empty=False):
         self.pictures = []
@@ -184,11 +188,7 @@ class User():
         db.exec(query, (self.id,))
 
         rows = db.cur.fetchall()
-        res = []
-        for t in rows:
-            print(t, flush=True)
-            res.append(User.get_user(user_id=t[0]))
-        return res
+        return [User.build_from_db_tuple(t) for t in rows]
 
     @property
     def blocked_by(self):
