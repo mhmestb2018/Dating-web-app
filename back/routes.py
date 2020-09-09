@@ -140,15 +140,19 @@ def user_actions(user_id, user, payload):
         return error("You narcicist fuck.", 418)
     if "block" in payload:
         if payload["block"]:
-            user.block(found)
+            if not user.block(found):
+                return error("Tu a déjà bloqué cet utilisateur", 400)
         else:
-            user.unblock(found)
+            if not user.unblock(found):
+                return error("Tu n'avais pas bloqué cet utilisateur", 400)
     elif "like" in payload:
         match = False
         if payload["like"]:
-            user.like(found)
+            if not user.like(found):
+                return error("Tu a déjà liké cet utilisateur", 400)
         else:
-            user.unlike(found)
+            if not user.unlike(found):
+                return error("Tu n'avais pas liké cet utilisateur", 400)
     else:
         return error("Aucune action valide demandée", 400)
     return ({"match": user.matches(found)})

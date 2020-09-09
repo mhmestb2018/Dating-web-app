@@ -11,7 +11,7 @@ class Schema:
                 self.conn = mariadb.connect(**self.config)
             except mariadb.Error as e:
                 print(f"Connection to database failed: {e}", flush=True)
-                time.sleep(1)
+                time.sleep(2)
         self.conn.auto_reconnect = True
         self.cur = self.conn.cursor()
 
@@ -57,11 +57,10 @@ class Schema:
 
         query = """
         CREATE TABLE IF NOT EXISTS likes (
-        id int NOT NULL AUTO_INCREMENT,
         user_id int NOT NULL,
         liked int NOT NULL,
         
-        PRIMARY KEY (id),
+        PRIMARY KEY (user_id, liked),
         FOREIGN KEY (user_id) REFERENCES users(id),
         FOREIGN KEY (liked) REFERENCES users(id)
         ) ENGINE=InnoDB;
@@ -73,11 +72,10 @@ class Schema:
 
         query = """
         CREATE TABLE IF NOT EXISTS blocks (
-        id int NOT NULL AUTO_INCREMENT,
         user_id int NOT NULL,
         blocked int NOT NULL,
         
-        PRIMARY KEY (id),
+        PRIMARY KEY (user_id, blocked),
         FOREIGN KEY (user_id) REFERENCES users(id),
         FOREIGN KEY (blocked) REFERENCES users(id)
         ) ENGINE=InnoDB;

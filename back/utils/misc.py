@@ -9,6 +9,7 @@ def success(body={"pcachin": True}, status=200):
 def retry_on_db_error(exc):
     if isinstance(exc, AnyDatabaseError):
         from .. import db
+        print(f"Retrying after db error: {exc}", flush=True)
         db.connect()
         return True
     return False

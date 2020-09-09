@@ -100,12 +100,24 @@ class User():
         return True
 
     def like(self, user):
+        query = "SELECT * FROM likes WHERE user_id=? AND liked=?"
+        db.exec(query, (self.id, user.id))
+
+        rows = db.cur.fetchall()
+        if len(rows) is not 0:
+            return False
         query = "INSERT INTO likes (user_id, liked) VALUES (?, ?)"
         db.exec(query, (self.id, user.id))
         return True
 
     def unlike(self, user):
-        query = "DELETE FROM likes WHERE user_id=" + str(self.id) + " AND liked=" + str(user.id)
+        query = "SELECT * FROM likes WHERE user_id=? AND liked=?"
+        db.exec(query, (self.id, user.id))
+
+        rows = db.cur.fetchall()
+        if len(rows) is 0:
+            return False
+        query = "DELETE FROM likes WHERE user_id=? AND liked=?"
         db.exec(query, (self.id, user.id))
         return True
 
