@@ -9,6 +9,19 @@ class User():
     __fields__ = ("id", "first_name", "last_name", "email", "password", "sex", "orientation", "bio", "views_count", "likes_count", "picture_1", "picture_2", "picture_3", "picture_4", "picture_5", "validated")
     __restricted_fields__ = ("id", "validated", "views_count", "likes_count", "id")
 
+    def list_users(self):
+        query = """
+            SELECT
+                *
+            FROM users
+            WHERE
+                id!=?
+            """
+        db.exec(query, (self.id,))
+
+        rows = db.cur.fetchall()
+        return [User.build_from_db_tuple(t) for t in rows]
+
     @staticmethod
     def build_from_db_tuple(values):
         values = zip(User.__fields__, values)

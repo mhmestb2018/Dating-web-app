@@ -164,12 +164,12 @@ def user_actions(user_id, user, payload):
 @app.route("/users", methods=["GET"])
 @jsonify_output
 @validated_required
-def get_users(user_id, user):
+def get_users(user):
     """
-    List users
+    List unmatched users
     """
     payload = request.get_json()
-    return success()
+    return [x.public_as(user) for x in user.list_users()]
 
 @app.route("/matches", methods=["GET"])
 @jsonify_output
