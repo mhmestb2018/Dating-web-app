@@ -226,8 +226,8 @@ Content-Length: xy
 }
 ```
 
-## Actions (TO DO)
-**You send:**  Your `session` cookie and the json encoded action (`like` or `block`) to execute.  
+## Actions
+**You send:**  Your `session` cookie and the json encoded action (`like` or `block`) with it's boolean setting.  
 **You get:** The full JSON encoded profile of the connected user.
 
 **Request:**
