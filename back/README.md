@@ -90,7 +90,7 @@ Content-Length: xy
         "/data/pcachin.jpg",
         "/data/gikghks.jpg",
     ],
-    "score": 42,
+    "score": 42.0,
     "sex": "m",
     "validated": 1
 }
@@ -147,7 +147,7 @@ Content-Length: xy
         "/data/pcachin.jpg",
         "/data/gikghks.jpg",
     ],
-    "score": 42,
+    "score": 42.0,
     "sex": "m",
     "validated": 1
 }
@@ -173,7 +173,7 @@ Content-Length: xy
     "first_name": "roger",
     "orientation": null,
     "pictures": [],
-    "score": 0
+    "score": 0.0
 }
 ```
 
@@ -197,7 +197,7 @@ Content-Length: xy
     "first_name": "roger",
     "orientation": null,
     "pictures": [],
-    "score": 0
+    "score": 0.0
 }
 ```
 
@@ -225,7 +225,7 @@ Content-Length: xy
     "matches": false,
     "orientation": "asexual",
     "pictures": [],
-    "score": 0
+    "score": 0.0
 }
 ```
 
@@ -281,7 +281,7 @@ Content-Length: xy
             "matches": true,
             "orientation": "heterosexual",
             "pictures": [],
-            "score": 0
+            "score": 42.101
         },
         {
             "bio": "Je pète au lit",
@@ -292,7 +292,7 @@ Content-Length: xy
             "matches": true,
             "orientation": "bisexual",
             "pictures": [],
-            "score": 0
+            "score": 101.42
         }
     ],
 }

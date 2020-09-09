@@ -72,7 +72,8 @@ def signup(payload):
         msg = Message("Confirmation d'inscription", sender=("Matcha Headquarters", os.environ['FLASK_GMAIL']), recipients=[new.email])
         msg.html = render_template("validation_email.html", link=link)
         mail.send(msg)
-    
+    else:
+        new.update({"validated": 1})
     if not User.get_user(email=payload["email"]):
         return error("Failed to create user")
     return success({"validation_id": validation_id}, 201)

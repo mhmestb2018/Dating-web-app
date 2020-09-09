@@ -96,10 +96,3 @@ class Schema:
     def exec(self, query, args=()):
         self.cur.execute(query, args)
         return True
-
-    # def insert(self, table, fields, **kwargs):
-    #     data = []
-    #     for f in fields:
-    #         data += ["'" + kwargs[f] + "'"]
-    #     query = f"INSERT INTO {table} ({','.join(fields)}) VALUES ({','.join(data)})"
-    #     return self.exec(query)
