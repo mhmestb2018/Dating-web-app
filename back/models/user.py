@@ -22,7 +22,7 @@ class User():
                 if "views" in f:
                     tmp = v
                 elif "likes" in f and tmp is not None:
-                    user.score = v / max(tmp, 1E-7)
+                    user.score = float(v) / max(tmp, 1E-7)
             else:
                 setattr(user, f, v)
         return user
@@ -52,7 +52,7 @@ class User():
         self.orientation = None
         self.sex = None
         self.bio = None
-        self.score = 0
+        self.score = 0.0
         self.validated = 0
         if not empty:
             self.first_name = Validator.name(first_name)
