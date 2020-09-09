@@ -92,7 +92,7 @@ class Schema:
         """
         self.cur.execute(query)
 
-    @retry(retry_on_exception=retry_on_db_error, wait_fixed=1000)
+    @retry(retry_on_exception=retry_on_db_error, wait_fixed=1000, stop_max_attempt_number=10)
     def exec(self, query, args=()):
         self.cur.execute(query, args)
         return True
