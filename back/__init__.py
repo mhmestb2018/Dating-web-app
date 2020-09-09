@@ -19,7 +19,7 @@ host = os.environ['REACHABLE_HOST']
 def create_app():
     """Construct the core application."""
     app = Flask(__name__, instance_relative_config=False)
-    app.secret_key = os.urandom(12).hex()
+    app.secret_key = "Blablabla"
     
     app.config['MAIL_SERVER']='smtp.gmail.com'
     app.config['MAIL_PORT'] = 465
