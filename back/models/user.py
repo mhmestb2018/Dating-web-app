@@ -171,19 +171,22 @@ class User():
     def matchlist(self):
         query = """
             SELECT
-                a.user_id
-            FROM likes a
-            INNER JOIN likes b
-                ON a.user_id = b.liked
-                AND a.liked = b.user_id
-            WHERE
-                b.user_id = ?
+                u.*
+            FROM users u
+            INNER JOIN(likes a
+                INNER JOIN likes b
+                    ON a.user_id = b.liked
+                    AND a.liked = b.user_id
+                    AND b.user_id = ?)
+                ON
+                    u.id = a.user_id
             """
         db.exec(query, (self.id,))
 
         rows = db.cur.fetchall()
         res = []
         for t in rows:
+            print(t, flush=True)
             res.append(User.get_user(user_id=t[0]))
         return res
 
