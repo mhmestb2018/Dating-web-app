@@ -129,20 +129,46 @@ class User():
             return False
         return True
 
-    def matches(self, user):
+    def matches_with(self, user):
         if self.liked(user) and user.liked(self):
             return True
         return False
 
     def block(self, user):
+        query = "SELECT * FROM blocks WHERE user_id=? AND blocked=?"
+        db.exec(query, (self.id, user.id))
+
+        rows = db.cur.fetchall()
+        if len(rows) is not 0:
+            return False
         query = "INSERT INTO blocks (user_id, blocked) VALUES (?, ?)"
         db.exec(query, (self.id, user.id))
         return True
 
     def unblock(self, user):
-        query = "DELETE FROM blocks WHERE id=" + str(self.id) + " AND liked=" + str(user.id)
+        query = "SELECT * FROM blocks WHERE user_id=? AND blocked=?"
+        db.exec(query, (self.id, user.id))
+
+        rows = db.cur.fetchall()
+        if len(rows) is 0:
+            return False
+        query = "DELETE FROM blocks WHERE user_id=? AND blocked=?"
         db.exec(query, (self.id, user.id))
         return True
+
+    @property
+    def blocklist(self):
+        query = "SELECT blocked FROM blocks WHERE user_id=?"
+        db.exec(query, (self.id,))
+
+        return [int(i[0]) for i in db.cur.fetchall()]
+
+    @property
+    def blocked_by(self):
+        query = "SELECT user_id FROM blocks WHERE blocked=?"
+        db.exec(query, (self.id,))
+
+        return [int(i[0]) for i in db.cur.fetchall()]
 
     def check_password(self, password):
         return check_password_hash(self.password, password)

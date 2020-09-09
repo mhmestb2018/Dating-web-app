@@ -119,7 +119,7 @@ def user_profile(user_id, user):
     Returns public profile data of requested user_id
     """
     found = User.get_user(user_id=user_id)
-    if not found:
+    if not found or user.id in found.blocklist:
         return error("Utilisateur introuvable", 404)
     return success(found.public)
 
@@ -134,7 +134,7 @@ def user_actions(user_id, user, payload):
     Take an action set to a bool and returns the match status
     """
     found = User.get_user(user_id=user_id)
-    if not found:
+    if not found or user.id in found.blocklist:
         return error("Utilisateur cible introuvable", 404)
     if found.id == user.id:
         return error("You narcicist fuck.", 418)
@@ -156,7 +156,7 @@ def user_actions(user_id, user, payload):
             return ({"match": False})
     else:
         return error("Aucune action valide demandée", 400)
-    return ({"match": user.matches(found)})
+    return ({"match": user.matches_with(found)})
 
 @app.route("/users", methods=["GET"])
 @jsonify_output
@@ -166,5 +166,16 @@ def get_users(user_id, user, payload):
     """
     List users
     """
+    return success()
+
+###### DEBUG: TO REMOVE ####
+@app.route("/debug/beblocked1", methods=["GET"])
+@jsonify_output
+@user_required
+def beblocked(user):
+    """
+    Block the logged user with user 1
+    """
+    User.get_user(user_id=1).block(user)
     return success()
 
