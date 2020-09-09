@@ -12,10 +12,17 @@ class User():
     def list_users(self):
         query = """
             SELECT
-                *
-            FROM users
+                u.*
+            FROM
+                users u
+                LEFT JOIN (likes a
+                    INNER JOIN likes b
+                        ON a.user_id = b.liked
+                        AND a.liked = b.user_id
+                        AND b.user_id=?)
+                    ON a.user_id = u.id
             WHERE
-                id!=?
+                b.user_id IS NULL
             """
         db.exec(query, (self.id,))
 
