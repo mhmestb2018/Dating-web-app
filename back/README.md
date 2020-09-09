@@ -298,9 +298,11 @@ Content-Length: xy
 }
 ```
 
-## List users (To Do)
+## List users
 **You send:**  Your `session` cookie and optional search parameters.  
-**You get:** A JSON encoded list of unmatched users
+**You get:** A JSON encoded list of validated unmatched users
+
+(count is not yet enforced)
 
 **Request:**
 ```json
@@ -310,8 +312,7 @@ Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0
 Content-Type: application/json
 Content-Length: xy
 {
-    "count": 4,
-    "orientation": "other",
+    "count": 2,
     "sex": "m", 
 }
 ```
@@ -332,7 +333,8 @@ Content-Length: xy
             "matches": false,
             "orientation": "heterosexual",
             "pictures": [],
-            "score": 0
+            "score": 0,
+            "sex": "m"
         },
         {
             "bio": "Je pète au lit",
@@ -343,7 +345,8 @@ Content-Length: xy
             "matches": false,
             "orientation": "bisexual",
             "pictures": [],
-            "score": 0
+            "score": 0,
+            "sex": "m"
         }
     ],
 }

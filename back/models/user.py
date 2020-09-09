@@ -23,8 +23,10 @@ class User():
                     ON a.user_id = u.id
             WHERE
                 b.user_id IS NULL
+                AND u.validated=1
+                AND u.id != ?
             """
-        db.exec(query, (self.id,))
+        db.exec(query, (self.id, self.id))
 
         rows = db.cur.fetchall()
         return [User.build_from_db_tuple(t) for t in rows]
@@ -250,7 +252,8 @@ class User():
             "pictures": self.pictures,
             "orientation": self.orientation,
             "bio": "",
-            "score": self.score
+            "score": self.score,
+            "sex": self.sex
         }
 
 
