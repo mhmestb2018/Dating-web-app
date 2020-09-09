@@ -98,13 +98,17 @@ class User():
         db.exec(query, tuple(new_values.values()))
         return True
 
+    def validate(self):
+        db.exec("UPDATE users SET validated=1 WHERE id=?", (self.id,))
+
+
     def delete(self):
-        query = "DELETE FROM users WHERE id=" + str(self.id)
-        db.exec(query)
         query = "DELETE FROM likes WHERE user_id=? OR liked=?"
         db.exec(query, (self.id, self.id))
         query = "DELETE FROM blocks WHERE user_id=? OR blocked=?"
         db.exec(query, (self.id, self.id))
+        query = "DELETE FROM users WHERE id=" + str(self.id)
+        db.exec(query)
         return True
 
     def like(self, user):

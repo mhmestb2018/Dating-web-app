@@ -8,7 +8,8 @@ from . import db, host
 from .matcha import mail
 from .models.user import User
 from .utils import error, success
-from .utils.decorators import user_required, payload_required, jsonify_output, catcher
+from .utils.decorators import (user_required, payload_required,
+                                jsonify_output, catcher, validated_required)
 
 # https://www.restapitutorial.com/lessons/httpmethods.html
 
@@ -64,6 +65,7 @@ def signup(payload):
     hashed_password = generate_password_hash(payload["password"])
 
     new = User.create_user(payload["first_name"], payload["last_name"], payload["email"], hashed_password)
+    new.id = db.cur.lastrowid
 
     validation_id = False
     if mail:
@@ -73,7 +75,7 @@ def signup(payload):
         msg.html = render_template("validation_email.html", link=link)
         mail.send(msg)
     else:
-        new.update({"validated": 1})
+        new.validate()
     if not User.get_user(email=payload["email"]):
         return error("Failed to create user")
     return success({"validation_id": validation_id}, 201)
@@ -114,7 +116,7 @@ def profile(user):
 
 @app.route("/user/<user_id>", methods=["GET"])
 @jsonify_output
-@user_required
+@validated_required
 def user_profile(user_id, user):
     """
     Returns public profile data of requested user_id
@@ -127,7 +129,7 @@ def user_profile(user_id, user):
 
 @app.route("/user/<user_id>", methods=["POST"])
 @jsonify_output
-@user_required
+@validated_required
 @payload_required
 def user_actions(user_id, user, payload):
     """
@@ -161,7 +163,7 @@ def user_actions(user_id, user, payload):
 
 @app.route("/users", methods=["GET"])
 @jsonify_output
-@user_required
+@validated_required
 def get_users(user_id, user):
     """
     List users
@@ -171,7 +173,7 @@ def get_users(user_id, user):
 
 @app.route("/matches", methods=["GET"])
 @jsonify_output
-@user_required
+@validated_required
 def get_matches(user):
     """
     List matches as an array of full json encoded profiles
