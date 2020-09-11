@@ -31,7 +31,7 @@ Content-Length: xy
 
 ## Signup
 **You send:**  Your basic information.  
-**You get:** The `validation_id` generated for the validation link (http://hostname/validation/<validation_id>).
+**You get:** An email is sent with a validation link (http://hostname/validation/<validation_id>).
 
 **Request:**
 ```json
@@ -53,7 +53,32 @@ Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
 Content-Length: xy
 {
-    "validation_id": "p0cnVlLCJ1c2Vy",
+    "pcachin": "true",
+}
+```
+
+## Email validation (link from mail) TO DO
+**You send:**  Your new `password`.  
+**You get:** A success message.
+
+**Request:**
+```json
+POST /validate HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Content-Length: xy
+{
+    "validation_id": "AE16F5D0438CA",
+}
+```
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Server: Werkzeug/1.0.1 Python/3.7.9
+Content-Type: application/json
+Content-Length: xy
+{
+    "pcachin": "true",
 }
 ```
 
@@ -119,6 +144,8 @@ Content-Length: xy
 **You send:**  Your `session` cookie and all the json encoded fields to edit.  
 **You get:** The full JSON encoded profile of the connected user.
 
+If `email` is changed, this call will unvalidate the user and send a new validation link. (TO DO)
+
 **Request:**
 ```json
 PUT /profile HTTP/1.1
@@ -175,6 +202,57 @@ Content-Length: xy
     "pictures": [],
     "score": 0.0,
     "sex": "m"
+}
+```
+
+## Password lost TO DO
+**You send:**  Your `email` address.  
+**You get:** A mail is sent with a reset link (http://hostname/reset/<reset_id>).
+
+**Request:**
+```json
+POST /reset_password HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Content-Length: xy
+{
+    "email": "foo@bar.xy",
+}
+```
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Server: Werkzeug/1.0.1 Python/3.7.9
+Content-Type: application/json
+Content-Length: xy
+{
+    "pcachin": "true",
+}
+```
+
+## Password reset (link from mail) TO DO
+**You send:**  Your `reset_id` and  new `password`.  
+**You get:** A success message.
+
+**Request:**
+```json
+POST /reset_password HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Content-Length: xy
+{
+    "reset_id": "AE148F34643CD40",
+    "password": "S€cUr1ty",
+}
+```
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Server: Werkzeug/1.0.1 Python/3.7.9
+Content-Type: application/json
+Content-Length: xy
+{
+    "pcachin": "true",
 }
 ```
 
