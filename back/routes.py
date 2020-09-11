@@ -1,17 +1,18 @@
 import time, os
-from flask import current_app as app, render_template, request, session
+from flask import current_app as app, render_template, request, session, Blueprint
 from werkzeug.security import generate_password_hash
 from flask_mail import Message
 from mariadb import Error as Dberror
 
-from . import db, host
-from .matcha import mail
+from . import db, host, mail
 from .models.user import User
 from .utils import error, success
 from .utils.decorators import (user_required, payload_required,
                                 jsonify_output, catcher, validated_required)
 
 # https://www.restapitutorial.com/lessons/httpmethods.html
+
+routes = Blueprint("routes", __name__)
 
 @app.route("/login", methods=["POST"])
 @jsonify_output
