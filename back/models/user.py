@@ -85,12 +85,12 @@ class User():
 
     @staticmethod
     def create_user(first_name, last_name, email, hashed_password):
-        # Left to do: send mail
 
-        user = User(db.cur.lastrowid, first_name, last_name, email, hashed_password)
+        user = User(0, first_name, last_name, email, hashed_password)
         query = "INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)"
         db.exec(query, (first_name, last_name, email, hashed_password))
-        
+        user.id = db.cur.lastrowid
+
         return user
 
     def update(self, new_values:dict):
@@ -122,6 +122,7 @@ class User():
 
     def validate(self):
         db.exec("UPDATE users SET validated=1 WHERE id=?", (self.id,))
+        self.validated = 1
 
 
     def delete(self):

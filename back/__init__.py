@@ -12,7 +12,7 @@ config = {
 
 db = Schema(config)
 
-host = os.environ['REACHABLE_HOST']
+public_host = os.environ['REACHABLE_HOST']
 
-mail = None
+mail = False
 
