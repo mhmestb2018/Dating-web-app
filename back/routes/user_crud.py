@@ -6,8 +6,7 @@ from flask_mail import Message
 from .. import public_host, mail
 from ..models.user import User
 from ..utils import error, success
-from ..utils.decorators import (user_required, payload_required,
-                                jsonify_output, catcher, validated_required)
+from ..utils.decorators import user_required, payload_required, jsonify_output, catcher
 
 user_crud = Blueprint("user_crud", __name__)
 
@@ -112,15 +111,3 @@ def profile(user):
     Returns full profile data of the currently logged user
     """
     return success(user.dict)
-
-@user_crud.route("/user/<user_id>", methods=["GET"])
-@jsonify_output
-@validated_required
-def user_profile(user_id, user):
-    """
-    Returns public profile data of requested user_id
-    """
-    found = User.get_user(user_id=user_id)
-    if not found or user.id in found.blocklist:
-        return error("Utilisateur introuvable", 404)
-    return success(found.public_as(user))

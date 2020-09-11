@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, request
 
 from ..utils.decorators import (jsonify_output, validated_required)
 

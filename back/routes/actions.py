@@ -39,3 +39,15 @@ def user_actions(user_id, user, payload):
     else:
         return error("Aucune action valide demandée", 400)
     return ({"match": user.matches_with(found)})
+
+@actions.route("/user/<user_id>", methods=["GET"])
+@jsonify_output
+@validated_required
+def user_profile(user_id, user):
+    """
+    Returns public profile data of requested user_id
+    """
+    found = User.get_user(user_id=user_id)
+    if not found or user.id in found.blocklist:
+        return error("Utilisateur introuvable", 404)
+    return success(found.public_as(user))
