@@ -205,7 +205,7 @@ Content-Length: xy
 }
 ```
 
-## Password lost
+## Password lost #UNTESTED
 **You send:**  Your `email` address, and a `new_password` if email is not configured server-side.  
 **You get:** If applicable, a mail is sent with a reset link (http://hostname/reset/<user_id>/<reset_id>).
 
@@ -230,7 +230,7 @@ Content-Length: xy
 }
 ```
 
-## Password reset (link from mail)
+## Password reset (link from mail) #UNTESTED
 **You send:**  Your `new_password`.  
 **You get:** A success message.
 
