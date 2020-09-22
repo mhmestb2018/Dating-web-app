@@ -260,7 +260,6 @@ class User():
     def save_reset_id(self, reset_id):
         query = "INSERT INTO reset (user_id, reset_id) VALUES (?, ?)"
         db.exec(query, (self.id, reset_id))
-        self.reset_id = reset_id
 
     @property
     def reset_id(self):
@@ -271,4 +270,3 @@ class User():
         if len(rows) is 0:
             return False
         return rows[0]
-        
