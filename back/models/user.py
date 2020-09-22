@@ -93,7 +93,7 @@ class User():
 
         return user
 
-    def update(self, new_values:dict):
+    def update(self, new_values:dict, force=False):
         reqs = []
         params = []
 
@@ -107,7 +107,7 @@ class User():
                 self.pictures.append(path)
 
         for k in new_values.keys():
-            if k not in User.__fields__ or k in User.__restricted_fields__:
+            if k not in User.__fields__ or (k in User.__restricted_fields__ and not force):
                 raise Exception(f"field {k} doesn't exist")
             reqs += [f"{k}=?"]
         req = ", ".join(reqs)
@@ -256,3 +256,18 @@ class User():
             "score": self.score,
             "sex": self.sex
         }
+
+    def save_reset_id(self, reset_id):
+        query = "INSERT INTO reset (user_id, reset_id) VALUES (?, ?)"
+        db.exec(query, (self.id, reset_id))
+        self.reset_id = reset_id
+
+    @property
+    def reset_id(self):
+        query = "SELECT reset_id FROM reset WHERE user_id=?"
+        db.exec(query, (self.id,))
+
+        rows = db.cur.fetchall()
+        if len(rows) is 0:
+            return False
+        return rows[0]
