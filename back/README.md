@@ -58,7 +58,7 @@ Content-Length: xy
 ```
 
 ## Email validation (link from mail) TO DO
-**You send:**  Your new `password`.  
+**You send:** Nothing  
 **You get:** A success message.
 
 **Request:**
@@ -205,18 +205,18 @@ Content-Length: xy
 }
 ```
 
-## Password lost TO DO
-**You send:**  Your `email` address.  
-**You get:** A mail is sent with a reset link (http://hostname/reset/<reset_id>).
+## Password lost
+**You send:**  Your `email` address, and a `new_password` if email is not configured server-side.  
+**You get:** If applicable, a mail is sent with a reset link (http://hostname/reset/<user_id>/<reset_id>).
 
 **Request:**
 ```json
-POST /reset_password HTTP/1.1
+POST /reset HTTP/1.1
 Accept: application/json
 Content-Type: application/json
 Content-Length: xy
 {
-    "email": "foo@bar.xy",
+    "email": "foo@bar.fr",
 }
 ```
 **Successful Response:**
@@ -230,19 +230,18 @@ Content-Length: xy
 }
 ```
 
-## Password reset (link from mail) TO DO
-**You send:**  Your `reset_id` and  new `password`.  
+## Password reset (link from mail)
+**You send:**  Your `new_password`.  
 **You get:** A success message.
 
 **Request:**
 ```json
-POST /reset_password HTTP/1.1
+POST /reset/<user_id>/<reset_id> HTTP/1.1
 Accept: application/json
 Content-Type: application/json
 Content-Length: xy
 {
-    "reset_id": "AE148F34643CD40",
-    "password": "S€cUr1ty",
+    "new_password": "passW0rd",
 }
 ```
 **Successful Response:**
