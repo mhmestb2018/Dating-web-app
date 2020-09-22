@@ -6,7 +6,7 @@ from flask_mail import Message
 from .. import public_host, mail
 from ..models.user import User
 from ..utils import error, success, Validator
-from ..utils.decorators import user_required, payload_required, jsonify_output, catcher
+from ..utils.decorators import payload_required, jsonify_output, catcher
 
 reset_password = Blueprint("reset_password", __name__, url_prefix="/reset")
 
@@ -34,13 +34,12 @@ def query_reset(payload):
         user.save_reset_id(reset_id)
         msg.html = render_template("reset_password_email.html", link=link)
         mail.send(msg)
+    elif "new_password" in payload:
+        passwd = Validator.password(payload["new_password"])
+        user.update({"password": generate_password_hash(passwd)}, force=True)
+        print(f"Password of {user.email} validated automatically", flush=True)
     else:
-        if "new_password" in payload:
-            user.update({"password": Validator.password(payload["new_password"])}, force=True)
-            print(f"Password of {user.email} validated automatically", flush=True)
-        else:
-            return error("Missing 'new_password' in payload", 400)
-        user.validate()
+        return error("Missing 'new_password' in payload", 400)
 
     return success()
 
@@ -60,10 +59,12 @@ def reset_link(user_id, reset_id, payload):
     if not user.reset_id != reset_id:
         return error("Clé secrète invalide", 400)
     if "new_password" in payload:
-        user.update({"password": Validator.password(payload["new_password"])}, force=True)
+        passwd = Validator.password(payload["new_password"])
+        user.update({"password": generate_password_hash(passwd)}, force=True)
         print(f"Password of {user.email} validated manually", flush=True)
     else:
         return error("Missing 'new_password' in payload", 400)
     user.validate()
 
     return success()
+    

@@ -36,3 +36,4 @@ def create_app():
     app.register_blueprint(reset_password)
    
     return app
+    
