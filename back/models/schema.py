@@ -24,6 +24,8 @@ class Schema:
         self.create_users_table()
         self.create_likes_table()
         self.create_block_table()
+        self.create_reset_table()
+        self.create_validation_table()
 
         self.populate_users_table()
 
@@ -47,6 +49,7 @@ class Schema:
         picture_4 varchar(1024),
         picture_5 varchar(1024),
         validated tinyint DEFAULT 0 NOT NULL,
+        last_seen timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
         PRIMARY KEY (id)
         ) ENGINE=InnoDB;
         """
@@ -59,10 +62,41 @@ class Schema:
         CREATE TABLE IF NOT EXISTS likes (
         user_id int NOT NULL,
         liked int NOT NULL,
+        date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
         
         PRIMARY KEY (user_id, liked),
         FOREIGN KEY (user_id) REFERENCES users(id),
         FOREIGN KEY (liked) REFERENCES users(id)
+        ) ENGINE=InnoDB;
+        """
+
+        self.cur.execute(query)
+
+    def create_reset_table(self):
+
+        query = """
+        CREATE TABLE IF NOT EXISTS reset (
+        user_id int NOT NULL,
+        reset_id varchar(128) NOT NULL,
+        date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        
+        PRIMARY KEY (user_id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        ) ENGINE=InnoDB;
+        """
+
+        self.cur.execute(query)
+
+    def create_validation_table(self):
+
+        query = """
+        CREATE TABLE IF NOT EXISTS validation (
+        user_id int NOT NULL,
+        validation_id varchar(128) NOT NULL,
+        date timestamp DEFAULT NOW() NOT NULL,
+        
+        PRIMARY KEY (user_id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
         ) ENGINE=InnoDB;
         """
 
@@ -74,6 +108,7 @@ class Schema:
         CREATE TABLE IF NOT EXISTS blocks (
         user_id int NOT NULL,
         blocked int NOT NULL,
+        date timestamp DEFAULT NOW() NOT NULL,
         
         PRIMARY KEY (user_id, blocked),
         FOREIGN KEY (user_id) REFERENCES users(id),
