@@ -271,3 +271,4 @@ class User():
         if len(rows) is 0:
             return False
         return rows[0]
+        
