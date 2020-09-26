@@ -52,6 +52,16 @@ services:
       - frontend
     restart: on-failure
 
+  tests_back:
+    build: ./back/tests
+    depends_on:
+      - app
+    volumes:
+      - ./back/tests:/tests
+    networks:
+      - frontend
+
+
 networks:
   backend:
   frontend:

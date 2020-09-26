@@ -47,6 +47,12 @@ docker ps
 docker exec -it XXXXXXX_db_1 mysql --database=matcha --user=admin --password=admin
 ```
 
+## Tests
+### Back
+```bash
+docker-compose up --exit-code-from tests_back
+```
+In case of failure, please reset the database.
 
 ## Uninstall
 To delete all user data and docker images
