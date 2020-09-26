@@ -22,12 +22,11 @@ class Schema:
 
         # Create users first as other tables will refer to it
         self.create_users_table()
+        # self.populate_users_table()
         self.create_likes_table()
-        self.create_block_table()
-        self.create_reset_table()
-        self.create_validation_table()
-
-        self.populate_users_table()
+        self.create_blocks_table()
+        self.create_resets_table()
+        self.create_validations_table()
 
     def create_users_table(self):
 
@@ -39,7 +38,7 @@ class Schema:
         email varchar(255) NOT NULL,
         password varchar(255) NOT NULL,
         sex varchar(63),
-        orientation varchar(63),
+        orientation varchar(63) DEFAULT 'bisexual',
         bio text DEFAULT '' NOT NULL,
         views_count int DEFAULT 0 NOT NULL,
         likes_count int DEFAULT 0 NOT NULL,
@@ -72,10 +71,10 @@ class Schema:
 
         self.cur.execute(query)
 
-    def create_reset_table(self):
+    def create_resets_table(self):
 
         query = """
-        CREATE TABLE IF NOT EXISTS reset (
+        CREATE TABLE IF NOT EXISTS resets (
         user_id int NOT NULL,
         reset_id varchar(128) NOT NULL,
         date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -87,10 +86,10 @@ class Schema:
 
         self.cur.execute(query)
 
-    def create_validation_table(self):
+    def create_validations_table(self):
 
         query = """
-        CREATE TABLE IF NOT EXISTS validation (
+        CREATE TABLE IF NOT EXISTS validations (
         user_id int NOT NULL,
         validation_id varchar(128) NOT NULL,
         date timestamp DEFAULT NOW() NOT NULL,
@@ -102,7 +101,7 @@ class Schema:
 
         self.cur.execute(query)
 
-    def create_block_table(self):
+    def create_blocks_table(self):
 
         query = """
         CREATE TABLE IF NOT EXISTS blocks (

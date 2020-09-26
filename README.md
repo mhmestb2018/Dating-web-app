@@ -30,7 +30,7 @@ docker-compose build
 
 ## Run
 ```bash
-docker-compose up
+docker-compose up front
 ```
 
 ## Database
@@ -50,7 +50,7 @@ docker exec -it XXXXXXX_db_1 mysql --database=matcha --user=admin --password=adm
 ## Tests
 ### Back
 ```bash
-docker-compose up --exit-code-from tests_back
+docker-compose up tests_back
 ```
 In case of failure, please reset the database.
 

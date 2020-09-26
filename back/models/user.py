@@ -84,12 +84,15 @@ class User():
             self.id = user_id
 
     @staticmethod
-    def create_user(first_name, last_name, email, hashed_password):
+    def create_user(first_name, last_name, email, hashed_password, validation_id):
 
         user = User(0, first_name, last_name, email, hashed_password)
         query = "INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)"
         db.exec(query, (first_name, last_name, email, hashed_password))
         user.id = db.cur.lastrowid
+
+        query = "INSERT INTO validations (user_id, validation_id) VALUES (?, ?)"
+        db.exec(query, (user.id, validation_id))
 
         return user
 
@@ -120,10 +123,23 @@ class User():
         db.exec(query, tuple(new_values.values()))
         return True
 
-    def validate(self):
-        db.exec("UPDATE users SET validated=1 WHERE id=?", (self.id,))
-        self.validated = 1
-
+    @staticmethod
+    def validate(validation_id):
+        query = """
+            SELECT
+                u.*
+            FROM users u
+                INNER JOIN validations v
+                    ON v.user_id = u.id
+                    AND v.validation_id = ?
+            """
+        db.exec(query, (validation_id,))
+        rows = db.cur.fetchall()
+        if len(rows) is 0:
+            return False
+        db.exec("UPDATE users SET validated=1 WHERE id=?", (rows[0][0],))
+        db.exec("DELETE FROM validations WHERE user_id=?", (rows[0][0],))
+        return True
 
     def delete(self):
         query = "DELETE FROM likes WHERE user_id=? OR liked=?"

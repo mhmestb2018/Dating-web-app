@@ -31,7 +31,7 @@ Content-Length: xy
 
 ## Signup
 **You send:**  Your basic information.  
-**You get:** An email is sent with a validation link (http://hostname/validation/<validation_id>).
+**You get:** An email is sent with a validation link (http://hostname/validate/<validation_id>). If email is not set up, returns the `validation_id`.
 
 **Request:**
 ```json
@@ -57,7 +57,7 @@ Content-Length: xy
 }
 ```
 
-## Email validation (link from mail) TO DO
+## Email validation (link from mail)
 **You send:** Nothing  
 **You get:** A success message.
 
