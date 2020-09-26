@@ -24,8 +24,10 @@ class Validator():
     @staticmethod
     @printable
     def name(val, limit=32):
+        if len(val) < 2:
+            raise InvalidData(f"Le nom est trop court (< 2)")
         if len(val) > limit:
-            raise InvalidData(f"Le nom est trop long (> {limit}")
+            raise InvalidData(f"Le nom est trop long (> {limit})")
         return val
 
     @staticmethod

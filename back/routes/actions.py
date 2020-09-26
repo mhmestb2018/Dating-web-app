@@ -30,6 +30,8 @@ def user_actions(user_id, user, payload):
     elif "like" in payload:
         match = False
         if payload["like"]:
+            if len(user.pictures) is 0:
+                return error("Tu n'as pas de photo de profil", 403)
             if not user.like(found):
                 return error("Tu a déjà liké cet utilisateur", 400)
         else:

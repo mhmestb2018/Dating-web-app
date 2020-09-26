@@ -37,7 +37,7 @@ def test_pytest():
     # time.sleep(20)
     print("SUCCESS")
 
-def signup_user(user, value=201):
+def signup(user, value=201):
     payload = {
         'email': user["email"],
         'password': user["password"],
@@ -47,9 +47,12 @@ def signup_user(user, value=201):
     response = user["session"].post(f"{url}/signup", data=payload)
     print(response.text)
     assert response.status_code == value
-    return json.loads(response.text)["validation_id"]
+    tmp = json.loads(response.text)
+    if "validation_id" in tmp:
+        return tmp["validation_id"]
+    return None
 
-def login_user(user, value=200):
+def login(user, value=200):
     payload = {
         'email': user["email"],
         'password': user["password"],
@@ -60,40 +63,55 @@ def login_user(user, value=200):
     assert response.status_code == value
     return json.loads(response.text)
 
-def validate_user(user, validation_id, value=200):
+def validate(user, validation_id, value=200):
     response = user["session"].post(f"{url}/validate/{validation_id}")
     print(response)
     assert response.status_code == value
 
-def create_user(user):
-    validation_id = signup_user(user)
-    validate_user(user, validation_id)
+def create(user):
+    validation_id = signup(user)
+    validate(user, validation_id)
 
-def delete_user(user, value=200):
+def delete(user, value=200):
     response = user["session"].delete(f"{url}/profile")
     print(response)
     assert response.status_code == value
 
-def logout_user(user, value=200):
+def logout(user, value=200):
     response = user["session"].post(f"{url}/logout")
     print(response)
     assert response.status_code == value
 
-def test_create_user():
-    create_user(user1)
-    create_user(user2)
+def test_create():
+    create(user1)
+    create(user2)
 
-def test_login_user():
-    login_user(user1)
-    login_user(user2)
+def test_recreate():
+    signup(user1, value=409)
 
-def test_logout_user():
-    logout_user(user1)
-    logout_user(user2)
-    login_user(user1)
-    login_user(user2)
+def test_bad_create():
+    payload = {
+        'email': "testets@flhsldfn.fr",
+        'password': user1["password"],
+        'first_name': "",
+        'last_name': user1["last_name"]
+    }
+    response = user1["session"].post(f"{url}/signup", data=payload)
+    print(response.text)
+    assert response.status_code == 400
 
-def test_delete_user():
-    delete_user(user1)
-    delete_user(user2)
+def test_login():
+    login(user1)
+    login(user2)
+
+def test_logout():
+    logout(user1)
+    logout(user2)
+    login(user1)
+    login(user2)
+
+
+def test_delete():
+    delete(user1)
+    delete(user2)
 
