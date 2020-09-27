@@ -40,7 +40,6 @@ class Validator():
         name = tmp[0].split("+")[0]
         provider = tmp[1]
         tmp = provider.split(".")
-        print(tmp, flush=True)
         if len(tmp) < 2 or len(tmp[0]) < 2 or len(tmp[-1]) < 2 or len(name) < 2:
             raise InvalidData(f"{val} n'est pas un email valide")
         if len(tmp[-1]) > 4:
