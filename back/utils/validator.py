@@ -40,10 +40,11 @@ class Validator():
         name = tmp[0].split("+")[0]
         provider = tmp[1]
         tmp = provider.split(".")
-        if len(tmp) < 2:
-            raise InvalidData(f"{val} n'est pas un email valide (extention manquante)")
+        print(tmp, flush=True)
+        if len(tmp) < 2 or len(tmp[0]) < 2 or len(tmp[-1]) < 2 or len(name) < 2:
+            raise InvalidData(f"{val} n'est pas un email valide")
         if len(tmp[-1]) > 4:
-            raise InvalidData(f"{val} n'ets pas un email valide (extention '.{tmp[-1]}' trop longue)")
+            raise InvalidData(f"{val} n'est pas un email valide (extention '.{tmp[-1]}' trop longue)")
         if tmp[-2] is "gmail":
             name = "".join(name.split("."))
         return f"{name}@{provider}"
@@ -85,7 +86,7 @@ class Validator():
 
     @staticmethod
     @printable
-    def password(val, limit=5):
+    def password(val, limit=6):
         if len(val) >= limit:
             return val
         raise InvalidData(f"password is too short ({len(val)}<{limit} chars)")

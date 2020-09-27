@@ -100,6 +100,66 @@ def test_bad_create():
     print(response.text)
     assert response.status_code == 400
 
+    payload = {
+        'email': "testets@.fr",
+        'password': user1["password"],
+        'first_name': "henri",
+        'last_name': user1["last_name"]
+    }
+    response = user1["session"].post(f"{url}/signup", data=payload)
+    print(response.text)
+    assert response.status_code == 400
+
+    payload = {
+        'email': "@flhsldfn.fr",
+        'password': user1["password"],
+        'first_name': "henri",
+        'last_name': user1["last_name"]
+    }
+    response = user1["session"].post(f"{url}/signup", data=payload)
+    print(response.text)
+    assert response.status_code == 400
+
+    payload = {
+        'email': "testetsflhsldfn.fr",
+        'password': user1["password"],
+        'first_name': "henri",
+        'last_name': user1["last_name"]
+    }
+    response = user1["session"].post(f"{url}/signup", data=payload)
+    print(response.text)
+    assert response.status_code == 400
+
+    payload = {
+        'email': "testets@flhsldfn",
+        'password': user1["password"],
+        'first_name': "henri",
+        'last_name': user1["last_name"]
+    }
+    response = user1["session"].post(f"{url}/signup", data=payload)
+    print(response.text)
+    assert response.status_code == 400
+
+    payload = {
+        'email': "testets@flhsldfn.fr",
+        'password': "biuhg",
+        'first_name': "henri",
+        'last_name': user1["last_name"]
+    }
+    response = user1["session"].post(f"{url}/signup", data=payload)
+    print(response.text)
+    assert response.status_code == 400
+
+    payload = {
+        'email': "testets@flhsldfn.fr",
+        'password': user1["password"],
+        'last_name': user1["last_name"]
+    }
+    response = user1["session"].post(f"{url}/signup", data=payload)
+    print(response.text)
+    assert response.status_code == 400
+
+
 def test_login():
     login(user1)
     login(user2)

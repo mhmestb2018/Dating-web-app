@@ -57,8 +57,13 @@ def signup(payload):
     """
     if "user" in session:
         return error("Vous êtes déjà connecté", 400)
+    if not "email" in payload or not "first_name" in payload or not "last_name" in payload or not "password" in payload:
+        return error("Saisie incomplète", 400)
     if User.get_user(email=payload["email"]) is not None:
         return error("L'utilisateur existe déjà", 409)
+    if len(payload["password"]) < 6:
+        return error("Mot de passe trop court", 400)
+
     hashed_password = generate_password_hash(payload["password"])
 
     validation_id = os.urandom(12).hex()
