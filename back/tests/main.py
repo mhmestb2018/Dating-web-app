@@ -81,6 +81,17 @@ def logout(user):
     print(response)
     return response
 
+
+def update(user, data):
+    response = user["session"].put(f"{url}/profile", data=data)
+    return response
+
+def get_profile(user):
+    response = user["session"].get(f"{url}/profile")
+    return json.loads(response.text)
+
+######################### TESTS ########################################## TESTS ####################
+
 def test_create():
     create(user1)
     create(user2)
@@ -159,10 +170,6 @@ def test_bad_create():
     print(response.text)
     assert response.status_code == 400
 
-def update(user, data):
-    response = user["session"].put(f"{url}/profile", data=data)
-    return response
-
 def test_login():
     response = login(user1)
     assert response.status_code == 200
@@ -182,6 +189,7 @@ def test_update():
     res = json.loads(res.text)
     assert res["first_name"] == 'Joel'
     user1["first_name"] = 'Joel'
+    assert get_profile(user1)["first_name"] == 'Joel'
     logout(user1)
 
 def test_delete():
