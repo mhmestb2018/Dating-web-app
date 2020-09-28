@@ -10,7 +10,7 @@ from ..utils.decorators import payload_required, jsonify_output, catcher
 
 reset_password = Blueprint("reset_password", __name__, url_prefix="/reset")
 
-@reset_password.route("/", methods=["POST"])
+@reset_password.route("", methods=["POST"])
 @payload_required
 @jsonify_output
 @catcher
@@ -18,29 +18,24 @@ def query_reset(payload):
     """
     Expects 'email' in payload
     Sends an email with a reset link valid for 1 hour
-    When email is not configurated, changes the password
-    with the 'new_password' provided
+    When email is not configurated, return the reset_id
+    used for link generation
     """
     if "user" in session:
         return error("Vous êtes déjà connecté", 400)
     user = User.get_user(email=payload["email"])
     if not user:
         return error("Utilisateur introuvable", 404)
+    reset_id = os.urandom(12).hex()
+    user.save_reset_id(reset_id)
     if mail:
         print(f"Sending validation email to {payload['email']}", flush=True)
-        reset_id = os.urandom(12).hex()
         link = f"{public_host}/reset/{user.id}/{reset_id}"
         msg = Message("Demande de changement de mot de passe", sender=("Matcha Headquarters", os.environ['FLASK_GMAIL']), recipients=[user.email])
-        user.save_reset_id(reset_id)
         msg.html = render_template("reset_password_email.html", link=link)
         mail.send(msg)
-    elif "new_password" in payload:
-        passwd = Validator.password(payload["new_password"])
-        user.update({"password": generate_password_hash(passwd)}, force=True)
-        print(f"Password of {user.email} validated automatically", flush=True)
     else:
-        return error("Missing 'new_password' in payload", 400)
-
+        return success({'reset_id': reset_id})
     return success()
 
 @reset_password.route("/<user_id>/<reset_id>", methods=["POST"])
@@ -64,7 +59,7 @@ def reset_link(user_id, reset_id, payload):
         print(f"Password of {user.email} validated manually", flush=True)
     else:
         return error("Missing 'new_password' in payload", 400)
-    user.validate()
+    user.clear_resets()
 
     return success()
     

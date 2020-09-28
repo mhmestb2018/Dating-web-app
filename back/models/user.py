@@ -148,6 +148,9 @@ class User():
         db.exec(query, (self.id, self.id))
         query = "DELETE FROM users WHERE id=" + str(self.id)
         db.exec(query)
+        self.clear_resets()
+        self.clear_blocks()
+        self.clear_likes()
         return True
 
     def like(self, user):
@@ -274,15 +277,27 @@ class User():
         }
 
     def save_reset_id(self, reset_id):
-        query = "INSERT INTO reset (user_id, reset_id) VALUES (?, ?)"
+        query = "INSERT INTO resets (user_id, reset_id) VALUES (?, ?)"
         db.exec(query, (self.id, reset_id))
 
     @property
     def reset_id(self):
-        query = "SELECT reset_id FROM reset WHERE user_id=?"
+        query = "SELECT reset_id FROM resets WHERE user_id=?"
         db.exec(query, (self.id,))
 
         rows = db.cur.fetchall()
         if len(rows) is 0:
             return False
         return rows[0]
+
+    def clear_resets(self):
+        query = "DELETE from resets WHERE user_id=?"
+        db.exec(query, (self.id,))
+
+    def clear_blocks(self):
+        query = "DELETE from blocks WHERE user_id=? or blocked=?"
+        db.exec(query, (self.id, self.id))
+
+    def clear_likes(self):
+        query = "DELETE from likes WHERE user_id=? or liked=?"
+        db.exec(query, (self.id, self.id))

@@ -192,6 +192,20 @@ def test_update():
     assert get_profile(user1)["first_name"] == 'Joel'
     logout(user1)
 
+def test_password_lost():
+    response = user1["session"].post(f"{url}/reset", data={'email' : user1["email"]})
+    print(response, response.text)
+    assert response.status_code == 200
+    reset_id = json.loads(response.text)["reset_id"]
+    user1["password"] = '1O1For€verBb'
+    response = user1["session"].post(f"{url}/reset/{user1['id']}/{reset_id}", data={'new_password': user1["password"]})
+    print(response, response.text)
+    assert response.status_code == 200
+    response = login(user1)
+    print(response, response.text)
+    assert response.status_code == 200
+    logout(user1)
+
 def test_delete():
     login(user1)
     response = delete(user1)
