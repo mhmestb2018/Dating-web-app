@@ -37,7 +37,7 @@ def test_pytest():
     # time.sleep(20)
     print("SUCCESS")
 
-def signup(user, value=201):
+def signup(user):
     payload = {
         'email': user["email"],
         'password': user["password"],
@@ -46,13 +46,10 @@ def signup(user, value=201):
     }
     response = user["session"].post(f"{url}/signup", data=payload)
     print(response.text)
-    assert response.status_code == value
     tmp = json.loads(response.text)
-    if "validation_id" in tmp:
-        return tmp["validation_id"]
-    return None
+    return response
 
-def login(user, value=200):
+def login(user):
     payload = {
         'email': user["email"],
         'password': user["password"],
@@ -60,34 +57,37 @@ def login(user, value=200):
     }
     response = user["session"].post(f"{url}/login", data=payload)
     print(response)
-    assert response.status_code == value
-    return json.loads(response.text)
+    return response
 
-def validate(user, validation_id, value=200):
+def validate(user, validation_id):
     response = user["session"].post(f"{url}/validate/{validation_id}")
     print(response)
-    assert response.status_code == value
+    return response
 
-def create(user):
-    validation_id = signup(user)
-    validate(user, validation_id)
+def create(user, checks=True):
+    response = signup(user)
+    assert response.status_code == 201
+    data = json.loads(response.text)
+    response = validate(user, data["validation_id"])
+    assert response.status_code == 200
 
-def delete(user, value=200):
+def delete(user):
     response = user["session"].delete(f"{url}/profile")
     print(response)
-    assert response.status_code == value
+    return response
 
-def logout(user, value=200):
+def logout(user):
     response = user["session"].post(f"{url}/logout")
     print(response)
-    assert response.status_code == value
+    return response
 
 def test_create():
     create(user1)
     create(user2)
 
 def test_recreate():
-    signup(user1, value=409)
+    response = signup(user1)
+    assert response.status_code == 409
 
 def test_bad_create():
     payload = {
@@ -159,19 +159,36 @@ def test_bad_create():
     print(response.text)
     assert response.status_code == 400
 
+def update(user, data):
+    response = user["session"].put(f"{url}/profile", data=data)
+    return response
 
 def test_login():
-    login(user1)
-    login(user2)
+    response = login(user1)
+    assert response.status_code == 200
+    response = login(user2)
+    assert response.status_code == 200
+    data = json.loads(response.text)
+    assert data["first_name"] == user2["first_name"]
 
 def test_logout():
-    logout(user1)
-    logout(user2)
-    login(user1)
-    login(user2)
+    assert logout(user1).status_code == 200
+    assert logout(user2).status_code == 200
 
+def test_update():
+    login(user1)
+    res = update(user1, {'first_name': 'Joel'})
+    assert res.status_code == 200
+    res = json.loads(res.text)
+    assert res["first_name"] == 'Joel'
+    user1["first_name"] = 'Joel'
+    logout(user1)
 
 def test_delete():
-    delete(user1)
-    delete(user2)
+    login(user1)
+    response = delete(user1)
+    assert response.status_code == 200
+    login(user2)
+    response = delete(user2)
+    assert response.status_code == 200
 
