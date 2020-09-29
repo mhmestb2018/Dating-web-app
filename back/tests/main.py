@@ -169,14 +169,24 @@ def test_matches():
     assert len(response.json()["matches"]) == 1
 
     response = unlike(user2, user1)
-    print(response, response.text)
+    # print(response, response.text)
     assert response.status_code == 200
     assert response.json()["match"] == False
     response = user1["session"].get(f"{url}/matches")
-    print(response, response.text)
+    # print(response, response.text)
     assert response.status_code == 200
     assert len(response.json()["matches"]) == 0
     unlike(user1, user2)
+
+    like(user1, user2)
+    print(like(user2, user1).json(), flush=True)
+    response = user1["session"].get(f"{url}/users")
+    assert response.status_code == 200
+    assert len(response.json()["users"]) == 0
+    
+    unlike(user1, user2)
+    unlike(user2, user1)
+
     logout(user1)
     logout(user2)
 

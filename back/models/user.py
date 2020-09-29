@@ -15,15 +15,22 @@ class User():
                 *
             FROM
                 users
+                LEFT OUTER JOIN (likes a
+                    INNER JOIN likes b
+                        ON a.user_id = b.liked
+                        AND a.liked = b.user_id
+                        AND b.user_id=?)
+                    ON users.id = a.user_id
                 LEFT OUTER JOIN blocks
                     ON users.id = blocks.user_id
                     AND blocks.blocked=?
             WHERE
                 blocks.user_id IS NULL
+                AND b.user_id IS NULL
                 AND users.validated=1
                 AND users.id != ?
             """
-        db.exec(query, (self.id, self.id))
+        db.exec(query, (self.id, self.id, self.id))
 
         rows = db.cur.fetchall()
         return [User.build_from_db_tuple(t).public_as(self) for t in rows]
