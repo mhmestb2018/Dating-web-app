@@ -1,6 +1,4 @@
-import json
-
-from constants import url, user1, user2
+from constants import url
 
 def signup(user):
     payload = {
@@ -11,7 +9,7 @@ def signup(user):
     }
     response = user["session"].post(f"{url}/signup", data=payload)
     print(response.text)
-    tmp = json.loads(response.text)
+    tmp = response.json()
     return response
 
 def login(user):
@@ -32,7 +30,7 @@ def validate(user, validation_id):
 def create(user, checks=True):
     response = signup(user)
     assert response.status_code == 201
-    data = json.loads(response.text)
+    data = response.json()
     response = validate(user, data["validation_id"])
     assert response.status_code == 200
 
@@ -48,9 +46,24 @@ def logout(user):
 
 
 def update(user, data):
-    response = user["session"].put(f"{url}/profile", data=data)
+    response = user["session"].put(f"{url}/profile", json=data)
     return response
 
 def get_profile(user):
     response = user["session"].get(f"{url}/profile")
-    return json.loads(response.text)
+    return response.json()
+
+def like(user_from, user_to):
+    return user_from["session"].post(f"{url}/users/{user_to['id']}", json={'like': True})
+
+def unlike(user_from, user_to):
+    return user_from["session"].post(f"{url}/users/{user_to['id']}", json={'like': False})
+
+def block(user_from, user_to):
+    return user_from["session"].post(f"{url}/users/{user_to['id']}", json={'block': True})
+
+def unblock(user_from, user_to):
+    return user_from["session"].post(f"{url}/users/{user_to['id']}", json={'block': False})
+
+def report(user_from, user_to):
+    return user_from["session"].post(f"{url}/users/{user_to['id']}", json={'report': True})

@@ -59,7 +59,7 @@ def payload_required(fun):
         payload = request.form
         if not payload or len(payload) is 0:
             payload = request.get_json()
-        
+        print("Payload:", payload, flush=True)
         if not payload or len(payload) is 0:
             return error("This endpoint requires a payload", 400)
         return fun(*args, **kwargs, payload=payload)

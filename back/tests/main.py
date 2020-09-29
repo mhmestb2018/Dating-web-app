@@ -1,6 +1,9 @@
-import json, requests, time
+import requests, time
 
-from utils import *
+from constants import url, user1, user2
+from utils import (signup, login, validate, create, update, delete,
+                    logout, get_profile, like, unlike, block, unblock,
+                    report)
 
 def test_pytest():
     # time.sleep(20)
@@ -89,7 +92,7 @@ def test_login():
     assert response.status_code == 200
     response = login(user2)
     assert response.status_code == 200
-    data = json.loads(response.text)
+    data = response.json()
     assert data["first_name"] == user2["first_name"]
 
 def test_logout():
@@ -100,47 +103,82 @@ def test_update():
     login(user1)
     res = update(user1, {'first_name': 'Joel'})
     assert res.status_code == 200
-    res = json.loads(res.text)
-    assert res["first_name"] == 'Joel'
+    assert res.json()["first_name"] == 'Joel'
     user1["first_name"] = 'Joel'
     assert get_profile(user1)["first_name"] == 'Joel'
     logout(user1)
 
 def test_password_lost():
     response = user1["session"].post(f"{url}/reset", data={'email' : user1["email"]})
-    print(response, response.text)
+    # print(response, response.text)
     assert response.status_code == 200
-    reset_id = json.loads(response.text)["reset_id"]
+    reset_id = response.json()["reset_id"]
     user1["password"] = '1O1For€verBb'
     response = user1["session"].post(f"{url}/reset/{user1['id']}/{reset_id}", data={'new_password': user1["password"]})
-    print(response, response.text)
+    # print(response, response.text)
     assert response.status_code == 200
     response = login(user1)
-    print(response, response.text)
+    # print(response, response.text)
     assert response.status_code == 200
     logout(user1)
 
 def get_curr_user():
     login(user1)
     response = user1.get(f"{url}/profile")
-    print(response, response.text)
-    data = json.loads(response.text)
+    # print(response, response.text)
+    data = response.json()
     assert data["first_name"] == user1["first_name"]
     logout(user1)
 
     response = user1.get(f"{url}/profile")
-    print(response, response.text)
+    # print(response, response.text)
     assert response.status_code == 400
 
 def get_public_profile():
     login(user1)
     response = user1.get(f"{url}/{user2['id']}")
-    print(response, response.text)
-    data = json.loads(response.text)
+    data = response.json()
     assert data["first_name"] == user2["first_name"]
     assert 'email' not in data
 
+def test_matches():
+    login(user1)
+    login(user2)
+    response = like(user1, user2)
+    # print(response, response.text)
+    assert response.status_code == 403
+    response = update(user1, {"pictures": ["/test123", "456"]})
+    # print(response, response.text)
+    assert response.status_code == 200
+    response = update(user2, {"pictures": ["/test2"]})
+    # print(response, response.text)
+    assert response.status_code == 200
 
+    response = like(user1, user2)
+    # print(response, response.text)
+    assert response.status_code == 200
+    assert response.json()["match"] == False
+    response = like(user2, user1)
+    # print(response, response.text)
+    assert response.status_code == 200
+    assert response.json()["match"] == True
+
+    response = user1["session"].get(f"{url}/matches")
+    # print(response, response.text)
+    assert response.status_code == 200
+    assert len(response.json()["matches"]) == 1
+
+    response = unlike(user2, user1)
+    print(response, response.text)
+    assert response.status_code == 200
+    assert response.json()["match"] == False
+    response = user1["session"].get(f"{url}/matches")
+    print(response, response.text)
+    assert response.status_code == 200
+    assert len(response.json()["matches"]) == 0
+    unlike(user1, user2)
+    logout(user1)
+    logout(user2)
 
 
 

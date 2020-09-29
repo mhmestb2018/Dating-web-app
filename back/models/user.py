@@ -100,14 +100,20 @@ class User():
         reqs = []
         params = []
 
+        new_values = dict(new_values)
         # Unpack pictures array:
         if "pictures" in new_values:
-            pictures = new_values["pictures"]
+            pictures = []
+            import json
+            print(new_values["pictures"])
+            pictures += new_values["pictures"]
+            print(pictures, flush=True)
             self.pictures = []
             for i, path in enumerate(pictures):
                 path = Validator.path(path)
-                setattr(new_values, f"picture_{i}", path)
+                new_values[f"picture_{i+1}"] = path
                 self.pictures.append(path)
+            del new_values["pictures"]
 
         for k in new_values.keys():
             if k not in User.__fields__ or (k in User.__restricted_fields__ and not force):
@@ -301,3 +307,4 @@ class User():
     def clear_likes(self):
         query = "DELETE from likes WHERE user_id=? or liked=?"
         db.exec(query, (self.id, self.id))
+        
