@@ -12,24 +12,43 @@ class User():
     def list_users(self):
         query = """
             SELECT
-                u.*
+                *
             FROM
-                users u
-                LEFT JOIN (likes a
-                    INNER JOIN likes b
-                        ON a.user_id = b.liked
-                        AND a.liked = b.user_id
-                        AND b.user_id=?)
-                    ON a.user_id = u.id
+                users
+                LEFT OUTER JOIN blocks
+                    ON users.id = blocks.user_id
+                    AND blocks.blocked=?
             WHERE
-                b.user_id IS NULL
-                AND u.validated=1
-                AND u.id != ?
+                blocks.user_id IS NULL
+                AND users.validated=1
+                AND users.id != ?
             """
         db.exec(query, (self.id, self.id))
 
         rows = db.cur.fetchall()
-        return [User.build_from_db_tuple(t) for t in rows]
+        return [User.build_from_db_tuple(t).public_as(self) for t in rows]
+
+    # def list_users(self):
+    #     query = """
+    #         SELECT
+    #             u.*
+    #         FROM
+    #             users u
+    #             LEFT JOIN (likes a
+    #                 INNER JOIN likes b
+    #                     ON a.user_id = b.liked
+    #                     AND a.liked = b.user_id
+    #                     AND b.user_id=?)
+    #                 ON a.user_id = u.id
+    #         WHERE
+    #             b.user_id IS NULL
+    #             AND u.validated=1
+    #             AND u.id != ?
+    #         """
+    #     db.exec(query, (self.id, self.id))
+
+    #     rows = db.cur.fetchall()
+    #     return [User.build_from_db_tuple(t) for t in rows]
 
     @staticmethod
     def build_from_db_tuple(values):
@@ -240,7 +259,7 @@ class User():
         db.exec(query, (self.id,))
 
         rows = db.cur.fetchall()
-        return [User.build_from_db_tuple(t) for t in rows]
+        return [User.build_from_db_tuple(t).public_as(self) for t in rows]
 
     @property
     def blocked_by(self):

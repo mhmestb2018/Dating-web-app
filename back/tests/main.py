@@ -180,8 +180,34 @@ def test_matches():
     logout(user1)
     logout(user2)
 
+def test_blocks():
+    login(user1)
+    login(user2)
 
+    response = user1["session"].get(f"{url}/users")
+    assert response.status_code == 200
+    assert len(response.json()["users"]) == 1
 
+    response = block(user2, user1)
+    assert response.status_code == 200
+    response = user1["session"].get(f"{url}/users")
+    assert response.status_code == 200
+    assert len(response.json()["users"]) == 0
+
+    response = block(user2, user1)
+    assert response.status_code == 400
+
+    response = unblock(user2, user1)
+    assert response.status_code == 200
+    response = user1["session"].get(f"{url}/users")
+    assert response.status_code == 200
+    assert len(response.json()["users"]) == 1
+
+    response = unblock(user2, user1)
+    assert response.status_code == 400
+
+    logout(user1)
+    logout(user2)
 
 def test_delete():
     login(user1)
