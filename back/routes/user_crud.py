@@ -57,26 +57,31 @@ def signup(payload):
     """
     if "user" in session:
         return error("Vous êtes déjà connecté", 400)
+    if not "email" in payload or not "first_name" in payload or not "last_name" in payload or not "password" in payload:
+        return error("Saisie incomplète", 400)
     if User.get_user(email=payload["email"]) is not None:
         return error("L'utilisateur existe déjà", 409)
+    if len(payload["password"]) < 6:
+        return error("Mot de passe trop court", 400)
+
     hashed_password = generate_password_hash(payload["password"])
 
-    user = User.create_user(payload["first_name"], payload["last_name"], payload["email"], hashed_password)
+    validation_id = os.urandom(12).hex()
 
-    validation_id = False
+    user = User.create_user(payload["first_name"], payload["last_name"], payload["email"], hashed_password, validation_id)
+
     if mail:
         print(f"Sending validation email to {payload['email']}", flush=True)
-        validation_id = os.urandom(12).hex()
-        link = f"{public_host}/validation/{validation_id}"
-        msg = Message("Confirmation d'inscription", sender=("Matcha Headquarters", os.environ['FLASK_GMAIL']), recipients=[new.email])
+        link = f"{public_host}/validate/{validation_id}"
+        msg = Message("Confirmation d'inscription", sender=("Matcha Headquarters", os.environ['FLASK_GMAIL']), recipients=[user.email])
         msg.html = render_template("validation_email.html", link=link)
         mail.send(msg)
     else:
         print(f"{user.email} validated automatically", flush=True)
-        user.validate()
+        return success({"validation_id": validation_id}, 201)
     if not User.get_user(email=payload["email"]):
         return error("Failed to create user")
-    return success({"validation_id": validation_id}, 201)
+    return success(status=201)
 
 @user_crud.route("/profile", methods=["PUT"])
 @jsonify_output
@@ -91,6 +96,17 @@ def update_user(user, payload):
     """
     user.update(payload)
     return success(user.dict)
+
+@user_crud.route("/validate/<validation_id>", methods=["POST"])
+@jsonify_output
+@catcher
+def validate_user(validation_id):
+    """
+    Validate an user given a validation_id
+    """
+    if User.validate(validation_id):
+        return success()
+    return error("Invalid validation link", 404)
 
 @user_crud.route("/profile", methods=["DELETE"])
 @jsonify_output

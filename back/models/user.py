@@ -12,24 +12,28 @@ class User():
     def list_users(self):
         query = """
             SELECT
-                u.*
+                *
             FROM
-                users u
-                LEFT JOIN (likes a
+                users
+                LEFT OUTER JOIN (likes a
                     INNER JOIN likes b
                         ON a.user_id = b.liked
                         AND a.liked = b.user_id
                         AND b.user_id=?)
-                    ON a.user_id = u.id
+                    ON users.id = a.user_id
+                LEFT OUTER JOIN blocks
+                    ON users.id = blocks.user_id
+                    AND blocks.blocked=?
             WHERE
-                b.user_id IS NULL
-                AND u.validated=1
-                AND u.id != ?
+                blocks.user_id IS NULL
+                AND b.user_id IS NULL
+                AND users.validated=1
+                AND users.id != ?
             """
-        db.exec(query, (self.id, self.id))
+        db.exec(query, (self.id, self.id, self.id))
 
         rows = db.cur.fetchall()
-        return [User.build_from_db_tuple(t) for t in rows]
+        return [User.build_from_db_tuple(t).public_as(self) for t in rows]
 
     @staticmethod
     def build_from_db_tuple(values):
@@ -59,12 +63,12 @@ class User():
             query = "SELECT * FROM users WHERE id=?"
             db.exec(query,  (kwargs['user_id'],))
         else:
-            print("get_user: missing parameters", flush=True)
+            #print("get_user: missing parameters", flush=True)
             return None
 
         rows = db.cur.fetchall()
         if len(rows) is 0:
-            print("get_user: no results", flush=True)
+            #print("get_user: no results", flush=True)
             return None
     
         return User.build_from_db_tuple(rows[0])
@@ -84,30 +88,39 @@ class User():
             self.id = user_id
 
     @staticmethod
-    def create_user(first_name, last_name, email, hashed_password):
+    def create_user(first_name, last_name, email, hashed_password, validation_id):
 
         user = User(0, first_name, last_name, email, hashed_password)
         query = "INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)"
         db.exec(query, (first_name, last_name, email, hashed_password))
         user.id = db.cur.lastrowid
 
+        query = "INSERT INTO validations (user_id, validation_id) VALUES (?, ?)"
+        db.exec(query, (user.id, validation_id))
+
         return user
 
-    def update(self, new_values:dict):
+    def update(self, new_values:dict, force=False):
         reqs = []
         params = []
 
+        new_values = dict(new_values)
         # Unpack pictures array:
         if "pictures" in new_values:
-            pictures = new_values["pictures"]
+            pictures = []
+            import json
+            print(new_values["pictures"])
+            pictures += new_values["pictures"]
+            print(pictures, flush=True)
             self.pictures = []
             for i, path in enumerate(pictures):
                 path = Validator.path(path)
-                setattr(new_values, f"picture_{i}", path)
+                new_values[f"picture_{i+1}"] = path
                 self.pictures.append(path)
+            del new_values["pictures"]
 
         for k in new_values.keys():
-            if k not in User.__fields__ or k in User.__restricted_fields__:
+            if k not in User.__fields__ or (k in User.__restricted_fields__ and not force):
                 raise Exception(f"field {k} doesn't exist")
             reqs += [f"{k}=?"]
         req = ", ".join(reqs)
@@ -120,10 +133,23 @@ class User():
         db.exec(query, tuple(new_values.values()))
         return True
 
-    def validate(self):
-        db.exec("UPDATE users SET validated=1 WHERE id=?", (self.id,))
-        self.validated = 1
-
+    @staticmethod
+    def validate(validation_id):
+        query = """
+            SELECT
+                u.*
+            FROM users u
+                INNER JOIN validations v
+                    ON v.user_id = u.id
+                    AND v.validation_id = ?
+            """
+        db.exec(query, (validation_id,))
+        rows = db.cur.fetchall()
+        if len(rows) is 0:
+            return False
+        db.exec("UPDATE users SET validated=1 WHERE id=?", (rows[0][0],))
+        db.exec("DELETE FROM validations WHERE user_id=?", (rows[0][0],))
+        return True
 
     def delete(self):
         query = "DELETE FROM likes WHERE user_id=? OR liked=?"
@@ -132,6 +158,9 @@ class User():
         db.exec(query, (self.id, self.id))
         query = "DELETE FROM users WHERE id=" + str(self.id)
         db.exec(query)
+        self.clear_resets()
+        self.clear_blocks()
+        self.clear_likes()
         return True
 
     def like(self, user):
@@ -215,7 +244,7 @@ class User():
         db.exec(query, (self.id,))
 
         rows = db.cur.fetchall()
-        return [User.build_from_db_tuple(t) for t in rows]
+        return [User.build_from_db_tuple(t).public_as(self) for t in rows]
 
     @property
     def blocked_by(self):
@@ -256,3 +285,30 @@ class User():
             "score": self.score,
             "sex": self.sex
         }
+
+    def save_reset_id(self, reset_id):
+        query = "INSERT INTO resets (user_id, reset_id) VALUES (?, ?)"
+        db.exec(query, (self.id, reset_id))
+
+    @property
+    def reset_id(self):
+        query = "SELECT reset_id FROM resets WHERE user_id=?"
+        db.exec(query, (self.id,))
+
+        rows = db.cur.fetchall()
+        if len(rows) is 0:
+            return False
+        return rows[0]
+
+    def clear_resets(self):
+        query = "DELETE from resets WHERE user_id=?"
+        db.exec(query, (self.id,))
+
+    def clear_blocks(self):
+        query = "DELETE from blocks WHERE user_id=? or blocked=?"
+        db.exec(query, (self.id, self.id))
+
+    def clear_likes(self):
+        query = "DELETE from likes WHERE user_id=? or liked=?"
+        db.exec(query, (self.id, self.id))
+        

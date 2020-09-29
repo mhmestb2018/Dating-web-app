@@ -22,10 +22,11 @@ class Schema:
 
         # Create users first as other tables will refer to it
         self.create_users_table()
+        # self.populate_users_table()
         self.create_likes_table()
-        self.create_block_table()
-
-        self.populate_users_table()
+        self.create_blocks_table()
+        self.create_resets_table()
+        self.create_validations_table()
 
     def create_users_table(self):
 
@@ -37,7 +38,7 @@ class Schema:
         email varchar(255) NOT NULL,
         password varchar(255) NOT NULL,
         sex varchar(63),
-        orientation varchar(63),
+        orientation varchar(63) DEFAULT 'bisexual',
         bio text DEFAULT '' NOT NULL,
         views_count int DEFAULT 0 NOT NULL,
         likes_count int DEFAULT 0 NOT NULL,
@@ -47,6 +48,7 @@ class Schema:
         picture_4 varchar(1024),
         picture_5 varchar(1024),
         validated tinyint DEFAULT 0 NOT NULL,
+        last_seen timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
         PRIMARY KEY (id)
         ) ENGINE=InnoDB;
         """
@@ -59,6 +61,7 @@ class Schema:
         CREATE TABLE IF NOT EXISTS likes (
         user_id int NOT NULL,
         liked int NOT NULL,
+        date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
         
         PRIMARY KEY (user_id, liked),
         FOREIGN KEY (user_id) REFERENCES users(id),
@@ -68,12 +71,43 @@ class Schema:
 
         self.cur.execute(query)
 
-    def create_block_table(self):
+    def create_resets_table(self):
+
+        query = """
+        CREATE TABLE IF NOT EXISTS resets (
+        user_id int NOT NULL,
+        reset_id varchar(128) NOT NULL,
+        date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        
+        PRIMARY KEY (user_id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        ) ENGINE=InnoDB;
+        """
+
+        self.cur.execute(query)
+
+    def create_validations_table(self):
+
+        query = """
+        CREATE TABLE IF NOT EXISTS validations (
+        user_id int NOT NULL,
+        validation_id varchar(128) NOT NULL,
+        date timestamp DEFAULT NOW() NOT NULL,
+        
+        PRIMARY KEY (user_id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        ) ENGINE=InnoDB;
+        """
+
+        self.cur.execute(query)
+
+    def create_blocks_table(self):
 
         query = """
         CREATE TABLE IF NOT EXISTS blocks (
         user_id int NOT NULL,
         blocked int NOT NULL,
+        date timestamp DEFAULT NOW() NOT NULL,
         
         PRIMARY KEY (user_id, blocked),
         FOREIGN KEY (user_id) REFERENCES users(id),

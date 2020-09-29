@@ -28,10 +28,12 @@ def create_app():
         mail = Mail(app)
     app.app_context().push() 
 
-    from .routes import debug, actions, user_crud, users_list
+    from .routes import debug, actions, user_crud, users_list, reset_password
     app.register_blueprint(debug)
     app.register_blueprint(actions)
     app.register_blueprint(user_crud)
     app.register_blueprint(users_list)
+    app.register_blueprint(reset_password)
    
     return app
+    

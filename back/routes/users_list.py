@@ -12,7 +12,7 @@ def get_users(user):
     List unmatched users
     """
     payload = request.get_json()
-    return [x.public_as(user) for x in user.list_users()]
+    return {"users": [x for x in user.list_users()]}
 
 @users_list.route("/matches", methods=["GET"])
 @jsonify_output
@@ -21,4 +21,4 @@ def get_matches(user):
     """
     List matches as an array of full json encoded profiles
     """
-    return [x.public_as(user) for x in user.matchlist]
+    return {"matches": [x for x in user.matchlist]}
