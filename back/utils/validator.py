@@ -107,3 +107,16 @@ class Validator():
     @staticmethod
     def last_name(val, limit=32):
         return Validator.name(val=val, limit=limit)
+
+    @staticmethod
+    def last_seen(val):
+        return val
+
+    @staticmethod
+    def lon(val):
+        return float(val)
+
+    @staticmethod
+    def lat(val):
+        return float(val)
+        

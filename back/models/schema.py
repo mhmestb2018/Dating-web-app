@@ -49,6 +49,9 @@ class Schema:
         picture_5 varchar(1024),
         validated tinyint DEFAULT 0 NOT NULL,
         last_seen timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        age int DEFAULT NULL,
+        lat float DEFAULT NULL,
+        lon float DEFAULT NULL,
         PRIMARY KEY (id)
         ) ENGINE=InnoDB;
         """

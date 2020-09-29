@@ -1,8 +1,7 @@
-import requests, time
-
+import requests, time, datetime
 from constants import url, user1, user2
 from utils import (signup, login, validate, create, update, delete,
-                    logout, get_profile, like, unlike, block, unblock,
+                    logout, get_profile, get_public_profile, like, unlike, block, unblock,
                     report)
 
 def test_clean_failed_attempts():
@@ -127,25 +126,6 @@ def test_password_lost():
     assert response.status_code == 200
     logout(user1)
 
-def get_curr_user():
-    login(user1)
-    response = user1.get(f"{url}/profile")
-    # print(response, response.text)
-    data = response.json()
-    assert data["first_name"] == user1["first_name"]
-    logout(user1)
-
-    response = user1.get(f"{url}/profile")
-    # print(response, response.text)
-    assert response.status_code == 400
-
-def get_public_profile():
-    login(user1)
-    response = user1.get(f"{url}/{user2['id']}")
-    data = response.json()
-    assert data["first_name"] == user2["first_name"]
-    assert 'email' not in data
-
 def test_matches():
     login(user1)
     login(user2)
@@ -244,6 +224,21 @@ def test_liked_by():
     
     unlike(user1, user2)
     unlike(user2, user1)
+
+    logout(user1)
+    logout(user2)
+
+def test_last_seen():
+    login(user2)
+    time.sleep(2)
+    t1 = datetime.datetime.now()
+
+    login(user1)
+    # 'Tue, 29 Sep 2020 00:00:00 GMT'
+    assert datetime.datetime.strptime(get_public_profile(user1, user2)["last_seen"], "%a, %d %b %Y %H:%M:%S GMT") < t1
+    time.sleep(2)
+    get_profile(user2)
+    assert datetime.datetime.strptime(get_public_profile(user1, user2)["last_seen"], "%a, %d %b %Y %H:%M:%S GMT") > t1
 
     logout(user1)
     logout(user2)

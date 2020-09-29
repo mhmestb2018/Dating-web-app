@@ -119,7 +119,10 @@ Content-Length: xy
     ],
     "score": 42.0,
     "sex": "m",
-    "validated": 1
+    "validated": 1,
+    "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+    "lon": 45.454646545,
+    "lat": 12.135456464
 }
 ```
 
@@ -178,7 +181,10 @@ Content-Length: xy
     ],
     "score": 42.0,
     "sex": "m",
-    "validated": 1
+    "validated": 1,
+    "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+    "lon": 45.454646545,
+    "lat": 12.135456464
 }
 ```
 
@@ -203,7 +209,10 @@ Content-Length: xy
     "orientation": null,
     "pictures": [],
     "score": 0.0,
-    "sex": "m"
+    "sex": "m",
+    "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+    "lon": 45.454646545,
+    "lat": 12.135456464
 }
 ```
 
@@ -278,7 +287,10 @@ Content-Length: xy
     "orientation": null,
     "pictures": [],
     "score": 0.0,
-    "sex": "m"
+    "sex": "m",
+    "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+    "lon": 45.454646545,
+    "lat": 12.135456464
 }
 ```
 
@@ -307,7 +319,10 @@ Content-Length: xy
     "orientation": "asexual",
     "pictures": [],
     "score": 0.0,
-    "sex": "m"
+    "sex": "m",
+    "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+    "lon": 45.454646545,
+    "lat": 12.135456464
 }
 ```
 
@@ -364,7 +379,10 @@ Content-Length: xy
             "orientation": "heterosexual",
             "pictures": [],
             "score": 42.101,
-            "sex": "m"
+            "sex": "m",
+            "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+            "lon": 45.454646545,
+            "lat": 12.135456464
         },
         {
             "bio": "Je pète au lit",
@@ -376,7 +394,10 @@ Content-Length: xy
             "orientation": "bisexual",
             "pictures": [],
             "score": 101.42,
-            "sex": "m"
+            "sex": "m",
+            "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+            "lon": 45.454646545,
+            "lat": 12.135456464
         }
     ],
 }
@@ -419,7 +440,10 @@ Content-Length: xy
             "orientation": "heterosexual",
             "pictures": [],
             "score": 0,
-            "sex": "m"
+            "sex": "m",
+            "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+            "lon": 45.454646545,
+            "lat": 12.135456464
         },
         {
             "bio": "Je pète au lit",
@@ -431,7 +455,10 @@ Content-Length: xy
             "orientation": "bisexual",
             "pictures": [],
             "score": 0,
-            "sex": "m"
+            "sex": "m",
+            "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+            "lon": 45.454646545,
+            "lat": 12.135456464
         }
     ],
 }

@@ -56,6 +56,10 @@ def get_profile(user):
     response = user["session"].get(f"{url}/profile")
     return response.json()
 
+def get_public_profile(user_from, user_to):
+    response = user_from["session"].get(f"{url}/users/{user_to['id']}")
+    return response.json()
+
 def like(user_from, user_to):
     return user_from["session"].post(f"{url}/users/{user_to['id']}", json={'like': True})
 

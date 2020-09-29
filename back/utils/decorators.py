@@ -1,4 +1,4 @@
-import types
+import types, datetime
 from flask import session, request, jsonify, make_response
 
 from ..models.user import User
@@ -20,6 +20,8 @@ def user_required(fun):
         if not found:
             return error("Votre compte a été supprimé", 403)
         delattr(found, "password")
+        print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),flush=True)
+        found.update({"last_seen": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")}, force=True)
         return fun(*args, **kwargs, user=found)
 
     if type(fun) is not types.FunctionType:
