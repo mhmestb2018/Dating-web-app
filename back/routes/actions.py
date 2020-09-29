@@ -6,7 +6,7 @@ from ..utils.decorators import payload_required, jsonify_output, validated_requi
 
 actions = Blueprint('user_actions', __name__, url_prefix='/')
 
-@actions.route("/user/<user_id>", methods=["POST"])
+@actions.route("/users/<user_id>", methods=["POST"])
 @jsonify_output
 @validated_required
 @payload_required
