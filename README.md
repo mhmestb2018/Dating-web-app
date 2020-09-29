@@ -3,6 +3,8 @@
 
 The frontend is accessible on port 3000 on your machine ([link](http://0.0.0.0:3000)).
 
+![Back](https://github.com/Karocyt/Dating-web-app/workflows/Tests_back/badge.svg)
+
 ## Setup
 ### Requirements
 - WSL 2 (Windows)

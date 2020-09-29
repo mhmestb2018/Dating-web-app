@@ -5,6 +5,8 @@ The backend is accessible on port 5000 on your machine ([link](http://0.0.0.0:50
 
 This API uses `POST` request to communicate and HTTP [response codes](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes) to indenticate status and errors. All responses come in standard JSON. All requests must include a `content-type` of `application/json` and the body must be valid JSON.
 
+![Tests](https://github.com/Karocyt/Dating-web-app/workflows/Tests_back/badge.svg)
+
 ## Response Codes 
 ### Response Codes
 ```
