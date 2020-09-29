@@ -42,7 +42,7 @@ def user_actions(user_id, user, payload):
         return error("Aucune action valide demandée", 400)
     return ({"match": user.matches_with(found)})
 
-@actions.route("/user/<user_id>", methods=["GET"])
+@actions.route("/users/<user_id>", methods=["GET"])
 @jsonify_output
 @validated_required
 def user_profile(user_id, user):
