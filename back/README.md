@@ -122,7 +122,8 @@ Content-Length: xy
     "validated": 1,
     "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
     "lon": 45.454646545,
-    "lat": 12.135456464
+    "lat": 12.135456464,
+    "age": 21
 }
 ```
 
@@ -184,7 +185,8 @@ Content-Length: xy
     "validated": 1,
     "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
     "lon": 45.454646545,
-    "lat": 12.135456464
+    "lat": 12.135456464,
+    "age": 21
 }
 ```
 
@@ -212,7 +214,8 @@ Content-Length: xy
     "sex": "m",
     "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
     "lon": 45.454646545,
-    "lat": 12.135456464
+    "lat": 12.135456464,
+    "age": 21
 }
 ```
 
@@ -290,7 +293,8 @@ Content-Length: xy
     "sex": "m",
     "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
     "lon": 45.454646545,
-    "lat": 12.135456464
+    "lat": 12.135456464,
+    "age": 21
 }
 ```
 
@@ -322,7 +326,8 @@ Content-Length: xy
     "sex": "m",
     "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
     "lon": 45.454646545,
-    "lat": 12.135456464
+    "lat": 12.135456464,
+    "age": 21
 }
 ```
 
@@ -382,7 +387,8 @@ Content-Length: xy
             "sex": "m",
             "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
             "lon": 45.454646545,
-            "lat": 12.135456464
+            "lat": 12.135456464,
+            "age": 21
         },
         {
             "bio": "Je pète au lit",
@@ -397,7 +403,8 @@ Content-Length: xy
             "sex": "m",
             "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
             "lon": 45.454646545,
-            "lat": 12.135456464
+            "lat": 12.135456464,
+            "age": 21
         }
     ],
 }
@@ -443,7 +450,8 @@ Content-Length: xy
             "sex": "m",
             "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
             "lon": 45.454646545,
-            "lat": 12.135456464
+            "lat": 12.135456464,
+            "age": 21
         },
         {
             "bio": "Je pète au lit",
@@ -458,7 +466,8 @@ Content-Length: xy
             "sex": "m",
             "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
             "lon": 45.454646545,
-            "lat": 12.135456464
+            "lat": 12.135456464,
+            "age": 21
         }
     ],
 }
