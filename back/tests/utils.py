@@ -33,6 +33,9 @@ def create(user, checks=True):
     data = response.json()
     response = validate(user, data["validation_id"])
     assert response.status_code == 200
+    login(user)
+    user['id'] = get_profile(user)["id"]
+    logout(user)
 
 def delete(user):
     response = user["session"].delete(f"{url}/profile")

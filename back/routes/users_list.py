@@ -22,3 +22,12 @@ def get_matches(user):
     List matches as an array of full json encoded profiles
     """
     return {"matches": [x for x in user.matchlist]}
+
+@users_list.route("/liked_by", methods=["GET"])
+@jsonify_output
+@validated_required
+def get_liked_by(user):
+    """
+    List matches as an array of full json encoded profiles
+    """
+    return {"users": [x for x in user.liked_by_list]}

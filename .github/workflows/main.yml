@@ -2,7 +2,7 @@ name: Tests_back
 
 on:
   push:
-    branches: [ kevazoul ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 

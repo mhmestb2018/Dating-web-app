@@ -5,8 +5,13 @@ from utils import (signup, login, validate, create, update, delete,
                     logout, get_profile, like, unlike, block, unblock,
                     report)
 
-def test_pytest():
-    # time.sleep(20)
+def test_clean_failed_attempts():
+    login(user1)
+    delete(user1)
+    logout(user1)
+    login(user2)
+    delete(user2)
+    logout(user2)
     print("SUCCESS")
 
 def test_create():
@@ -215,6 +220,30 @@ def test_blocks():
 
     response = unblock(user2, user1)
     assert response.status_code == 400
+
+    logout(user1)
+    logout(user2)
+
+def test_liked_by():
+    login(user1)
+    login(user2)
+
+    response = user1["session"].get(f"{url}/liked_by")
+    print(response, response.text)
+    assert response.status_code == 200
+    assert len(response.json()["users"]) == 0
+
+    response = like(user1, user2)
+    print(response, response.text)
+    assert response.status_code == 200
+
+    response = user2["session"].get(f"{url}/liked_by")
+    print(response, response.text)
+    assert response.status_code == 200
+    assert len(response.json()["users"]) == 1
+    
+    unlike(user1, user2)
+    unlike(user2, user1)
 
     logout(user1)
     logout(user2)

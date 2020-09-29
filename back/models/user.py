@@ -245,6 +245,21 @@ class User():
 
         rows = db.cur.fetchall()
         return [User.build_from_db_tuple(t).public_as(self) for t in rows]
+    
+    @property
+    def liked_by_list(self):
+        query = """
+            SELECT
+                *
+            FROM users
+            INNER JOIN likes
+            ON users.id = likes.user_id
+                AND likes.liked = ?
+            """
+        db.exec(query, (self.id,))
+
+        rows = db.cur.fetchall()
+        return [User.build_from_db_tuple(t).public_as(self) for t in rows]
 
     @property
     def blocked_by(self):
