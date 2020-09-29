@@ -35,28 +35,6 @@ class User():
         rows = db.cur.fetchall()
         return [User.build_from_db_tuple(t).public_as(self) for t in rows]
 
-    # def list_users(self):
-    #     query = """
-    #         SELECT
-    #             u.*
-    #         FROM
-    #             users u
-    #             LEFT JOIN (likes a
-    #                 INNER JOIN likes b
-    #                     ON a.user_id = b.liked
-    #                     AND a.liked = b.user_id
-    #                     AND b.user_id=?)
-    #                 ON a.user_id = u.id
-    #         WHERE
-    #             b.user_id IS NULL
-    #             AND u.validated=1
-    #             AND u.id != ?
-    #         """
-    #     db.exec(query, (self.id, self.id))
-
-    #     rows = db.cur.fetchall()
-    #     return [User.build_from_db_tuple(t) for t in rows]
-
     @staticmethod
     def build_from_db_tuple(values):
         values = zip(User.__fields__, values)

@@ -380,7 +380,8 @@ Content-Length: xy
 }
 ```
 
-## List users
+## List users # TO FINISH (parameters)
+
 **You send:**  Your `session` cookie and optional search parameters.  
 **You get:** A JSON encoded list of validated unmatched users
 
