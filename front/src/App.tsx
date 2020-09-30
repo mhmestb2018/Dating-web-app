@@ -12,20 +12,44 @@ import PageNotFound from './pages/page-not-found'
 import axios from 'axios';
 
 const App: FunctionComponent = () => {
-    const login = (email:String, password:String) => {alert(email);setIsLogged(true);}
+    const __login = (email:String, password:String) => {
+        //axios.post('http://app:5000/login', { 'email':'gdssgs', 'password':'sgsssg' })
+        //axios.post('http://app:5000/profile')
+  /*      axios.post('http://app:5000/profile')
+        //axios.get('https://randomuser.me/api/')
+        .then(res => {
+            alert('123');
+            console.log(res);
+            console.log(res.data);
+        })
+        .catch(function (error) {
+              //console.log(error.response.data);
+              //console.log(error.response.status);
+              console.log(error);
+              alert("ERROR");
+          });
+*/
+          fetch('http://0.0.0.0:5000/profile', {
+  method: 'POST',
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    firstParam: 'yourValue',
+    secondParam: 'yourOtherValue',
+  })
+})
+
+        //setIsLogged(true);
+    }
     const [IsLogged, setIsLogged] = useState<Boolean>(false);
-    /*axios.post(`app:5000/login`, { 'email':'gdssgs', 'password':'sgsssg' })
-    .then(res => {
-        alert('123');
-        console.log(res);
-        console.log(res.data);
-    })*/
 
     return (
         <Router>
                 <Navbar />
                 <Switch>
-                    <Route exact path="/" component={() => !IsLogged&&<Home login={login}/>||<UserList/>}/>
+                    <Route exact path="/" component={() => !IsLogged&&<Home login={__login}/>||<UserList/>}/>
                     <Route exact path="/users" component={IsLogged&&UserList||Home}/>
                     <Route path="/users/:id" component={IsLogged&&UserDetail||Home}/>
                     <Route component={PageNotFound}/>
