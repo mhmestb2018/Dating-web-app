@@ -1,5 +1,6 @@
 import types, datetime
 from flask import session, request, jsonify, make_response
+from flask_cors import cross_origin
 
 from ..models.user import User
 from .misc import error
@@ -77,6 +78,7 @@ def jsonify_output(fun):
         1. jsonify the return value of the function
     """
 
+    @cross_origin()
     def wrapper(*args, **kwargs):
         ret = fun(*args, **kwargs)
         code = 200
