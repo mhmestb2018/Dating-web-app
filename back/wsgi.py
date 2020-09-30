@@ -32,8 +32,9 @@ def create_app():
         mail = Mail(app)
     app.app_context().push() 
 
-    from .routes import actions, user_crud, users_list, reset_password
+    from .routes import actions, user_crud, users_list, reset_password, healthcheck
     app.register_blueprint(actions)
+    app.register_blueprint(healthcheck)
     app.register_blueprint(user_crud)
     app.register_blueprint(users_list)
     app.register_blueprint(reset_password)
