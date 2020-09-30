@@ -23,9 +23,7 @@ This API uses `POST` request to communicate and HTTP [response codes](https://en
 ### Example Error Message
 ```json
 HTTP/1.1 403 FORBIDDEN
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "error": "Vous n'êtes pas connecté",
 }
@@ -38,9 +36,7 @@ Content-Length: xy
 **Request:**
 ```json
 POST /signup HTTP/1.1
-Accept: application/json
 Content-Type: application/json
-Content-Length: xy
 {
     "email": "foo@bar.xy",
     "password": "1234567",
@@ -51,9 +47,7 @@ Content-Length: xy
 **Successful Response:**
 ```json
 HTTP/1.1 201 CREATED
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "pcachin": "true",
 }
@@ -66,9 +60,7 @@ Content-Length: xy
 **Request:**
 ```json
 POST /validate HTTP/1.1
-Accept: application/json
 Content-Type: application/json
-Content-Length: xy
 {
     "validation_id": "AE16F5D0438CA",
 }
@@ -76,9 +68,7 @@ Content-Length: xy
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "pcachin": "true",
 }
@@ -91,9 +81,7 @@ Content-Length: xy
 **Request:**
 ```json
 POST /login HTTP/1.1
-Accept: application/json
 Content-Type: application/json
-Content-Length: xy
 {
     "username": "foo",
     "password": "1234567" 
@@ -102,10 +90,8 @@ Content-Length: xy
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Set-Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
 Content-Type: application/json
-Content-Length: xy
 {
     "bio": "Je suis caché",
     "email": "pcachin@gmail.com",
@@ -134,13 +120,12 @@ Content-Length: xy
 **Request:**
 ```json
 POST /logout HTTP/1.1
+Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
 ```
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "pcachin": true,
 }
@@ -155,10 +140,8 @@ If `email` is changed, this call will unvalidate the user and send a new validat
 **Request:**
 ```json
 PUT /profile HTTP/1.1
-Accept: application/json
 Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
 Content-Type: application/json
-Content-Length: xy
 {
     "first_name": "updated" 
 }
@@ -166,9 +149,7 @@ Content-Length: xy
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "bio": "Je suis caché",
     "email": "pcachin@gmail.com",
@@ -202,9 +183,7 @@ Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "bio": "",
     "first_name": "roger",
@@ -226,9 +205,7 @@ Content-Length: xy
 **Request:**
 ```json
 POST /reset HTTP/1.1
-Accept: application/json
 Content-Type: application/json
-Content-Length: xy
 {
     "email": "foo@bar.fr",
 }
@@ -236,9 +213,7 @@ Content-Length: xy
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "pcachin": "true",
 }
@@ -251,9 +226,7 @@ Content-Length: xy
 **Request:**
 ```json
 POST /reset/<user_id>/<reset_id> HTTP/1.1
-Accept: application/json
 Content-Type: application/json
-Content-Length: xy
 {
     "new_password": "passW0rd",
 }
@@ -261,9 +234,7 @@ Content-Length: xy
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "pcachin": "true",
 }
@@ -281,9 +252,7 @@ Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "bio": "",
     "first_name": "roger",
@@ -310,9 +279,7 @@ Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "bio": "J'aime manger des pommes",
     "blocked": false,
@@ -338,10 +305,8 @@ Content-Length: xy
 **Request:**
 ```json
 POST /users/<user_id> HTTP/1.1
-Accept: application/json
 Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
 Content-Type: application/json
-Content-Length: xy
 {
     "like": false,
 }
@@ -349,9 +314,7 @@ Content-Length: xy
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "match": false,
 }
@@ -369,9 +332,7 @@ Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "matches": [
         {
@@ -420,10 +381,8 @@ Content-Length: xy
 **Request:**
 ```json
 GET /users HTTP/1.1
-Accept: application/json
 Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
 Content-Type: application/json
-Content-Length: xy
 {
     "count": 2,
     "sex": "m", 
@@ -432,9 +391,7 @@ Content-Length: xy
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "users":  [
         {
