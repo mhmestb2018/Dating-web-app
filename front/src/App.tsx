@@ -14,8 +14,8 @@ import axios from 'axios';
 const App: FunctionComponent = () => {
     const __login = (email:String, password:String) => {
         //axios.post('http://app:5000/login', { 'email':'gdssgs', 'password':'sgsssg' })
-        //axios.post('http://app:5000/profile')
-  /*      axios.post('http://app:5000/profile')
+        axios.get('http://app:5000/profile')
+        //axios.post('http://app:5000/')
         //axios.get('https://randomuser.me/api/')
         .then(res => {
             alert('123');
@@ -28,8 +28,8 @@ const App: FunctionComponent = () => {
               console.log(error);
               alert("ERROR");
           });
-*/
-          fetch('http://0.0.0.0:5000/profile', {
+
+    /*      fetch('http://app:5000/profile', {
   method: 'POST',
   headers: {
     'Accept': 'application/json',
@@ -39,7 +39,7 @@ const App: FunctionComponent = () => {
     firstParam: 'yourValue',
     secondParam: 'yourOtherValue',
   })
-})
+})*/
 
         //setIsLogged(true);
     }
