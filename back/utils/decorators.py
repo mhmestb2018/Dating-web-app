@@ -78,7 +78,7 @@ def jsonify_output(fun):
         1. jsonify the return value of the function
     """
 
-    @cross_origin()
+    @cross_origin(headers=['Content-Type'])
     def wrapper(*args, **kwargs):
         ret = fun(*args, **kwargs)
         code = 200
