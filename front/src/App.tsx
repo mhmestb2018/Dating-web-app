@@ -14,7 +14,7 @@ import axios from 'axios';
 const App: FunctionComponent = () => {
     const __login = (email:String, password:String) => {
         //axios.post('http://app:5000/login', { 'email':'gdssgs', 'password':'sgsssg' })
-        axios.get('http://app:5000/profile')
+        axios.get('/debug')
         //axios.post('http://app:5000/')
         //axios.get('https://randomuser.me/api/')
         .then(res => {
