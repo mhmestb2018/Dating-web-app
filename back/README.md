@@ -373,7 +373,7 @@ Content-Type: application/json
 
 ## Liked by
 **You send:**  Your `session` cookie.  
-**You get:** A JSON encoded list of users who like you with whom you haven't matched yet
+**You get:** A JSON encoded list of users who like you (including matches)
 
 **Request:**
 ```json
@@ -391,8 +391,8 @@ Content-Type: application/json
             "blocked": false,
             "first_name": "roger",
             "id": 2,
-            "liked": false,
-            "matches": false,
+            "liked": true,
+            "matches": true,
             "orientation": "heterosexual",
             "pictures": [],
             "score": 42.101,
