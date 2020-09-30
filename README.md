@@ -3,6 +3,8 @@
 
 The frontend is accessible on port 3000 on your machine ([link](http://0.0.0.0:3000)).
 
+![Back](https://github.com/Karocyt/Dating-web-app/workflows/Tests_back/badge.svg)
+
 ## Setup
 ### Requirements
 - WSL 2 (Windows)
@@ -30,7 +32,7 @@ docker-compose build
 
 ## Run
 ```bash
-docker-compose up
+docker-compose up front
 ```
 
 ## Database
@@ -47,6 +49,12 @@ docker ps
 docker exec -it XXXXXXX_db_1 mysql --database=matcha --user=admin --password=admin
 ```
 
+## Tests
+### Back
+```bash
+docker-compose up tests_back
+```
+In case of failure, please reset the database.
 
 ## Uninstall
 To delete all user data and docker images

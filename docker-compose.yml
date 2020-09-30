@@ -1,4 +1,4 @@
-version: "2"
+version: "2.4"
 services:
   db:
     image: mariadb:latest
@@ -11,6 +11,7 @@ services:
       - db-data:/var/lib/mysql # To override random volume name
     networks:
       - backend
+    restart: on-failure
 
   app:
     build: ./back
@@ -18,8 +19,6 @@ services:
       - config/flask.env
       - config/mysql.env
       - config/local.env
-    links:
-      - db
     ports:
       - "5000:5000"
     expose:
@@ -29,12 +28,17 @@ services:
     networks:
       - backend
       - frontend
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://app:5000 || 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 20s
 
   front:
     build: ./front
     env_file: config/node.env
-    links:
-      - app
     expose:
       - "3000"
     user: node 
@@ -48,6 +52,15 @@ services:
     command: "npm start"
     networks:
       - frontend
+    restart: on-failure
+
+  tests_back:
+    build: ./back/tests
+    volumes:
+      - ./back/tests:/tests
+    networks:
+      - frontend
+
 
 networks:
   backend:
