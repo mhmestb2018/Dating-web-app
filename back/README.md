@@ -371,6 +371,57 @@ Content-Type: application/json
 }
 ```
 
+## Liked by
+**You send:**  Your `session` cookie.  
+**You get:** A JSON encoded list of users who like you with whom you haven't matched yet
+
+**Request:**
+```json
+GET /liked_by HTTP/1.1
+Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
+```
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+    "users": [
+        {
+            "bio": "J'aime manger des pommes",
+            "blocked": false,
+            "first_name": "roger",
+            "id": 2,
+            "liked": false,
+            "matches": false,
+            "orientation": "heterosexual",
+            "pictures": [],
+            "score": 42.101,
+            "sex": "m",
+            "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+            "lon": 45.454646545,
+            "lat": 12.135456464,
+            "age": 21
+        },
+        {
+            "bio": "Je pète au lit",
+            "blocked": false,
+            "first_name": "bertrand",
+            "id": 7,
+            "liked": false,
+            "matches": false,
+            "orientation": "bisexual",
+            "pictures": [],
+            "score": 101.42,
+            "sex": "m",
+            "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+            "lon": 45.454646545,
+            "lat": 12.135456464,
+            "age": 21
+        }
+    ],
+}
+```
+
 ## List users # TO FINISH (parameters)
 
 **You send:**  Your `session` cookie and optional search parameters.  
