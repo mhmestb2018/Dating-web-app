@@ -19,6 +19,8 @@ services:
       - config/flask.env
       - config/mysql.env
       - config/local.env
+    links:
+      - db
     ports:
       - "5000:5000"
     expose:
@@ -45,6 +47,8 @@ services:
     working_dir: /home/node/app
     ports:
       - "3000:3000"
+    links:
+      - app
     volumes:
       - ./front/public:/home/node/app/public
       - ./front/src:/home/node/app/src
@@ -56,6 +60,8 @@ services:
 
   tests_back:
     build: ./back/tests
+    links:
+      - app
     volumes:
       - ./back/tests:/tests
     networks:
