@@ -10,13 +10,10 @@
 import os
 from flask import Flask
 from flask_mail import Mail
-from flask_cors import CORS, cross_origin
 
 def create_app():
     """Construct the core application."""
     app = Flask(__name__, instance_relative_config=False)
-    CORS(app)
-    app.config['CORS_HEADERS'] = 'Content-Type'
     
     app.secret_key = "Blablabla"
     
