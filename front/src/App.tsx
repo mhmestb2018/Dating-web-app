@@ -12,13 +12,19 @@ import PageNotFound from './pages/page-not-found'
 import axios from 'axios';
 
 const App: FunctionComponent = () => {
-    const __login = (email:String, password:String) => {
-        //axios.post('http://app:5000/login', { 'email':'gdssgs', 'password':'sgsssg' })
-        axios.get('/debug')
-        //axios.post('http://app:5000/')
-        //axios.get('https://randomuser.me/api/')
+    const login = (email:String, password:String) => {
+        axios.post('/login',
+          {
+            'email':email,
+            'password':password,
+            "remember_me": true
+          }
+        )
+        //axios.get('/debug')
         .then(res => {
-            alert('123');
+
+        setIsLogged(true);
+            //alert('123');
             console.log(res);
             console.log(res.data);
         })
@@ -28,28 +34,34 @@ const App: FunctionComponent = () => {
               console.log(error);
               alert("ERROR");
           });
-
-    /*      fetch('http://app:5000/profile', {
-  method: 'POST',
-  headers: {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    firstParam: 'yourValue',
-    secondParam: 'yourOtherValue',
-  })
-})*/
-
-        //setIsLogged(true);
     }
+    const signup = (email:String, password:String, firstname:String, lastname:String) => {
+      //axios.post('http://app:5000/login', { 'email':'gdssgs', 'password':'sgsssg' })
+      axios.post('/signup',
+        {
+           'email':email,
+           //'username':username,
+           "password":password,
+           "first_name":firstname,
+           "last_name":lastname 
+        }
+      )
+      .then(res => {
+        console.log(res);
+        alert("SUCCESS");
+      })
+      .catch(function (error) {
+            console.log(error);
+            alert("ERROR");
+        });
+  }
     const [IsLogged, setIsLogged] = useState<Boolean>(false);
 
     return (
         <Router>
                 <Navbar />
                 <Switch>
-                    <Route exact path="/" component={() => !IsLogged&&<Home login={__login}/>||<UserList/>}/>
+                    <Route exact path="/" component={() => !IsLogged&&<Home login={login} signup={signup}/>||<UserList/>}/>
                     <Route exact path="/users" component={IsLogged&&UserList||Home}/>
                     <Route path="/users/:id" component={IsLogged&&UserDetail||Home}/>
                     <Route component={PageNotFound}/>

@@ -1,11 +1,25 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useState } from 'react';
+//import { useSelector, useDispatch } from 'react-redux';
 
 type Props = {
     login: (email:String, password:String) => void;
+    signup: (
+        email:String,
+        username:String,
+        firstname:String,
+        lastname:String
+    ) => void;
 };
 
-const Home: FunctionComponent<Props> = ({login}) => {
-    console.log(login);
+const Home: FunctionComponent<Props> = ({login, signup}) => {
+    //console.log(login);
+    const [signinUsername, setSigninUsername] = useState('');
+    const [signinPassword, setSigninPassword] = useState('');
+    const [signupMail, setSignupMail] = useState('');
+    const [signupUsername, setSignupUsername] = useState('');
+    const [signupFirstname, setSignupFirstname] = useState('');
+    const [signupLastname, setSignupLastname] = useState('');
+    const [signupPassword, setSignupPassword] = useState('');
   return (
     <div>
         <br/>
@@ -24,13 +38,13 @@ const Home: FunctionComponent<Props> = ({login}) => {
                                 <button type="button" className="close" data-dismiss="modal">&times;</button>
                             </div>
                             <div className="modal-body">
-                                    <input type="text" className="form-control" placeholder="Email" name="email"/>
+                                    <input onChange={(e) => setSigninUsername(e.target.value)} type="text" className="form-control" placeholder="Email" name="email"/>
                                     <br/>
-                                    <input type="password" className="form-control" placeholder="Mot de passe" name="password"/>
+                                    <input onChange={(e) => setSigninPassword(e.target.value)} type="password" className="form-control" placeholder="Mot de passe" name="password"/>
                                     <br/>
                             </div>
                             <div className="modal-footer">
-                                <button onClick={() => login("gdssgs","sgsssg")} type="button" className="btn btn-success" data-dismiss="modal">Valider</button>
+                                <button onClick={() => login(signinUsername, signinPassword)} type="button" className="btn btn-success" data-dismiss="modal">Valider</button>
                             </div> 
                         </div>
                     </div>
@@ -98,25 +112,25 @@ const Home: FunctionComponent<Props> = ({login}) => {
                             <form>
                                 <div className="form-row">
                                     <div className="col">
-                                        <input type="text" className="form-control" placeholder="Email" name="email"/>
+                                        <input onChange={(e) => setSignupMail(e.target.value)} type="text" className="form-control" placeholder="Email" name="email"/>
                                     </div>
                                     <div className="col">
-                                        <input type="text" className="form-control" placeholder="Nom d'utilisateur" name="userName"/>
-                                    </div>
-                                </div>
-                                <br/>
-                                <div className="form-row">
-                                    <div className="col">
-                                        <input type="text" className="form-control" placeholder="Prénom" name="firstName"/>
-                                    </div>
-                                    <div className="col">
-                                        <input type="text" className="form-control" placeholder="Nom" name="lastName"/>
+                                        <input onChange={(e) => setSignupUsername(e.target.value)} type="text" className="form-control" placeholder="Nom d'utilisateur" name="userName"/>
                                     </div>
                                 </div>
                                 <br/>
                                 <div className="form-row">
                                     <div className="col">
-                                        <input type="text" className="form-control" placeholder="Mot de passe" name="firstPassword"/>
+                                        <input onChange={(e) => setSignupFirstname(e.target.value)} type="text" className="form-control" placeholder="Prénom" name="firstName"/>
+                                    </div>
+                                    <div className="col">
+                                        <input onChange={(e) => setSignupLastname(e.target.value)} type="text" className="form-control" placeholder="Nom" name="lastName"/>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div className="form-row">
+                                    <div className="col">
+                                        <input onChange={(e) => setSignupPassword(e.target.value)} type="text" className="form-control" placeholder="Mot de passe" name="firstPassword"/>
                                     </div>
                                     <div className="col">
                                         <input type="text" className="form-control" placeholder="Retapper le mot de passe" name="lastPassword"/>
@@ -125,7 +139,7 @@ const Home: FunctionComponent<Props> = ({login}) => {
                             </form> 
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-success" data-dismiss="modal">Valider</button>
+                            <button onClick={() => signup(signupMail, signupPassword, signupFirstname, signupLastname)} type="button" className="btn btn-success" data-dismiss="modal">Valider</button>
                         </div>
                     </div>
                 </div>
