@@ -83,8 +83,9 @@ Content-Type: application/json
 POST /login HTTP/1.1
 Content-Type: application/json
 {
-    "username": "foo",
-    "password": "1234567" 
+    "email": "foo@bar.fr",
+    "password": "1234567",
+    "remember_me: true 
 }
 ```
 **Successful Response:**
