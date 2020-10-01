@@ -59,11 +59,7 @@ Content-Type: application/json
 
 **Request:**
 ```json
-POST /validate HTTP/1.1
-Content-Type: application/json
-{
-    "validation_id": "AE16F5D0438CA",
-}
+POST /validate/<validation_id> HTTP/1.1
 ```
 **Successful Response:**
 ```json
