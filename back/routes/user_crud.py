@@ -27,7 +27,7 @@ def login(payload):
     if not user.check_password(payload["password"]):
         return error("Mot de passe incorrect")
     session["user"] = user.id
-    if payload["remember_me"] == "true":
+    if payload["remember_me"] == True:
         session.permanent = True
     delattr(user, "password")
     return success(user.dict)
