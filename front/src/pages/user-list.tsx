@@ -5,6 +5,7 @@ import USER_LIST from '../models/mock-user';
 import UserCard from '../components/user-card'
 import getGenderColor from '../helpers/get-gender-color'
 
+
 const UserList: FunctionComponent = () => {
     const [users, setUSers] = useState<User[]>([]);
 

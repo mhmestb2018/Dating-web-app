@@ -23,9 +23,7 @@ This API uses `POST` request to communicate and HTTP [response codes](https://en
 ### Example Error Message
 ```json
 HTTP/1.1 403 FORBIDDEN
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "error": "Vous n'êtes pas connecté",
 }
@@ -38,9 +36,7 @@ Content-Length: xy
 **Request:**
 ```json
 POST /signup HTTP/1.1
-Accept: application/json
 Content-Type: application/json
-Content-Length: xy
 {
     "email": "foo@bar.xy",
     "password": "1234567",
@@ -51,9 +47,7 @@ Content-Length: xy
 **Successful Response:**
 ```json
 HTTP/1.1 201 CREATED
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "pcachin": "true",
 }
@@ -65,20 +59,12 @@ Content-Length: xy
 
 **Request:**
 ```json
-POST /validate HTTP/1.1
-Accept: application/json
-Content-Type: application/json
-Content-Length: xy
-{
-    "validation_id": "AE16F5D0438CA",
-}
+POST /validate/<validation_id> HTTP/1.1
 ```
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "pcachin": "true",
 }
@@ -91,21 +77,18 @@ Content-Length: xy
 **Request:**
 ```json
 POST /login HTTP/1.1
-Accept: application/json
 Content-Type: application/json
-Content-Length: xy
 {
-    "username": "foo",
-    "password": "1234567" 
+    "email": "foo@bar.fr",
+    "password": "1234567",
+    "remember_me: true 
 }
 ```
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Set-Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
 Content-Type: application/json
-Content-Length: xy
 {
     "bio": "Je suis caché",
     "email": "pcachin@gmail.com",
@@ -122,7 +105,8 @@ Content-Length: xy
     "validated": 1,
     "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
     "lon": 45.454646545,
-    "lat": 12.135456464
+    "lat": 12.135456464,
+    "age": 21
 }
 ```
 
@@ -133,13 +117,12 @@ Content-Length: xy
 **Request:**
 ```json
 POST /logout HTTP/1.1
+Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
 ```
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "pcachin": true,
 }
@@ -154,10 +137,8 @@ If `email` is changed, this call will unvalidate the user and send a new validat
 **Request:**
 ```json
 PUT /profile HTTP/1.1
-Accept: application/json
 Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
 Content-Type: application/json
-Content-Length: xy
 {
     "first_name": "updated" 
 }
@@ -165,9 +146,7 @@ Content-Length: xy
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "bio": "Je suis caché",
     "email": "pcachin@gmail.com",
@@ -184,7 +163,8 @@ Content-Length: xy
     "validated": 1,
     "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
     "lon": 45.454646545,
-    "lat": 12.135456464
+    "lat": 12.135456464,
+    "age": 21
 }
 ```
 
@@ -200,9 +180,7 @@ Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "bio": "",
     "first_name": "roger",
@@ -212,7 +190,8 @@ Content-Length: xy
     "sex": "m",
     "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
     "lon": 45.454646545,
-    "lat": 12.135456464
+    "lat": 12.135456464,
+    "age": 21
 }
 ```
 
@@ -223,9 +202,7 @@ Content-Length: xy
 **Request:**
 ```json
 POST /reset HTTP/1.1
-Accept: application/json
 Content-Type: application/json
-Content-Length: xy
 {
     "email": "foo@bar.fr",
 }
@@ -233,9 +210,7 @@ Content-Length: xy
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "pcachin": "true",
 }
@@ -248,9 +223,7 @@ Content-Length: xy
 **Request:**
 ```json
 POST /reset/<user_id>/<reset_id> HTTP/1.1
-Accept: application/json
 Content-Type: application/json
-Content-Length: xy
 {
     "new_password": "passW0rd",
 }
@@ -258,9 +231,7 @@ Content-Length: xy
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "pcachin": "true",
 }
@@ -278,9 +249,7 @@ Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "bio": "",
     "first_name": "roger",
@@ -290,7 +259,8 @@ Content-Length: xy
     "sex": "m",
     "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
     "lon": 45.454646545,
-    "lat": 12.135456464
+    "lat": 12.135456464,
+    "age": 21
 }
 ```
 
@@ -306,9 +276,7 @@ Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "bio": "J'aime manger des pommes",
     "blocked": false,
@@ -322,7 +290,8 @@ Content-Length: xy
     "sex": "m",
     "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
     "lon": 45.454646545,
-    "lat": 12.135456464
+    "lat": 12.135456464,
+    "age": 21
 }
 ```
 
@@ -333,10 +302,8 @@ Content-Length: xy
 **Request:**
 ```json
 POST /users/<user_id> HTTP/1.1
-Accept: application/json
 Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
 Content-Type: application/json
-Content-Length: xy
 {
     "like": false,
 }
@@ -344,9 +311,7 @@ Content-Length: xy
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "match": false,
 }
@@ -364,9 +329,7 @@ Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "matches": [
         {
@@ -382,7 +345,8 @@ Content-Length: xy
             "sex": "m",
             "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
             "lon": 45.454646545,
-            "lat": 12.135456464
+            "lat": 12.135456464,
+            "age": 21
         },
         {
             "bio": "Je pète au lit",
@@ -397,7 +361,59 @@ Content-Length: xy
             "sex": "m",
             "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
             "lon": 45.454646545,
-            "lat": 12.135456464
+            "lat": 12.135456464,
+            "age": 21
+        }
+    ],
+}
+```
+
+## Liked by
+**You send:**  Your `session` cookie.  
+**You get:** A JSON encoded list of users who like you (including matches)
+
+**Request:**
+```json
+GET /liked_by HTTP/1.1
+Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
+```
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+    "users": [
+        {
+            "bio": "J'aime manger des pommes",
+            "blocked": false,
+            "first_name": "roger",
+            "id": 2,
+            "liked": true,
+            "matches": true,
+            "orientation": "heterosexual",
+            "pictures": [],
+            "score": 42.101,
+            "sex": "m",
+            "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+            "lon": 45.454646545,
+            "lat": 12.135456464,
+            "age": 21
+        },
+        {
+            "bio": "Je pète au lit",
+            "blocked": false,
+            "first_name": "bertrand",
+            "id": 7,
+            "liked": false,
+            "matches": false,
+            "orientation": "bisexual",
+            "pictures": [],
+            "score": 101.42,
+            "sex": "m",
+            "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+            "lon": 45.454646545,
+            "lat": 12.135456464,
+            "age": 21
         }
     ],
 }
@@ -413,10 +429,8 @@ Content-Length: xy
 **Request:**
 ```json
 GET /users HTTP/1.1
-Accept: application/json
 Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
 Content-Type: application/json
-Content-Length: xy
 {
     "count": 2,
     "sex": "m", 
@@ -425,9 +439,7 @@ Content-Length: xy
 **Successful Response:**
 ```json
 HTTP/1.1 200 OK
-Server: Werkzeug/1.0.1 Python/3.7.9
 Content-Type: application/json
-Content-Length: xy
 {
     "users":  [
         {
@@ -443,7 +455,8 @@ Content-Length: xy
             "sex": "m",
             "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
             "lon": 45.454646545,
-            "lat": 12.135456464
+            "lat": 12.135456464,
+            "age": 21
         },
         {
             "bio": "Je pète au lit",
@@ -458,7 +471,8 @@ Content-Length: xy
             "sex": "m",
             "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
             "lon": 45.454646545,
-            "lat": 12.135456464
+            "lat": 12.135456464,
+            "age": 21
         }
     ],
 }

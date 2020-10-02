@@ -1,0 +1,3 @@
+[OK] creer une fonction pour se logguer
+[  ] faire un appel a l api pour se connecter
+[  ] faire une fonction pour controller que l on est bien connecté avant d afficher la page

@@ -4,6 +4,18 @@ from utils import (signup, login, validate, create, update, delete,
                     logout, get_profile, get_public_profile, like, unlike, block, unblock,
                     report)
 
+def wait_startup():
+    response = None
+    i = 0
+    while response is None and i < 30:
+        try:
+            response = user1["session"].get({"url"})
+        except:
+            print("Not able to reach backend yet, waiting 3 seconds...", flush=True)
+            time.sleep(3)
+        i += 1
+    assert response.status_code == 200
+
 def test_clean_failed_attempts():
     login(user1)
     delete(user1)
@@ -216,6 +228,14 @@ def test_liked_by():
     response = like(user1, user2)
     print(response, response.text)
     assert response.status_code == 200
+
+    response = user2["session"].get(f"{url}/liked_by")
+    print(response, response.text)
+    assert response.status_code == 200
+    assert len(response.json()["users"]) == 1
+    
+    like(user1, user2)
+    like(user2, user1)
 
     response = user2["session"].get(f"{url}/liked_by")
     print(response, response.text)

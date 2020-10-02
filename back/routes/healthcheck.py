@@ -7,5 +7,10 @@ healthcheck = Blueprint('healthcheck', __name__)
 
 @healthcheck.route("/", methods=["POST", "GET"])
 @jsonify_output
-def is_alive(user_id, user, payload):
+def is_alive():
+    return success()
+
+@healthcheck.route("/debug", methods=["POST", "GET"])
+@jsonify_output
+def is_debug():
     return success()
