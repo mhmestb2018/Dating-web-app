@@ -38,6 +38,17 @@ def user_actions(user_id, user, payload):
             if not user.unlike(found):
                 return error("Tu n'avais pas liké cet utilisateur", 400)
             return ({"match": False})
+    elif "report" in payload:
+        match = False
+        if payload["report"] == True:
+            if len(user.pictures) is 0:
+                return error("Tu n'as pas de photo de profil", 403)
+            if not user.report(found):
+                return error("Tu as déjà reporté cet utilisateur", 400)
+        else:
+            if not user.unlike(found):
+                return error("Tu n'avais pas liké cet utilisateur", 400)
+            return ({"match": False})
     else:
         return error("Aucune action valide demandée", 400)
     return ({"match": user.matches_with(found)})
@@ -52,4 +63,6 @@ def user_profile(user_id, user):
     found = User.get_user(user_id=user_id)
     if not found or user.id in found.blocklist:
         return error("Utilisateur introuvable", 404)
+    if user.id != found.id:
+        user.visit(found)
     return success(found.public_as(user))

@@ -29,6 +29,49 @@ def test_create():
     create(user1)
     create(user2)
 
+def test_content():
+    tmp = {
+        "bio": "",
+        "email": "tesfdfddt1@gmail.com",
+        "first_name": "rogdffder",
+        "last_name": "UPDATEDdfdfffd",
+        "orientation": "bisexual",
+        "pictures": [],
+        # "score": 0.0,
+        "age": 21,
+        "sex": "m",
+        "lat": 42.0,
+        "lon": -1.01,
+        "password": "blabla123456",
+        "session": requests.Session() 
+    }
+    import copy
+    check = copy.deepcopy(tmp)
+    del check["session"]
+    del check["password"]
+    create(tmp)
+    login(tmp)
+    r = update(tmp, check)
+    check["banned"] = 0
+    check["validated"] = 1
+    assert r.status_code == 200
+    profile = get_profile(tmp)
+    check["id"] = profile["id"]
+    for k in profile:
+        if k not in ["pictures", "last_seen", "lat", "lon", "score"]:
+            assert check[k] == profile[k]
+    delete(tmp)
+    logout(tmp)
+
+def test_key_error():
+    login(user1)
+    import copy
+    tmp = copy.deepcopy(user1)
+    del tmp["session"]
+    r = update(user1, tmp)
+    assert r.status_code == 400
+    logout(user1)
+
 def test_recreate():
     response = signup(user1)
     assert response.status_code == 409
@@ -262,6 +305,22 @@ def test_last_seen():
 
     logout(user1)
     logout(user2)
+
+def test_report():
+    login(user1)
+    delete(user1)
+    create(user1)
+    login(user1)
+    response = update(user1, {"pictures": ["/test123", "456"]})
+    assert response.status_code == 200
+    login(user1)
+    login(user2)
+    response = report(user2, user1)
+    assert response.status_code == 200
+    response = report(user2, user1)
+    assert response.status_code == 400
+    response = like(user1, user2)
+    assert response.status_code == 403
 
 def test_delete():
     login(user1)

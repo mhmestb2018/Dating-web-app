@@ -1,4 +1,4 @@
-import mariadb
+import mariadb, datetime
 from flask import jsonify
 from werkzeug.security import check_password_hash
 
@@ -10,9 +10,9 @@ class User():
         "id", "first_name", "last_name", "email", "password", "sex",
         "orientation", "bio", "views_count", "likes_count",
         "picture_1", "picture_2", "picture_3", "picture_4", "picture_5",
-        "validated", "last_seen", "age", "lat", "lon")
+        "validated", "banned", "last_seen", "age", "lat", "lon")
     __restricted_fields__ = ("id", "validated", "views_count", "likes_count", "last_seen")
-    __private_fields__ = ("last_seen")
+    __private_fields__ = ("last_seen", "banned")
 
     def list_users(self):
         query = """
@@ -38,7 +38,7 @@ class User():
         db.exec(query, (self.id, self.id, self.id))
 
         rows = db.cur.fetchall()
-        return [User.build_from_db_tuple(t).public_as(self) for t in rows]
+        return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
 
     @staticmethod
     def build_from_db_tuple(values):
@@ -85,6 +85,9 @@ class User():
         self.bio = None
         self.score = 0.0
         self.validated = 0
+        self.lon = 0
+        self.lat = 0
+        self.last_seen = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         if not empty:
             self.first_name = Validator.name(first_name)
             self.last_name = Validator.name(last_name)
@@ -126,7 +129,7 @@ class User():
 
         for k in new_values.keys():
             if k not in User.__fields__ or (k in User.__restricted_fields__ and not force):
-                raise Exception(f"field {k} doesn't exist")
+                raise KeyError(f"field {k} doesn't exist")
             reqs += [f"{k}=?"]
         req = ", ".join(reqs)
         query = "UPDATE users SET " + req + " WHERE id=" + str(self.id)
@@ -157,15 +160,20 @@ class User():
         return True
 
     def delete(self):
-        query = "DELETE FROM likes WHERE user_id=? OR liked=?"
-        db.exec(query, (self.id, self.id))
-        query = "DELETE FROM blocks WHERE user_id=? OR blocked=?"
+        # query = "DELETE FROM likes WHERE user_id=? OR liked=?"
+        # db.exec(query, (self.id, self.id))
+        # query = "DELETE FROM blocks WHERE user_id=? OR blocked=?"
+        # db.exec(query, (self.id, self.id))
+        self.clear_resets()
+        self.clear_reports()
+        self.clear_blocks()
+        self.clear_likes()
+        query = "DELETE FROM validations WHERE user_id=" + str(self.id)
+        db.exec(query)
+        query = "DELETE FROM visits WHERE user_id=? or visited=?"
         db.exec(query, (self.id, self.id))
         query = "DELETE FROM users WHERE id=" + str(self.id)
         db.exec(query)
-        self.clear_resets()
-        self.clear_blocks()
-        self.clear_likes()
         return True
 
     def like(self, user):
@@ -177,6 +185,49 @@ class User():
             return False
         query = "INSERT INTO likes (user_id, liked) VALUES (?, ?)"
         db.exec(query, (self.id, user.id))
+        return True
+
+    def report(self, user):
+        query = "SELECT * FROM reports WHERE user_id=? AND reported=?"
+        db.exec(query, (self.id, user.id))
+
+        rows = db.cur.fetchall()
+        if len(rows) is not 0:
+            return False
+        query = "INSERT INTO reports (user_id, reported) VALUES (?, ?)"
+        db.exec(query, (self.id, user.id))
+
+
+        query = "SELECT COUNT(*) FROM visits WHERE visited=?"
+        db.exec(query, (user.id,))
+        rows = db.cur.fetchall()
+        if len(rows) is not 0:
+            visits = float(rows[0][0])
+        visits = max(1.0, visits)
+
+        query = "SELECT COUNT(*) FROM reports WHERE reported=?"
+        db.exec(query, (user.id,))
+        rows = db.cur.fetchall()
+        reports = 0
+        if len(rows) is not 0:
+            reports = float(rows[0][0])
+        if reports / visits > 0.3:
+            query = "UPDATE users SET banned=1 WHERE id=?"
+            db.exec(query, (user.id,))
+
+        return True
+
+    def visit(self, user):
+        query = "SELECT * FROM visits WHERE user_id=? AND visited=?"
+        db.exec(query, (self.id, user.id))
+
+        rows = db.cur.fetchall()
+        if len(rows) is not 0:
+            query = "UPDATE visits SET date=? WHERE user_id=? AND visited=?"
+            db.exec(query, (datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"), self.id, user.id))
+        else:
+            query = "INSERT INTO visits (user_id, visited) VALUES (?, ?)"
+            db.exec(query, (self.id, user.id))
         return True
 
     def unlike(self, user):
@@ -249,7 +300,7 @@ class User():
         db.exec(query, (self.id,))
 
         rows = db.cur.fetchall()
-        return [User.build_from_db_tuple(t).public_as(self) for t in rows]
+        return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
     
     @property
     def liked_by_list(self):
@@ -264,7 +315,23 @@ class User():
         db.exec(query, (self.id,))
 
         rows = db.cur.fetchall()
-        return [User.build_from_db_tuple(t).public_as(self) for t in rows]
+        return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
+    
+    @property
+    def visits_list(self):
+        query = """
+            SELECT
+                u.*
+            FROM users u
+            INNER JOIN visits v
+            ON u.id = v.user_id
+                AND v.visited = ?
+            ORDER BY v.date DESC;
+            """
+        db.exec(query, (self.id,))
+
+        rows = db.cur.fetchall()
+        return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
 
     @property
     def blocked_by(self):
@@ -294,6 +361,13 @@ class User():
         d["blocked"] = self.id in user.blocklist 
         return d
 
+    def intro_as(self, user):
+        d = self.intro
+        d["liked"] = user.liked(self)
+        d["matches"] = user.matches_with(self)
+        d["blocked"] = self.id in user.blocklist 
+        return d
+
     @property
     def public(self):
         return {
@@ -301,11 +375,23 @@ class User():
             "id": self.id,
             "pictures": self.pictures,
             "orientation": self.orientation,
-            "bio": "",
+            "bio": self.bio,
+            "age": self.age,
             "score": self.score,
             "sex": self.sex,
             "lon": self.lon,
             "lat": self.lat,
+            "last_seen": self.last_seen
+        }
+
+    @property
+    def intro(self):
+        return {
+            "first_name": self.first_name,
+            "id": self.id,
+            "pictures": self.pictures,
+            "age": self.age,
+            "sex": self.sex,
             "last_seen": self.last_seen
         }
 
@@ -326,6 +412,10 @@ class User():
     def clear_resets(self):
         query = "DELETE from resets WHERE user_id=?"
         db.exec(query, (self.id,))
+
+    def clear_reports(self):
+        query = "DELETE from reports WHERE user_id=? OR reported=?"
+        db.exec(query, (self.id, self.id))
 
     def clear_blocks(self):
         query = "DELETE from blocks WHERE user_id=? or blocked=?"

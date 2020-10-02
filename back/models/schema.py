@@ -26,6 +26,8 @@ class Schema:
         self.create_likes_table()
         self.create_blocks_table()
         self.create_resets_table()
+        self.create_reports_table()
+        self.create_visits_table()
         self.create_validations_table()
 
     def create_users_table(self):
@@ -48,11 +50,44 @@ class Schema:
         picture_4 varchar(1024),
         picture_5 varchar(1024),
         validated tinyint DEFAULT 0 NOT NULL,
+        banned tinyint DEFAULT 0 NOT NULL,
         last_seen timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-        age int DEFAULT NULL,
-        lat float DEFAULT NULL,
-        lon float DEFAULT NULL,
+        age int DEFAULT 18 NOT NULL,
+        lat float DEFAULT 0 NOT NULL,
+        lon float DEFAULT 0 NOT NULL,
         PRIMARY KEY (id)
+        ) ENGINE=InnoDB;
+        """
+
+        self.cur.execute(query)
+
+    def create_reports_table(self):
+
+        query = """
+        CREATE TABLE IF NOT EXISTS reports (
+        user_id int NOT NULL,
+        reported int NOT NULL,
+        date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        
+        PRIMARY KEY (user_id, reported),
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        FOREIGN KEY (reported) REFERENCES users(id)
+        ) ENGINE=InnoDB;
+        """
+
+        self.cur.execute(query)
+
+    def create_visits_table(self):
+
+        query = """
+        CREATE TABLE IF NOT EXISTS visits (
+        user_id int NOT NULL,
+        visited int NOT NULL,
+        date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        
+        PRIMARY KEY (user_id, visited),
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        FOREIGN KEY (visited) REFERENCES users(id)
         ) ENGINE=InnoDB;
         """
 

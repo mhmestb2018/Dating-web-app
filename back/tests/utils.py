@@ -63,6 +63,9 @@ def get_public_profile(user_from, user_to):
 def like(user_from, user_to):
     return user_from["session"].post(f"{url}/users/{user_to['id']}", json={'like': True})
 
+def report(user_from, user_to):
+    return user_from["session"].post(f"{url}/users/{user_to['id']}", json={'report': True})
+
 def unlike(user_from, user_to):
     return user_from["session"].post(f"{url}/users/{user_to['id']}", json={'like': False})
 

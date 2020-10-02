@@ -113,10 +113,26 @@ class Validator():
         return val
 
     @staticmethod
-    def lon(val):
+    def coord(val):
+        val = float(val)
+        if val < -90.0 or val > 90.0:
+            raise InvalidData(f"Coordonnées géographiques incorrects")
         return float(val)
 
     @staticmethod
     def lat(val):
-        return float(val)
+        return Validator.coord(val)
+
+    @staticmethod
+    def lon(val):
+        return Validator.coord(val)
+
+    @staticmethod
+    def age(val):
+        val = int(val)
+        if val < 18:
+            raise InvalidData(f"Il y a trop de pédophiles ici pour toi")
+        elif val > 120:
+            raise InvalidData(f"Jeanne Calment, elle a plus mal au dents...")
+        return val
         

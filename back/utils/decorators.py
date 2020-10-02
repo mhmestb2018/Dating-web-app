@@ -41,6 +41,8 @@ def validated_required(fun):
     def wrapper(*args, **kwargs):
         if kwargs["user"].validated is not 1:
             return error("Votre email n'a pas été validé", 403)
+        if kwargs["user"].banned is 1:
+            return error("Vous avez été banni", 403)
         return fun(*args, **kwargs)
 
     if type(fun) is not types.FunctionType:
@@ -102,6 +104,10 @@ def catcher(fun):
             return fun(*args, **kwargs)
         except InvalidData as e:
             return error(f"{e}", 400)
+        except KeyError as e:
+            return error(f"{e}", 400)
+        # except Exception as e:
+        #     return error(f"This is not supposed to happen: {e}", 418)
 
     if type(fun) is not types.FunctionType:
         raise ValueError()

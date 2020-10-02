@@ -11,9 +11,11 @@ user1 = {
     "orientation": "bisexual",
     "pictures": [],
     "score": 0.0,
+    "age": 21,
     "sex": None,
     "validated": 1,
     "password": "blabla123456",
+    "banned": 0,
     "session": requests.Session() 
 }
 
@@ -26,8 +28,10 @@ user2 = {
     "orientation": "bisexual",
     "pictures": [],
     "score": 0.0,
+    "age": 24,
     "sex": None,
     "validated": 1,
     "password": "blabla234567",
+    "banned": 0,
     "session": requests.Session() 
 }
