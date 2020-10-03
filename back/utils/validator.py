@@ -135,4 +135,8 @@ class Validator():
         elif val > 120:
             raise InvalidData(f"Jeanne Calment, elle a plus mal au dents...")
         return val
+
+    @staticmethod
+    def tag(val):
+        return Validator.name(val, limit=99)
         

@@ -21,7 +21,7 @@ def get_matches(user):
     """
     List matches as an array of full json encoded profiles
     """
-    return {"matches": [x for x in user.matchlist]}
+    return {"users": [x for x in user.matchlist]}
 
 @users_list.route("/liked_by", methods=["GET"])
 @jsonify_output

@@ -3,7 +3,7 @@ from mariadb import Error as AnyDatabaseError
 def error(msg, status=500):
     return {"error": msg}, status
 
-def success(body={"pcachin": True}, status=200):
+def success(body={"pcachin": False}, status=200):
     return body, status
 
 def retry_on_db_error(exc):

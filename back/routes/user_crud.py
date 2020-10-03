@@ -77,7 +77,6 @@ def signup(payload):
         msg.html = render_template("validation_email.html", link=link)
         mail.send(msg)
     else:
-        print(f"{user.email} validated automatically", flush=True)
         return success({"validation_id": validation_id}, 201)
     if not User.get_user(email=payload["email"]):
         return error("Failed to create user")

@@ -20,7 +20,7 @@ def user_required(fun):
         if not found:
             return error("Votre compte a été supprimé", 403)
         delattr(found, "password")
-        print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),flush=True)
+        # print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"),flush=True)
         found.update({"last_seen": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")}, force=True)
         return fun(*args, **kwargs, user=found)
 
@@ -63,7 +63,7 @@ def payload_required(fun):
         payload = request.form
         if not payload or len(payload) is 0:
             payload = request.get_json()
-        print("Payload:", payload, flush=True)
+        # print("Payload:", payload, flush=True)
         if not payload or len(payload) is 0:
             return error("This endpoint requires a payload", 400)
         return fun(*args, **kwargs, payload=payload)

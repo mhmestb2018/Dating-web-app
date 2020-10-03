@@ -29,6 +29,8 @@ class Schema:
         self.create_reports_table()
         self.create_visits_table()
         self.create_validations_table()
+        self.create_tags_table()
+        self.create_user_tags_table()
 
     def create_users_table(self):
 
@@ -39,7 +41,7 @@ class Schema:
         last_name varchar(255) NOT NULL,
         email varchar(255) NOT NULL,
         password varchar(255) NOT NULL,
-        sex varchar(63),
+        sex varchar(63) DEFAULT 'other',
         orientation varchar(63) DEFAULT 'bisexual',
         bio text DEFAULT '' NOT NULL,
         views_count int DEFAULT 0 NOT NULL,
@@ -155,13 +157,32 @@ class Schema:
 
         self.cur.execute(query)
 
-    def populate_users_table(self):
+    def create_tags_table(self):
+
         query = """
-        INSERT INTO users (first_name, last_name, email, password) VALUES
-        ('Toto', 'gjhh', 'gdssgs', 'sgsssg'),
-        ('Jack', 'gjgh', 'gdsss', 'ssssgd'),
-        ('Titi', 'ghgh', 'gssgs', 'sgsssd');
+        CREATE TABLE IF NOT EXISTS tags (
+        id int NOT NULL AUTO_INCREMENT,
+        name varchar(100) NOT NULL,
+        
+        PRIMARY KEY (id)
+        ) ENGINE=InnoDB;
         """
+
+        self.cur.execute(query)
+
+    def create_user_tags_table(self):
+
+        query = """
+        CREATE TABLE IF NOT EXISTS user_tags (
+        user_id int NOT NULL,
+        tag_id int NOT NULL,
+        
+        PRIMARY KEY (user_id, tag_id),
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        FOREIGN KEY (tag_id) REFERENCES tags(id)
+        ) ENGINE=InnoDB;
+        """
+
         self.cur.execute(query)
 
     @retry(retry_on_exception=retry_on_db_error, wait_fixed=1000, stop_max_attempt_number=3)

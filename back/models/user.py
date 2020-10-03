@@ -4,6 +4,8 @@ from werkzeug.security import check_password_hash
 
 from .. import db
 from ..utils import Validator
+from .tag import Tag
+from ..utils.errors import InvalidData
 
 class User():
     __fields__ = (
@@ -116,29 +118,33 @@ class User():
         # Unpack pictures array:
         if "pictures" in new_values:
             pictures = []
-            import json
-            print(new_values["pictures"])
+            # print(new_values["pictures"])
             pictures += new_values["pictures"]
-            print(pictures, flush=True)
+            # print(pictures, flush=True)
             self.pictures = []
             for i, path in enumerate(pictures):
                 path = Validator.path(path)
                 new_values[f"picture_{i+1}"] = path
                 self.pictures.append(path)
             del new_values["pictures"]
+        if "tags" in new_values:
+            if len(new_values["tags"]) > 0:
+                self.update_tags(new_values["tags"])
+            del new_values["tags"]
 
         for k in new_values.keys():
             if k not in User.__fields__ or (k in User.__restricted_fields__ and not force):
                 raise KeyError(f"field {k} doesn't exist")
             reqs += [f"{k}=?"]
-        req = ", ".join(reqs)
-        query = "UPDATE users SET " + req + " WHERE id=" + str(self.id)
-        for (k, v) in new_values.items():
-            if "picture" in k:
-                continue
-            checker = getattr(Validator, k)
-            setattr(self, k, checker(v))
-        db.exec(query, tuple(new_values.values()))
+        if len(reqs) > 0:
+            req = ", ".join(reqs)
+            query = "UPDATE users SET " + req + " WHERE id=" + str(self.id)
+            for (k, v) in new_values.items():
+                if "picture" in k:
+                    continue
+                checker = getattr(Validator, k)
+                setattr(self, k, checker(v))
+            db.exec(query, tuple(new_values.values()))
         return True
 
     @staticmethod
@@ -168,7 +174,10 @@ class User():
         self.clear_reports()
         self.clear_blocks()
         self.clear_likes()
+        self.clear_tags()
         query = "DELETE FROM validations WHERE user_id=" + str(self.id)
+        db.exec(query)
+        query = "DELETE FROM user_tags WHERE user_id=" + str(self.id)
         db.exec(query)
         query = "DELETE FROM visits WHERE user_id=? or visited=?"
         db.exec(query, (self.id, self.id))
@@ -332,6 +341,22 @@ class User():
 
         rows = db.cur.fetchall()
         return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
+    
+    @property
+    def tags_list(self):
+        query = """
+            SELECT
+                t.name
+            FROM user_tags ut
+            INNER JOIN tags t
+                ON ut.tag_id = t.id
+            WHERE
+                ut.user_id=?
+            """
+        db.exec(query, (self.id,))
+
+        rows = db.cur.fetchall()
+        return [str(t[0]) for t in rows]
 
     @property
     def blocked_by(self):
@@ -352,6 +377,7 @@ class User():
     @property
     def dict(self):
         d = vars(self)
+        d["tags"] = self.tags_list
         return d
 
     def public_as(self, user):
@@ -381,7 +407,8 @@ class User():
             "sex": self.sex,
             "lon": self.lon,
             "lat": self.lat,
-            "last_seen": self.last_seen
+            "last_seen": self.last_seen,
+            "tags": self.tags_list
         }
 
     @property
@@ -424,4 +451,20 @@ class User():
     def clear_likes(self):
         query = "DELETE from likes WHERE user_id=? or liked=?"
         db.exec(query, (self.id, self.id))
+
+    def clear_tags(self):
+        query = "DELETE from user_tags WHERE user_id=?"
+        db.exec(query, (self.id,))
         
+    def update_tags(self, tags):
+        if type(tags) is not list or type(tags[0]) is not str:
+            raise InvalidData(f"{tags} is not a list of strings")
+        tags = [Tag(t) for t in tags]
+        self.clear_tags()
+        query = f"""
+            INSERT INTO `user_tags` (user_id, tag_id) VALUES {", ".join(["(?, ?)"] * len(tags))};
+        """
+        params = zip([self.id] * len(tags), [t.id for t in tags])
+        params = tuple(i for t in params for i in t)
+        # print(params, [t.name for t in tags])
+        db.exec(query, params)
