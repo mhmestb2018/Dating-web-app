@@ -528,6 +528,7 @@ Content-Type: application/json
 {
     "tags":  ["artiste", "autiste"],
 }
+```
 
 **You send:**  Your `session` cookie  
 **You get:** A list of all the tags you haven't subscribed to yet
