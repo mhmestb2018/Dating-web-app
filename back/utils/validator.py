@@ -25,9 +25,9 @@ class Validator():
     @printable
     def name(val, limit=32):
         if len(val) < 2:
-            raise InvalidData(f"Le nom est trop court (< 2)")
+            raise InvalidData(f"Le nom {val} est trop court (< 2)")
         if len(val) > limit:
-            raise InvalidData(f"Le nom est trop long (> {limit})")
+            raise InvalidData(f"Le nom {val} est trop long (> {limit})")
         return val
 
     @staticmethod
@@ -54,9 +54,9 @@ class Validator():
         val = val.lower()
         if val in ("straight", "hetero", "hétéro", "heterosexual", "heterosexuel", "hétérosexuel", "hétérosexuelle", "heterosexuelle"):
             return "heterosexual"
-        if val in ("homosexual", "homosexuel", "homosexuelle", "gay", "lesbienne"):
+        if val in ("homosexual", "homosexuel", "homosexuelle", "gay", "lesbienne", "homo", "goudou"):
             return "homosexual"
-        if val in ("bisexuel", "bisexual"):
+        if val in ("bisexuel", "bisexual", "bi"):
             return "bisexual"
         if val in ("asexual", "asexuel"):
             return "asexual"
@@ -85,10 +85,8 @@ class Validator():
 
     @staticmethod
     @printable
-    def password(val, limit=6):
-        if len(val) >= limit:
-            return val
-        raise InvalidData(f"password is too short ({len(val)}<{limit} chars)")
+    def password(val):
+        return val
 
     @staticmethod
     def path(val, limit=1024):
@@ -115,7 +113,7 @@ class Validator():
     @staticmethod
     def coord(val):
         val = float(val)
-        if val < -90.0 or val > 90.0:
+        if val < -180.0 or val > 180.0:
             raise InvalidData(f"Coordonnées géographiques incorrects")
         return float(val)
 

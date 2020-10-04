@@ -130,7 +130,7 @@ Content-Type: application/json
 ```
 
 ## Update
-**You send:**  Your `session` cookie and all the json encoded fields to edit.  
+**You send:**  Your `session` cookie and all the json encoded fields to edit (except pictures).  
 **You get:** The full JSON encoded profile of the connected user.
 
 If `email` is changed, this call will unvalidate the user and send a new validation link. (TO DO)
@@ -170,7 +170,118 @@ Content-Type: application/json
 }
 ```
 
-## Delete
+## Add Pictures # TO DO
+**You send:**  Your `session` cookie and 1 to 5 forms inputs with `enctype=multipart/form-data` and an `<input type=file>`.  
+**You get:** The full JSON encoded profile of the connected user.
+
+**Request:**
+```json
+PUT /profile HTTP/1.1
+Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
+Content-Type: multipart/form-data; boundary=9051914041544843365972754266
+Content-Length: xy
+
+--9051914041544843365972754266
+Content-Disposition: form-data; name="file1"; filename="a.png"
+Content-Type: text/plain
+
+*Content of the file*
+
+--9051914041544843365972754266
+Content-Disposition: form-data; name="file2"; filename="a.jpg"
+Content-Type: text/html
+
+*Content of the file*
+
+--9051914041544843365972754266--
+```
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+    "bio": "Je suis caché",
+    "email": "pcachin@gmail.com",
+    "first_name": "updated",
+    "id": 1,
+    "last_name": "cachin",
+    "orientation": null,
+    "pictures": [
+        "/data/pcachin.jpg",
+        "/data/gikghks.jpg",
+    ],
+    "score": 42.0,
+    "sex": "m",
+    "validated": 1,
+    "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+    "lon": 45.454646545,
+    "lat": 12.135456464,
+    "age": 21,
+    "tags": ["enfants", "sucette", "peignoir"]
+}
+```
+
+## Delete Picture # TO DO
+**You send:**  Your `session` cookie and 2 forms inputs: `picture_order` (1 to 5) and a .  
+**You get:** A confirmation.
+
+**Request:**
+```json
+DELETE <picture_path> HTTP/1.1
+Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
+```
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+    "pcachin": true
+}
+```
+
+## Swap Pictures # TO DO
+**You send:**  Your `session` cookie and 2 json integer fields `from` and `to` (1 to 5).  
+**You get:** The full JSON encoded profile of the connected user.
+
+If `email` is changed, this call will unvalidate the user and send a new validation link. (TO DO)
+
+**Request:**
+```json
+PUT <picture_path> HTTP/1.1
+Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
+Content-Type: application/json
+{
+    "from": 1,
+    "to": 2 
+}
+```
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+    "bio": "Je suis caché",
+    "email": "pcachin@gmail.com",
+    "first_name": "updated",
+    "id": 1,
+    "last_name": "cachin",
+    "orientation": null,
+    "pictures": [
+        "/data/gikghks.jpg",
+        "/data/pcachin.jpg",
+    ],
+    "score": 42.0,
+    "sex": "m",
+    "validated": 1,
+    "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+    "lon": 45.454646545,
+    "lat": 12.135456464,
+    "age": 21,
+    "tags": ["enfants", "sucette", "peignoir"]
+}
+```
+
+## Delete User
 **You send:**  Your `session` cookie.  
 **You get:** The user public profile, for the last time.
 
