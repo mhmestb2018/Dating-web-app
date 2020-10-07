@@ -10,7 +10,7 @@ from ..utils.decorators import payload_required, jsonify_output, catcher
 
 reset_password = Blueprint("reset_password", __name__, url_prefix="/reset")
 
-@reset_password.route("", methods=["POST"])
+@reset_password.route("", methods=["POST"]) # com
 @payload_required
 @jsonify_output
 @catcher

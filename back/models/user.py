@@ -70,12 +70,10 @@ class User():
             query = "SELECT * FROM users WHERE id=?"
             db.exec(query,  (kwargs['user_id'],))
         else:
-            #print("get_user: missing parameters", flush=True)
             return None
 
         rows = db.cur.fetchall()
         if len(rows) is 0:
-            #print("get_user: no results", flush=True)
             return None
     
         return User.build_from_db_tuple(rows[0])
@@ -166,10 +164,6 @@ class User():
         return True
 
     def delete(self):
-        # query = "DELETE FROM likes WHERE user_id=? OR liked=?"
-        # db.exec(query, (self.id, self.id))
-        # query = "DELETE FROM blocks WHERE user_id=? OR blocked=?"
-        # db.exec(query, (self.id, self.id))
         self.clear_resets()
         self.clear_reports()
         self.clear_blocks()

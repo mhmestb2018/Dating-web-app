@@ -72,13 +72,14 @@ services:
 
   tests_back:
     build: ./back/tests
+    env_file:
+      - config/flask.env
     links:
       - app
     volumes:
       - ./back/tests:/tests
     networks:
       - frontend
-
 
 networks:
   backend:
@@ -87,3 +88,4 @@ networks:
 volumes:
   user-pictures:
   db-data:
+  

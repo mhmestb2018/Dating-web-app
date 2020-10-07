@@ -23,6 +23,7 @@ def create_app():
     app.config['MAIL_PASSWORD'] = os.environ['FLASK_GMAIL_PASSWORD']
     app.config['MAIL_USE_TLS'] = False
     app.config['MAIL_USE_SSL'] = True
+    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # 16Mb max uploads size
 
     if os.environ['FLASK_GMAIL'] is not "":
         mail = Mail(app)

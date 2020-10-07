@@ -1,4 +1,4 @@
-from constants import url
+from .constants import url
 
 def signup(user):
     payload = {
@@ -8,44 +8,74 @@ def signup(user):
         'last_name': user["last_name"]
     }
     response = user["session"].post(f"{url}/signup", data=payload)
-    print(response.text)
+    # print(response.text)
     tmp = response.json()
     return response
 
-def login(user):
-    payload = {
-        'email': user["email"],
-        'password': user["password"],
-        'remember_me': True
-    }
-    response = user["session"].post(f"{url}/login", data=payload)
-    print(response)
+def login(users):
+    if type(users) is not list:
+        users = [users]
+    reponse = None
+    for u in users:
+        payload = {
+            'email': u["email"],
+            'password': u["password"],
+            'remember_me': True
+        }
+        response = u["session"].post(f"{url}/login", data=payload)
+    # print(response)
     return response
 
 def validate(user, validation_id):
     response = user["session"].post(f"{url}/validate/{validation_id}")
-    print(response)
+    # print(response)
     return response
 
-def create(user, checks=True):
+def reset(users, picture=True):
+    if type(users) is not list:
+        users = [users]
+    for u in users:
+        login(u)
+        delete(u)
+        logout(u)
+        create(u, checks=False, picture=picture)
+        login(u)
+
+def create(user, checks=True, picture=False):
     response = signup(user)
-    assert response.status_code == 201
+    if checks:
+        assert response.status_code == 201
     data = response.json()
-    response = validate(user, data["validation_id"])
-    assert response.status_code == 200
-    login(user)
-    user['id'] = get_profile(user)["id"]
+    if "validation_id" in response.json() or checks:
+        response = validate(user, data["validation_id"])
+        if checks:
+            assert response.status_code == 200
+        login(user)
+        user['id'] = get_profile(user)["id"]
+    if picture:
+        update(user, {"pictures": ["/test123", "456"]})
     logout(user)
 
 def delete(user):
     response = user["session"].delete(f"{url}/profile")
-    print(response)
+    # print(response)
     return response
 
-def logout(user):
-    response = user["session"].post(f"{url}/logout")
-    print(response)
+def logout(users):
+    if type(users) is not list:
+        users = [users]
+    for u in users:
+        response = u["session"].post(f"{url}/logout")
+    # print(response)
     return response
+
+def clear(users):
+    if type(users) is not list:
+        users = [users]
+    for u in users:
+        login(u)
+        delete(u)
+        logout(u)
 
 
 def update(user, data):
