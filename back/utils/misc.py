@@ -1,6 +1,6 @@
 from mariadb import Error as AnyDatabaseError
 
-def error(msg, status=500):
+def error(msg, status=418):
     return {"error": msg}, status
 
 def success(body={"pcachin": False}, status=200):

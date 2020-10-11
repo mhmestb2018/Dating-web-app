@@ -25,7 +25,7 @@ def login(payload):
     if not user:
         return error("Utilisateur introuvable", 404)
     if not user.check_password(payload["password"]):
-        return error("Mot de passe incorrect")
+        return error("Mot de passe incorrect", 400)
     session["user"] = user.id
     if payload["remember_me"] == True:
         session.permanent = True

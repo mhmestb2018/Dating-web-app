@@ -78,6 +78,7 @@ services:
       - app
     volumes:
       - ./back/tests:/tests
+      - user-pictures:/data:ro # To check uploads/deletions
     networks:
       - frontend
 

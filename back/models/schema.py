@@ -187,5 +187,14 @@ class Schema:
 
     @retry(retry_on_exception=retry_on_db_error, wait_fixed=1000, stop_max_attempt_number=3)
     def exec(self, query, args=()):
-        self.cur.execute(query, args)
-        return True
+        with mariadb.connect(**self.config) as conn:
+            with conn.cursor() as cur:
+                cur.execute(query, args)
+                return cur.lastrowid
+
+    @retry(retry_on_exception=retry_on_db_error, wait_fixed=1000, stop_max_attempt_number=3)
+    def fetch(self, query, args=()):
+        with mariadb.connect(**self.config) as conn:
+            with conn.cursor() as cur:
+                cur.execute(query, args)
+                return cur.fetchall()

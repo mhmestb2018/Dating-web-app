@@ -37,9 +37,8 @@ class User():
                 AND users.validated=1
                 AND users.id != ?
             """
-        db.exec(query, (self.id, self.id, self.id))
+        rows = db.fetch(query, (self.id, self.id, self.id))
 
-        rows = db.cur.fetchall()
         return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
 
     @staticmethod
@@ -62,17 +61,17 @@ class User():
 
     @staticmethod
     def get_user(**kwargs):
+        rows = []
         if "email" in kwargs:
             email = Validator.email(kwargs['email'])
             query = "SELECT * FROM users WHERE email=?"
-            db.exec(query,  (email,))
+            rows = db.fetch(query, (email,))
         elif "user_id" in kwargs:
             query = "SELECT * FROM users WHERE id=?"
-            db.exec(query,  (kwargs['user_id'],))
+            rows = db.fetch(query, (kwargs['user_id'],))
         else:
             return None
 
-        rows = db.cur.fetchall()
         if len(rows) is 0:
             return None
     
@@ -100,8 +99,7 @@ class User():
 
         user = User(0, first_name, last_name, email, hashed_password)
         query = "INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)"
-        db.exec(query, (first_name, last_name, email, hashed_password))
-        user.id = db.cur.lastrowid
+        user.id = db.exec(query, (first_name, last_name, email, hashed_password))
 
         query = "INSERT INTO validations (user_id, validation_id) VALUES (?, ?)"
         db.exec(query, (user.id, validation_id))
@@ -155,8 +153,7 @@ class User():
                     ON v.user_id = u.id
                     AND v.validation_id = ?
             """
-        db.exec(query, (validation_id,))
-        rows = db.cur.fetchall()
+        rows = db.fetch(query, (validation_id,))
         if len(rows) is 0:
             return False
         db.exec("UPDATE users SET validated=1 WHERE id=?", (rows[0][0],))
@@ -181,9 +178,8 @@ class User():
 
     def like(self, user):
         query = "SELECT * FROM likes WHERE user_id=? AND liked=?"
-        db.exec(query, (self.id, user.id))
+        rows = db.fetch(query, (self.id, user.id))
 
-        rows = db.cur.fetchall()
         if len(rows) is not 0:
             return False
         query = "INSERT INTO likes (user_id, liked) VALUES (?, ?)"
@@ -192,9 +188,7 @@ class User():
 
     def report(self, user):
         query = "SELECT * FROM reports WHERE user_id=? AND reported=?"
-        db.exec(query, (self.id, user.id))
-
-        rows = db.cur.fetchall()
+        rows = db.fetch(query, (self.id, user.id))
         if len(rows) is not 0:
             return False
         query = "INSERT INTO reports (user_id, reported) VALUES (?, ?)"
@@ -202,15 +196,13 @@ class User():
 
 
         query = "SELECT COUNT(*) FROM visits WHERE visited=?"
-        db.exec(query, (user.id,))
-        rows = db.cur.fetchall()
+        rows = db.fetch(query, (user.id,))
         if len(rows) is not 0:
             visits = float(rows[0][0])
         visits = max(1.0, visits)
 
         query = "SELECT COUNT(*) FROM reports WHERE reported=?"
-        db.exec(query, (user.id,))
-        rows = db.cur.fetchall()
+        rows = db.fetch(query, (user.id,))
         reports = 0
         if len(rows) is not 0:
             reports = float(rows[0][0])
@@ -222,9 +214,7 @@ class User():
 
     def visit(self, user):
         query = "SELECT * FROM visits WHERE user_id=? AND visited=?"
-        db.exec(query, (self.id, user.id))
-
-        rows = db.cur.fetchall()
+        rows = db.fetch(query, (self.id, user.id))
         if len(rows) is not 0:
             query = "UPDATE visits SET date=? WHERE user_id=? AND visited=?"
             db.exec(query, (datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f"), self.id, user.id))
@@ -235,9 +225,8 @@ class User():
 
     def unlike(self, user):
         query = "SELECT * FROM likes WHERE user_id=? AND liked=?"
-        db.exec(query, (self.id, user.id))
+        rows = db.fetch(query, (self.id, user.id))
 
-        rows = db.cur.fetchall()
         if len(rows) is 0:
             return False
         query = "DELETE FROM likes WHERE user_id=? AND liked=?"
@@ -246,8 +235,7 @@ class User():
 
     def liked(self, user):
         query = "SELECT * FROM likes WHERE user_id=? AND liked=?"
-        db.exec(query, (self.id, user.id))
-        like = db.cur.fetchall()
+        like = db.fetch(query, (self.id, user.id))
         if len(like) is 0:
             return False
         return True
@@ -259,9 +247,7 @@ class User():
 
     def block(self, user):
         query = "SELECT * FROM blocks WHERE user_id=? AND blocked=?"
-        db.exec(query, (self.id, user.id))
-
-        rows = db.cur.fetchall()
+        rows = db.fetch(query, (self.id, user.id))
         if len(rows) is not 0:
             return False
         query = "INSERT INTO blocks (user_id, blocked) VALUES (?, ?)"
@@ -270,9 +256,7 @@ class User():
 
     def unblock(self, user):
         query = "SELECT * FROM blocks WHERE user_id=? AND blocked=?"
-        db.exec(query, (self.id, user.id))
-
-        rows = db.cur.fetchall()
+        rows = db.fetch(query, (self.id, user.id))
         if len(rows) is 0:
             return False
         query = "DELETE FROM blocks WHERE user_id=? AND blocked=?"
@@ -282,9 +266,8 @@ class User():
     @property
     def blocklist(self):
         query = "SELECT blocked FROM blocks WHERE user_id=?"
-        db.exec(query, (self.id,))
-
-        return [int(i[0]) for i in db.cur.fetchall()]
+        values = db.fetch(query, (self.id,))
+        return [int(i[0]) for i in values]
     
     @property
     def matchlist(self):
@@ -300,9 +283,7 @@ class User():
                 ON
                     u.id = a.user_id
             """
-        db.exec(query, (self.id,))
-
-        rows = db.cur.fetchall()
+        rows = db.fetch(query, (self.id,))
         return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
     
     @property
@@ -315,9 +296,7 @@ class User():
             ON users.id = likes.user_id
                 AND likes.liked = ?
             """
-        db.exec(query, (self.id,))
-
-        rows = db.cur.fetchall()
+        rows = db.fetch(query, (self.id,))
         return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
     
     @property
@@ -331,9 +310,7 @@ class User():
                 AND v.visited = ?
             ORDER BY v.date DESC;
             """
-        db.exec(query, (self.id,))
-
-        rows = db.cur.fetchall()
+        rows = db.fetch(query, (self.id,))
         return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
     
     @property
@@ -347,17 +324,15 @@ class User():
             WHERE
                 ut.user_id=?
             """
-        db.exec(query, (self.id,))
-
-        rows = db.cur.fetchall()
+        rows = db.fetch(query, (self.id,))
         return [str(t[0]) for t in rows]
 
     @property
     def blocked_by(self):
         query = "SELECT user_id FROM blocks WHERE blocked=?"
-        db.exec(query, (self.id,))
+        rows = db.fetch(query, (self.id,))
 
-        return [int(i[0]) for i in db.cur.fetchall()]
+        return [int(i[0]) for i in rows]
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
@@ -372,8 +347,6 @@ class User():
     def dict(self):
         d = vars(self)
         d["tags"] = self.tags_list
-        if "password" in d:
-            del d["password"]
         return d
 
     def public_as(self, user):
@@ -425,9 +398,7 @@ class User():
     @property
     def reset_id(self):
         query = "SELECT reset_id FROM resets WHERE user_id=?"
-        db.exec(query, (self.id,))
-
-        rows = db.cur.fetchall()
+        rows = db.fetch(query, (self.id,))
         if len(rows) is 0:
             return False
         return rows[0]

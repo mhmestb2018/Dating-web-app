@@ -36,7 +36,6 @@ def test_base_content():
     for k in profile:
         if k not in ["pictures", "last_seen", "lat", "lon", "score"]:
             assert check[k] == profile[k]
-    assert "password" not in profile
     delete(tmp)
     logout(tmp)
 

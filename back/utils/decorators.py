@@ -85,6 +85,7 @@ def jsonify_output(fun):
         if isinstance(ret, tuple):
             code = ret[1]
             ret = ret[0]
+        #print(f"ENDPOINT: {wrapper.__name__}", flush=True)
         return jsonify(ret), code
         
 
