@@ -7,11 +7,11 @@ from ..utils import Validator
 class Tag():
     
     def __init__(self, name):
-        self.name = name
+        self.name = name.lower()
         query = """
             INSERT INTO `tags` SET name=? ON DUPLICATE KEY UPDATE id=id
             """
-        self.id = db.exec(query, (Validator.tag(name),))
+        self.id = db.exec(query, (Validator.tag(self.name),))
 
     @staticmethod
     def list(as_user=None):

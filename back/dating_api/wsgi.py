@@ -1,12 +1,3 @@
-# from . import create_app
-# app = create_app()
-
-
-# #from . import routes  # Import routes
-
-# if __name__ == "__main__":
-#     app.run()
-
 import os
 from flask import Flask
 from flask_mail import Mail

@@ -11,6 +11,7 @@ def test_upload():
     assert response.status_code == 201
     print("201 OK", flush=True)
     profile = response.json()
+    print(profile, flush=True)
     pic_true_url = profile["pictures"][-1]
     assert os.path.exists(os.path.join("/data", pic_true_url.split('/')[-1]))
     pic_url = f"http://app:5000/pictures/{pic_true_url.split('/')[-1]}"

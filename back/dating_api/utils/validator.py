@@ -136,5 +136,5 @@ class Validator():
 
     @staticmethod
     def tag(val):
-        return Validator.name(val, limit=99)
+        return Validator.name(val, limit=99).lower()
         

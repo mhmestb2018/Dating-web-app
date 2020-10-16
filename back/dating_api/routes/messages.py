@@ -12,5 +12,5 @@ messages = Blueprint("messages", __name__)
 @jsonify_output
 @payload_required
 @catcher
-def login(payload):
+def get_messages(payload):
     pass

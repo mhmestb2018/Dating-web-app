@@ -487,6 +487,18 @@ Content-Type: application/json
 GET /visits HTTP/1.1
 Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
 Content-Type: application/json
+{
+    "age": {
+        "min": 18,
+        "max": 99
+    },
+    "score": {
+        "min": 0,
+        "max": 100
+    },
+    "distance": 15,
+    "tags": ["artist", "420"]
+}
 ```
 **Successful Response:**
 ```json
@@ -499,7 +511,7 @@ Content-Type: application/json
 
 ## List users
 
-**You send:**  Your `session` cookie 
+**You send:**  Your `session` cookie and optionnal search parameters
 **You get:** A JSON encoded list of validated unmatched users
 
 **Request:**
@@ -507,52 +519,17 @@ Content-Type: application/json
 GET /users HTTP/1.1
 Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
 Content-Type: application/json
-```
-**Successful Response:**
-```json
-HTTP/1.1 200 OK
-Content-Type: application/json
 {
-    "users":  [
-        {
-            "blocked": false,
-            "first_name": "roger",
-            "id": 2,
-            "liked": true,
-            "matches": false,
-            "pictures": [],
-            "sex": "m",
-            "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
-            "age": 21
-        },
-        {
-            "blocked": false,
-            "first_name": "bertrand",
-            "id": 7,
-            "liked": false,
-            "matches": false,
-            "pictures": [],
-            "sex": "m",
-            "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
-            "age": 21
-        }
-    ],
-}
-```
-
-## Search users # TO DO
-
-**You send:**  Your `session` cookie 
-**You get:** A JSON encoded list of validated unmatched users
-
-**Request:**
-```json
-POST /users HTTP/1.1
-Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
-Content-Type: application/json
-{
-    "count": 2,
-    "sex": "m", 
+    "age": {
+        "min": 18,
+        "max": 99
+    },
+    "score": {
+        "min": 0,
+        "max": 100
+    },
+    "distance": 15,
+    "tags": ["artist", "420"]
 }
 ```
 **Successful Response:**

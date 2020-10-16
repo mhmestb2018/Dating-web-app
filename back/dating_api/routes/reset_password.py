@@ -35,7 +35,7 @@ def query_reset(payload):
         msg.html = render_template("reset_password_email.html", link=link)
         mail.send(msg)
     else:
-        return success({'reset_id': reset_id})
+        return success({'reset_id': reset_id, 'user_id': user.id})
     return success()
 
 @reset_password.route("/<user_id>/<reset_id>", methods=["POST"])
