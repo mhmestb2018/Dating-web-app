@@ -11,6 +11,8 @@ import os
 from flask import Flask
 from flask_mail import Mail
 
+from . import socketio
+
 def create_app():
     """Construct the core application."""
     app = Flask(__name__, instance_relative_config=False)
@@ -39,6 +41,8 @@ def create_app():
     app.register_blueprint(reset_password)
     app.register_blueprint(list_tags)
     app.register_blueprint(private_pictures)
+
+    socketio.init_app(app)
    
     return app
     

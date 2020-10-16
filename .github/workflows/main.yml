@@ -17,4 +17,4 @@ jobs:
         
       # Runs a set of commands using the runners shell
       - name: Run tests container
-        run: docker-compose up --exit-code-from tests_back tests_back
+        run: docker-compose up --exit-code-from tests_back tests_back app

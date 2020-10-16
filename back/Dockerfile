@@ -8,6 +8,6 @@ RUN pip3 install -r requirements.txt
 
 EXPOSE 5000
 
-ENTRYPOINT [ "flask" ]
+ENTRYPOINT [ "gunicorn" ]
 
-CMD [ "run", "--host=0.0.0.0" ]
+CMD ["--bind", "0.0.0.0:5000", "-w", "2", "dating_api.wsgi:create_app()"]

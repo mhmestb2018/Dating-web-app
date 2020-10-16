@@ -6,12 +6,16 @@ from .utils import (signup, login, validate, create, update, delete,
 
 random.seed(42)
 
-def wait_startup():
+def test_pytest():
+    assert 1 == 1
+
+def test_wait_startup():
     response = None
     i = 0
-    while response is None and i < 30:
+    while response is None and i < 10:
         try:
-            response = user1["session"].get({"url"})
+            print("Waiting for server to warm up...", flush=True)
+            response = user1["session"].get(url, timeout=0.1)
         except:
             print("Not able to reach backend yet, waiting 3 seconds...", flush=True)
             time.sleep(3)
