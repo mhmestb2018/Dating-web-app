@@ -451,7 +451,7 @@ class User():
 
     def search(self, payload):
         age_min = 18
-        age_max = 99
+        age_max = 127
         score_min = 0
         score_max = 100
         distance_max = 50000 # km
