@@ -35,3 +35,20 @@ user2 = {
     "banned": 0,
     "session": requests.Session() 
 }
+
+user3 = {
+    "bio": "blablablou",
+    "email": "qqq@qqq.qq",
+    "first_name": "steven",
+    "id": 3,
+    "last_name": "seagal",
+    "orientation": "bisexual",
+    "pictures": [],
+    "score": 0.0,
+    "age": 24,
+    "sex": None,
+    "validated": 1,
+    "password": "qwertyuiop",
+    "banned": 0,
+    "session": requests.Session() 
+}

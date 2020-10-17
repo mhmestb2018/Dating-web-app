@@ -1,6 +1,7 @@
 from mariadb import Error as AnyDatabaseError
 
 def error(msg, status=418):
+    print("API CALL ERROR:", msg, flush=True)
     return {"error": msg}, status
 
 def success(body={"pcachin": False}, status=200):

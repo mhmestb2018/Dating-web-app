@@ -44,7 +44,19 @@ services:
       timeout: 3s
       retries: 10
       start_period: 20s
-    #entrypoint: ["flask", "run", "--host=0.0.0.0"] # To use the dev server for debug
+    entrypoint: ["flask", "run", "--host=0.0.0.0"] # To use the dev server for debug
+
+  tests_back:
+    build: ./back/tests
+    env_file:
+      - config/flask.env
+    links:
+      - app
+    volumes:
+      - ./back/tests:/tests
+      - user-pictures:/data:ro # To check uploads/deletions
+    networks:
+      - frontend
 
   front:
     build: ./front
@@ -71,17 +83,28 @@ services:
       retries: 10
       start_period: 20s
 
-  tests_back:
-    build: ./back/tests
-    env_file:
-      - config/flask.env
-    links:
-      - app
+  flutter:
+    build: ./flutter
+    env_file: config/flutter.env
+    expose:
+      - "3000"
+    working_dir: /myapp
+    ports:
+      - "3000:3000"
     volumes:
-      - ./back/tests:/tests
-      - user-pictures:/data:ro # To check uploads/deletions
+      - ./flutter/myapp:/myapp
+    # links:
+    #   - app
+    command: "flutter run"
     networks:
       - frontend
+    restart: on-failure
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://front:3000"]
+    #   interval: 10s
+    #   timeout: 3s
+    #   retries: 10
+    #   start_period: 20s
 
 networks:
   backend:
