@@ -31,6 +31,7 @@ class Schema:
         self.create_validations_table()
         self.create_tags_table()
         self.create_user_tags_table()
+        self.create_messages_table()
 
     def create_users_table(self):
 
@@ -72,8 +73,8 @@ class Schema:
         date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
         
         PRIMARY KEY (user_id, reported),
-        FOREIGN KEY (user_id) REFERENCES users(id),
-        FOREIGN KEY (reported) REFERENCES users(id)
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (reported) REFERENCES users(id) ON DELETE CASCADE
         ) ENGINE=InnoDB;
         """
 
@@ -88,8 +89,8 @@ class Schema:
         date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
         
         PRIMARY KEY (user_id, visited),
-        FOREIGN KEY (user_id) REFERENCES users(id),
-        FOREIGN KEY (visited) REFERENCES users(id)
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (visited) REFERENCES users(id) ON DELETE CASCADE
         ) ENGINE=InnoDB;
         """
 
@@ -104,8 +105,8 @@ class Schema:
         date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
         
         PRIMARY KEY (user_id, liked),
-        FOREIGN KEY (user_id) REFERENCES users(id),
-        FOREIGN KEY (liked) REFERENCES users(id)
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (liked) REFERENCES users(id) ON DELETE CASCADE
         ) ENGINE=InnoDB;
         """
 
@@ -120,7 +121,7 @@ class Schema:
         date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
         
         PRIMARY KEY (user_id),
-        FOREIGN KEY (user_id) REFERENCES users(id)
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         ) ENGINE=InnoDB;
         """
 
@@ -135,7 +136,7 @@ class Schema:
         date timestamp DEFAULT NOW() NOT NULL,
         
         PRIMARY KEY (user_id),
-        FOREIGN KEY (user_id) REFERENCES users(id)
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         ) ENGINE=InnoDB;
         """
 
@@ -150,8 +151,8 @@ class Schema:
         date timestamp DEFAULT NOW() NOT NULL,
         
         PRIMARY KEY (user_id, blocked),
-        FOREIGN KEY (user_id) REFERENCES users(id),
-        FOREIGN KEY (blocked) REFERENCES users(id)
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (blocked) REFERENCES users(id) ON DELETE CASCADE
         ) ENGINE=InnoDB;
         """
 
@@ -178,12 +179,30 @@ class Schema:
         tag_id int NOT NULL,
         
         PRIMARY KEY (user_id, tag_id),
-        FOREIGN KEY (user_id) REFERENCES users(id),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
         FOREIGN KEY (tag_id) REFERENCES tags(id)
         ) ENGINE=InnoDB;
         """
 
         self.cur.execute(query)
+
+    def create_messages_table(self):
+
+        query = """
+        CREATE TABLE IF NOT EXISTS messages (
+        from_id int NOT NULL,
+        to_id int NOT NULL,
+        content text NOT NULL,
+        date timestamp DEFAULT NOW() NOT NULL,
+        
+        PRIMARY KEY (date),
+        FOREIGN KEY (from_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (to_id) REFERENCES users(id) ON DELETE CASCADE
+        ) ENGINE=InnoDB;
+        """
+
+        self.cur.execute(query)
+        pass
 
     @retry(retry_on_exception=retry_on_db_error, wait_fixed=1000, stop_max_attempt_number=3)
     def exec(self, query, args=()):

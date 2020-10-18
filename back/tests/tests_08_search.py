@@ -6,12 +6,12 @@ from .utils import (signup, login, validate, create, update, delete,
 
 def test_search():
     login(user1)
-    response = user1["session"].get(f"{url}/users",
+    response = user1["session"].post(f"{url}/users",
                                     json={'age': {'min': 18, 'max': 27}})
     assert response.status_code == 200
     assert response.json()["users"][0]["age"] < 27
 
-    response = user1["session"].get(f"{url}/users",
+    response = user1["session"].post(f"{url}/users",
                                     json={'tags': ['street']})
     assert response.status_code == 200
     print(response.json()["users"], flush=True)
@@ -19,14 +19,14 @@ def test_search():
     print(profile, flush=True)
     assert 'street' in profile["tags"]
 
-    response = user1["session"].get(f"{url}/users",
+    response = user1["session"].post(f"{url}/users",
                                     json={'tags': ['street', 'rue']})
     assert response.status_code == 200
     profile = user1["session"].get(f"{url}/users/{response.json()['users'][0]['id']}").json()
     assert 'street' in profile["tags"] or 'rue' in profile["tags"]
 
 
-    response = user1["session"].get(f"{url}/users",
+    response = user1["session"].post(f"{url}/users",
                                     json={
                                             'age': {'min': 18, 'max': 99},
                                             'tags': ['rue', 'de']})
@@ -44,7 +44,7 @@ def test_search():
     print(tmp.json(), flush=True)
     assert tmp.status_code == 200
 
-    response = user1["session"].get(f"{url}/users",
+    response = user1["session"].post(f"{url}/users",
                                     json={
                                             'age': {'min': 23, 'max': 23},
                                             'tags': ['pcachin'],
@@ -53,7 +53,7 @@ def test_search():
     print(len(response.json()["users"]))
     assert len(response.json()["users"]) == 1
 
-    response = user1["session"].get(f"{url}/users",
+    response = user1["session"].post(f"{url}/users",
                                     json={
                                             'age': {'min': 22, 'max': 24},
                                             'tags': ['pcachin'],

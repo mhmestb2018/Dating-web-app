@@ -48,7 +48,7 @@ def test_matches():
 
     like(user1, user2)
     like(user2, user1)
-    response = user1["session"].get(f"{url}/users")
+    response = user1["session"].post(f"{url}/users")
     assert response.status_code == 200
     print(len(response.json()["users"]), flush=True)
     assert len(response.json()["users"]) == 0 or len(response.json()["users"]) > 20 # populate side-effect tape
@@ -63,7 +63,7 @@ def test_blocks():
     login(user1)
     login(user2)
 
-    response = user1["session"].get(f"{url}/users")
+    response = user1["session"].post(f"{url}/users")
     print(response.json(), flush=True)
     assert response.status_code == 200
     users_count = len(response.json()["users"])
@@ -71,7 +71,7 @@ def test_blocks():
 
     response = block(user2, user1)
     assert response.status_code == 200
-    response = user1["session"].get(f"{url}/users")
+    response = user1["session"].post(f"{url}/users")
     assert response.status_code == 200
     new_users_count = len(response.json()["users"])
     assert new_users_count == users_count - 1
@@ -81,7 +81,7 @@ def test_blocks():
 
     response = unblock(user2, user1)
     assert response.status_code == 200
-    response = user1["session"].get(f"{url}/users")
+    response = user1["session"].post(f"{url}/users")
     assert response.status_code == 200
     assert len(response.json()["users"]) == users_count
 
