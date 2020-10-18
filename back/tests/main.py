@@ -44,4 +44,5 @@ from .tests_05_tags import *
 from .tests_06_populate import *
 from .tests_07_pictures import *
 from .tests_08_search import *
+from .tests_09_messages import *
 from .tests_99_delete import *

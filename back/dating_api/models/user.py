@@ -501,3 +501,28 @@ class User():
 
         return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
         
+    @property
+    def conversations(self):
+        query = """
+            SELECT DISTINCT
+                u.*
+            FROM
+                users u
+                -- boilerplate start
+                LEFT OUTER JOIN (likes a
+                    INNER JOIN likes b
+                        ON a.user_id = b.liked
+                        AND a.liked = b.user_id
+                        AND b.user_id=?)
+                    ON u.id = a.user_id
+                LEFT OUTER JOIN blocks
+                    ON u.id = blocks.user_id
+                    AND blocks.blocked=?
+                -- boilerplate end
+                INNER JOIN messages m
+                ON (m.from_id=u.id OR m.to_id=u.id)
+            WHERE
+                u.id != ? 
+        """
+        rows = db.fetch(query, (self.id, self.id, self.id,))
+        return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
