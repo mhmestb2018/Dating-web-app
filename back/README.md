@@ -516,7 +516,7 @@ Content-Type: application/json
 
 **Request:**
 ```json
-GET /users HTTP/1.1
+POST /users HTTP/1.1
 Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
 Content-Type: application/json
 {
@@ -600,6 +600,113 @@ Content-Type: application/json
 {
     "tags":  ["artiste"],
 }
+
+## List conversations
+
+**You send:**  Your `session` cookie
+**You get:** A JSON encoded list of users with whom you have an active conversation
+
+**Request:**
+```json
+GET /conversations HTTP/1.1
+Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
+```
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+    "users":  [
+        {
+            "blocked": false,
+            "first_name": "roger",
+            "id": 2,
+            "liked": true,
+            "matches": false,
+            "pictures": [],
+            "sex": "m",
+            "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+            "age": 21
+        },
+        {
+            "blocked": false,
+            "first_name": "bertrand",
+            "id": 7,
+            "liked": false,
+            "matches": false,
+            "pictures": [],
+            "sex": "m",
+            "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+            "age": 21
+        }
+    ],
+}
+```
+
+## Get messages thread
+
+**You send:**  Your `session` cookie and a `user` id
+**You get:** A JSON encoded list of messages between you and the specified user
+
+**Request:**
+```json
+POST /messages HTTP/1.1
+Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
+Content-Type: application/json
+{
+    "user": 42
+}
+```
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+    "messages":  [
+        {
+            "from": 42,
+            "to": 51,
+            "content": "Ton daron a voler toute lé étoile du cielle pr lé metre dans t yeu",
+            "date": "Tue, 29 Sep 2000 00:00:00 GMT",
+        },
+        {
+            "from": 42,
+            "to": 51,
+            "content": "Pk tu répon pa?",
+            "date": "Tue, 29 Sep 2000 00:00:14 GMT",
+        },
+    ],
+}
+```
+
+## Send a message
+
+**You send:**  Your `session` cookie, the user_id of the receiver as `user` and a `content` string
+**You get:** A JSON encoded list of validated unmatched users
+
+**Request:**
+```json
+POST /new_message HTTP/1.1
+Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
+Content-Type: application/json
+{
+    "user": 42,
+    "content": "Toi tu sais parler aux femmes.",
+}
+```
+**Successful Response:**
+```json
+HTTP/1.1 201 OK
+Content-Type: application/json
+{
+    "message": {
+        "from": 51,
+        "to": 42,
+        "content": "Toi tu sais parler aux femmes.",
+        "date": "Tue, 29 Sep 2000 00:00:23 GMT",
+    }
+}
+```
 
 ## Author
 * **Kevin Azoulay** @ 42 Lyon

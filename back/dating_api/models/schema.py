@@ -86,9 +86,9 @@ class Schema:
         CREATE TABLE IF NOT EXISTS visits (
         user_id int NOT NULL,
         visited int NOT NULL,
-        date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        date timestamp(6) DEFAULT CURRENT_TIMESTAMP NOT NULL,
         
-        PRIMARY KEY (user_id, visited),
+        PRIMARY KEY (date),
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
         FOREIGN KEY (visited) REFERENCES users(id) ON DELETE CASCADE
         ) ENGINE=InnoDB;
@@ -102,9 +102,9 @@ class Schema:
         CREATE TABLE IF NOT EXISTS likes (
         user_id int NOT NULL,
         liked int NOT NULL,
-        date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        date timestamp(6) DEFAULT CURRENT_TIMESTAMP NOT NULL,
         
-        PRIMARY KEY (user_id, liked),
+        PRIMARY KEY (date),
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
         FOREIGN KEY (liked) REFERENCES users(id) ON DELETE CASCADE
         ) ENGINE=InnoDB;
@@ -118,9 +118,9 @@ class Schema:
         CREATE TABLE IF NOT EXISTS resets (
         user_id int NOT NULL,
         reset_id varchar(128) NOT NULL,
-        date timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        date timestamp(6) DEFAULT CURRENT_TIMESTAMP NOT NULL,
         
-        PRIMARY KEY (user_id),
+        PRIMARY KEY (date),
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         ) ENGINE=InnoDB;
         """
@@ -133,9 +133,9 @@ class Schema:
         CREATE TABLE IF NOT EXISTS validations (
         user_id int NOT NULL,
         validation_id varchar(128) NOT NULL,
-        date timestamp DEFAULT NOW() NOT NULL,
+        date timestamp(6) DEFAULT NOW() NOT NULL,
         
-        PRIMARY KEY (user_id),
+        PRIMARY KEY (date),
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         ) ENGINE=InnoDB;
         """
@@ -148,9 +148,9 @@ class Schema:
         CREATE TABLE IF NOT EXISTS blocks (
         user_id int NOT NULL,
         blocked int NOT NULL,
-        date timestamp DEFAULT NOW() NOT NULL,
+        date timestamp(6) DEFAULT NOW() NOT NULL,
         
-        PRIMARY KEY (user_id, blocked),
+        PRIMARY KEY (date),
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
         FOREIGN KEY (blocked) REFERENCES users(id) ON DELETE CASCADE
         ) ENGINE=InnoDB;
@@ -193,7 +193,7 @@ class Schema:
         from_id int NOT NULL,
         to_id int NOT NULL,
         content text NOT NULL,
-        date timestamp DEFAULT NOW() NOT NULL,
+        date timestamp(6) DEFAULT NOW() NOT NULL,
         
         PRIMARY KEY (date),
         FOREIGN KEY (from_id) REFERENCES users(id) ON DELETE CASCADE,
