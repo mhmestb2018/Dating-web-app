@@ -11,7 +11,7 @@ messages = Blueprint("messages", __name__)
 
 @messages.route("/conversations", methods=["GET"])
 @jsonify_output
-def get_conversations(user, payload):
+def get_conversations(user):
     return user.conversations
 
 @messages.route("/messages", methods=["POST"])
