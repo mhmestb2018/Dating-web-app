@@ -458,7 +458,7 @@ class User():
                 tags = payload["tags"]
 
         query = """
-            SELECT
+            SELECT DISTINCT
                 u.*
             FROM
                 users u
