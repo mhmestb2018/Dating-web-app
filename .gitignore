@@ -111,3 +111,5 @@ dist
 .tern-port
 
 package-lock.json
+flutter/myapp/build
+flutter/myapp/pubspec.lock
