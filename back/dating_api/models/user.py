@@ -523,6 +523,7 @@ class User():
                 ON (m.from_id=u.id OR m.to_id=u.id)
             WHERE
                 u.id != ? 
+                AND u.picture_1 not NULL
         """
         rows = db.fetch(query, (self.id,))
         return [User.build_from_db_tuple(t).intro_as(self) for t in rows]

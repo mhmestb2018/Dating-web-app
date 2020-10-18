@@ -23,30 +23,16 @@ class UserTile extends StatelessWidget {
           ),
           footer: GridTileBar(
             backgroundColor: Colors.black87,
-            leading: IconButton(
-              color: Theme.of(context).accentColor,
-              icon: Consumer<UserPreview>(
-                // child will not rebuild and can be used in builder
-                child: null,
-                // only part that listen to changes
-                builder: (ctx, user, child) => user.liked
-                    ? const Icon(Icons.favorite)
-                    : const Icon(Icons.favorite_border),
-              ),
-              onPressed: user.toggleLiked,
-            ),
             title: Text(
               user.firstName,
               textAlign: TextAlign.center,
               softWrap: true,
             ),
-            trailing: IconButton(
-              icon: const Icon(Icons.shopping_cart),
+            trailing: Icon(user.liked
+                    ? Icons.favorite
+                    : Icons.favorite_border,
               color: Theme.of(context).accentColor,
-              onPressed: () {
-                //cart.addItem(product.id, product.price, product.title);
-              },
-            ),
+            )
           ),
         ),
       ),

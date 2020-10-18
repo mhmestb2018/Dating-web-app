@@ -1,42 +1,37 @@
 import 'package:flutter/foundation.dart';
+import 'package:requests/requests.dart';
 
 import './user_preview_provider.dart';
 import '../dummies.dart';
 
 class Users with ChangeNotifier {
-  List<UserPreview> _users = dummyUsersList;
-  
-  // // Could be a global state management
-  // var _favoriteOnly = false;
-
-  // void toggleFavoritesFilter() {
-  //   _favoriteOnly = !_favoriteOnly;
-  //   notifyListeners();
-  // }
-
-  // set favoritesFilter(bool value) {
-  //   _favoriteOnly = value;
-  //   notifyListeners();
-  // }
+  List<UserPreview> _dusers = dummyUsersList;
 
   List<UserPreview> get users {
-    return [..._users];
+    List<UserPreview> _users;
+    Requests.post('http://localhost:5000/users').then((response) {
+      response.json().forEach((elem) {
+        _users.add(
+          UserPreview(
+            firstName: elem["first_name"],
+            id: elem["id"],
+            age: elem["age"],
+            blocked: elem["blocked"],
+            liked: elem["liked"],
+            matches: elem["matches"],
+            pictures: elem["pictures"]
+          )
+        );
+      });
+    }).catchError((error) => log.shout(error));
+    return _users;
   }
 
   List<UserPreview> get likedBy {
-    return [..._users];
+    return [..._dusers];
   }
 
   List<UserPreview> get matches {
-    return [..._users];
-  }
-
-  UserPreview findById(int id) {
-    return _users.firstWhere((user) => user.id == id);
-  }
-
-  void addUser(value) {
-    _users.add(value);
-    notifyListeners();
+    return [..._dusers];
   }
 }

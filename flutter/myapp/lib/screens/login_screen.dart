@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
       'remember_me': true
     };
     var jsonData = null;
-    var response = await Requests.post('http://0.0.0.0:5000/login', body: data);
+    var response = await Requests.post('http://localhost:5000/login', body: data);
     if (response.statusCode == 200) {
       jsonData = response.json();
       setState(() {
