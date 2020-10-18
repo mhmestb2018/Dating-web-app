@@ -4,7 +4,7 @@ from ..utils.decorators import (jsonify_output, validated_required, payload_requ
 
 users_list = Blueprint("users_list", __name__)
 
-@users_list.route("/users", methods=["GET"])
+@users_list.route("/users", methods=["POST"])
 @jsonify_output
 @validated_required
 def get_users(user):

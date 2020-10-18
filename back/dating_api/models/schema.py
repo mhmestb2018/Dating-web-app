@@ -31,6 +31,7 @@ class Schema:
         self.create_validations_table()
         self.create_tags_table()
         self.create_user_tags_table()
+        self.create_messages_table()
 
     def create_users_table(self):
 
@@ -189,18 +190,19 @@ class Schema:
 
         query = """
         CREATE TABLE IF NOT EXISTS messages (
-        from int NOT NULL,
-        to int NOT NULL,
+        from_id int NOT NULL,
+        to_id int NOT NULL,
         content text NOT NULL,
         date timestamp DEFAULT NOW() NOT NULL,
         
-        PRIMARY KEY (from, to),
-        FOREIGN KEY (from) REFERENCES users(id) ON DELETE CASCADE,
-        FOREIGN KEY (to) REFERENCES users(id) ON DELETE CASCADE
+        PRIMARY KEY (date),
+        FOREIGN KEY (from_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (to_id) REFERENCES users(id) ON DELETE CASCADE
         ) ENGINE=InnoDB;
         """
 
         self.cur.execute(query)
+        pass
 
     @retry(retry_on_exception=retry_on_db_error, wait_fixed=1000, stop_max_attempt_number=3)
     def exec(self, query, args=()):
