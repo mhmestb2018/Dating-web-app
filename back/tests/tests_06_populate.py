@@ -51,7 +51,7 @@ def test_populate():
     login(user1)
     # print("POPULATE_DB" in os.environ, os.environ["POPULATE_DB"], len(user1["session"].get(f"{url}/users").json()["users"]), flush=True)
     # assert 1 == 0
-    if "POPULATE_DB" in os.environ and len(user1["session"].get(f"{url}/users").json()["users"]) < int(os.environ["POPULATE_DB"]):
+    if "POPULATE_DB" in os.environ and len(user1["session"].post(f"{url}/users").json()["users"]) < int(os.environ["POPULATE_DB"]):
         while len(data) == 0 and tries < 2:
             try:
                 tries += 1
