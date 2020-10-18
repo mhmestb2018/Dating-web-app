@@ -8,10 +8,12 @@ class Tag():
     
     def __init__(self, name):
         self.name = name.lower()
-        query = """
-            INSERT INTO `tags` SET name=? ON DUPLICATE KEY UPDATE id=id
-            """
-        self.id = db.exec(query, (Validator.tag(self.name),))
+        self.id = Tag.get_id(self.name)
+        if not self.id:
+            query = """
+                INSERT INTO `tags` SET name=?
+                """
+            self.id = db.exec(query, (Validator.tag(self.name),))
 
     @staticmethod
     def list(as_user=None):
@@ -28,3 +30,17 @@ class Tag():
             params = (as_user.id,)
         values = db.fetch(query, params)
         return [row[0] for row in values]
+
+    @staticmethod
+    def get_id(name):
+        query = """
+            SELECT
+                id
+            FROM tags
+            WHERE
+                name = ?
+            """
+        values = db.fetch(query, (name,))
+        if len(values) == 0:
+            return False
+        return values[0][0]

@@ -161,17 +161,6 @@ class User():
         return True
 
     def delete(self):
-        self.clear_resets()
-        self.clear_reports()
-        self.clear_blocks()
-        self.clear_likes()
-        self.clear_tags()
-        query = "DELETE FROM validations WHERE user_id=" + str(self.id)
-        db.exec(query)
-        query = "DELETE FROM user_tags WHERE user_id=" + str(self.id)
-        db.exec(query)
-        query = "DELETE FROM visits WHERE user_id=? or visited=?"
-        db.exec(query, (self.id, self.id))
         query = "DELETE FROM users WHERE id=" + str(self.id)
         db.exec(query)
         return True
@@ -469,7 +458,7 @@ class User():
                 tags = payload["tags"]
 
         query = """
-            SELECT
+            SELECT DISTINCT
                 u.*
             FROM
                 users u
