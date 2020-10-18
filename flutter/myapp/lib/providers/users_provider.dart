@@ -23,8 +23,12 @@ class Users with ChangeNotifier {
     return [..._users];
   }
 
-  List<UserPreview> get liked {
-    return [..._users.where((user) => user.liked)];
+  List<UserPreview> get likedBy {
+    return [..._users];
+  }
+
+  List<UserPreview> get matches {
+    return [..._users];
   }
 
   UserPreview findById(int id) {

@@ -3,7 +3,7 @@ import 'package:myapp/providers/user_preview_provider.dart';
 import 'package:provider/provider.dart';
 
 // import '../widgets/products_grid.dart';
-import '../widgets/user_tile.dart';
+import '../widgets/users_grid.dart';
 import '../providers/users_provider.dart';
 // import '../screens/cart_screen.dart';
 
@@ -72,19 +72,9 @@ class _UsersOverviewScreenState extends State<UsersOverviewScreen> {
               ),
             ],
           ),
-          // Consumer<Users>(
-          //   child: IconButton(
-          //     icon: const Icon(Icons.shopping_cart),
-          //     onPressed: () => Navigator.of(context).pushNamed('caca'),//MessagesScreen.route),
-          //   ),
-          //   builder: (_, usersList, child) => UserTile(
-          //     child: child,
-          //     value: cart.itemsCount.toString(),
-          //   ),
-          // )
         ],
       ),
-      body: Text('Coucou')//ProductsGrid(_favoritesOnly),
+      body: UsersGrid(_likedByOnly, _matchesOnly),
     );
   }
 }

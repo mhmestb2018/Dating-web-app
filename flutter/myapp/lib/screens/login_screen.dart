@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
           gradient: LinearGradient(
             colors: [
               Colors.red,
-              Colors.redAccent
+              Colors.red[50]
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter
@@ -77,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
           login(emailController.text, passwordController.text);
         },
         child: Text("Sign in", style: TextStyle(color: Colors.white70)),
-        color: Colors.purple,
+        color: Colors.red,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0))
       )
     );
