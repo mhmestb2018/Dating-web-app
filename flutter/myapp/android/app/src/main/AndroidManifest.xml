@@ -1,8 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.myapp">
+   <uses-permission android:name="android.permission.INTERNET" /> <!-- Because it's a crazy world we live in TO DELETE-->
    <application
         android:label="myapp"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true"> <!-- to disable https TO DELETE -->
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

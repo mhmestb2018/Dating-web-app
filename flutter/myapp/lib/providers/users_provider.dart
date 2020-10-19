@@ -3,13 +3,14 @@ import 'package:requests/requests.dart';
 
 import './user_preview_provider.dart';
 import '../dummies.dart';
+import '../constants.dart' as Constants;
 
 class Users with ChangeNotifier {
   List<UserPreview> _dusers = dummyUsersList;
 
   List<UserPreview> get users {
     List<UserPreview> _users;
-    Requests.post('http://localhost:5000/users').then((response) {
+    Requests.post("${Constants.API_HOST}/users").then((response) {
       response.json().forEach((elem) {
         _users.add(
           UserPreview(
@@ -24,6 +25,7 @@ class Users with ChangeNotifier {
         );
       });
     }).catchError((error) => log.shout(error));
+    debugPrint(_users.toString());
     return _users;
   }
 

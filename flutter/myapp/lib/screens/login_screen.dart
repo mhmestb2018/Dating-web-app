@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:requests/requests.dart';
 
 import 'package:myapp/screens/users_overview_screen.dart';
+import '../constants.dart' as Constants;
 
 class LoginScreen extends StatefulWidget {
   static const String route = '/login';
@@ -46,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
       'remember_me': true
     };
     var jsonData = null;
-    var response = await Requests.post('http://localhost:5000/login', body: data);
+    var response = await Requests.post("${Constants.API_HOST}/login", body: data);
     if (response.statusCode == 200) {
       jsonData = response.json();
       setState(() {
