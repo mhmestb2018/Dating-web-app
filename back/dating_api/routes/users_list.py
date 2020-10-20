@@ -53,3 +53,12 @@ def get_visits(user):
     List visits as an array of full json encoded profiles
     """
     return {"users": user.visits_list}
+
+@users_list.route("/blocked", methods=["GET"])
+@jsonify_output
+@validated_required
+def get_visits(user):
+    """
+    List blocked users as an array of full json encoded profiles
+    """
+    return {"users": user.blocked_list}

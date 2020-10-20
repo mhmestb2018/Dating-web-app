@@ -314,6 +314,20 @@ class User():
             """
         rows = db.fetch(query, (self.id,))
         return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
+
+    @property
+    def blocked_list(self):
+        query = """
+            SELECT
+                u.*
+            FROM users u
+            INNER JOIN blocks b
+            ON u.id = ?
+                AND b.blocked = ?
+            ORDER BY v.date DESC;
+            """
+        rows = db.fetch(query, (self.id,))
+        return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
     
     @property
     def tags_list(self):
