@@ -1,27 +1,42 @@
 export default class User {
-    // 1. Typage des propiétés d'un pokémon.
+    // 1. Typage des propiétés d'un user.
+    age: number;
+    blocked: boolean;
+    first_name: string;
+    last_name: string;
     id: number;
-    name: string;
-    picture: string;
-    types: Array<string>;
-    created: Date;
-    gender:string;
-     
-    // 2. Définition des valeurs par défaut des propriétés d'un pokémon.
+    last_seen: string;
+    liked: boolean;
+    matches: boolean;
+    pictures: Array<string>;
+    sex: string;
+    bio: string;
+
+    // 2. Définition des valeurs par défaut des propriétés d'un user.
     constructor(
-     id: number,
-     name: string = 'name',
-     picture: string = 'http://...',
-     types: Array<string> = ['Normal'],
-     created: Date = new Date(),
-     gender:string = 'Unknow',
+        age: number,
+        blocked: boolean,
+        first_name: string,
+        last_name: string,
+        id: number,
+        last_seen: string,
+        liked: boolean,
+        matches: boolean,
+        pictures: Array<string>,
+        sex: string,
+        bio: string,
     ) {
-     // 3. Initialisation des propiétés d'un pokémons.
+     // 3. Initialisation des propiétés d'un user.
+     this.age = age;
+     this.blocked = blocked;
+     this.first_name = first_name;
+     this.last_name = last_name;
      this.id = id;
-     this.name = name;
-     this.picture = picture;
-     this.types = types;
-     this.created = created;
-     this.gender = gender;
+     this.last_seen = last_seen;
+     this.liked = liked;
+     this.matches = matches;
+     this.pictures = pictures;
+     this.sex = sex;
+     this.bio = bio;
     }
-   }
+}

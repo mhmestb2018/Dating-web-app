@@ -1,3 +1,15 @@
 [OK] creer une fonction pour se logguer
-[  ] faire un appel a l api pour se connecter
-[  ] faire une fonction pour controller que l on est bien connecté avant d afficher la page
+[OK] faire un appel a l api pour se connecter
+[OK] faire une fonction pour controller que l on est bien connecté avant d afficher la page
+[OK] enregistrer les users a la creation
+[OK] Recuperer la liste des users
+[OK] Creer une classe de type Users
+[OK] L integrer dans la fonction user-list afin de charger la liste des users
+[OK] Afficher la liste des users
+[OK] Afficher un user quand on clique dessus
+[OK] Afficher mon profil
+[OK] Modifier mon profil
+[  ] Afficher les matchs un par un
+[OK] Afficher la carte interactive des utilisateurs
+[  ] Afficher une selectbox pour le genre
+[  ] Creer des tags

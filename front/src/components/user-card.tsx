@@ -26,11 +26,11 @@ const UserCard: FunctionComponent<Props> = ({user, borderColorHover='red'}) => {
     return (
         <div className="col-sm-6 col-md-4 col-lg-3 col-xl-2">
             <div onClick={() => goToUser(user.id)} className="card horizontal shadow"  onMouseEnter={showBorder} onMouseLeave={hideBorder} style={{borderColor:color, cursor: "pointer"}}>
-                <img className="card-img-top" src={user.picture} alt={user.name}  width="400" height="200"/>
+                <img className="card-img-top" src={user.pictures[0]} alt={user.pictures[0]}  width="400" height="200"/>
                 <div className="card-body">
-                    <h4 className="card-title text-center">{user.name}</h4>
+                    <h4 className="card-title text-center">{user.first_name}</h4>
                     {/*<p className="card-text">{created.toString()}</p>*/}
-                    {/*<p className="card-text">{user.gender}</p>*/}
+                    {<p className="card-text">{user.sex}</p>}
                     {/*user.types.map(type => (
                         <span key={type} className="badge badge-pill badge-secondary">{type}</span>
                     ))*/}

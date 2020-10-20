@@ -19,32 +19,12 @@ const Footer: FunctionComponent = () => {
                         <p>Réalisation de la partie front-end en javascript avec React.js et bootstrap4</p>
                         <ul className="list-unstyled list-inline text-center">
                             <li className="list-inline-item">
-                                <a className="btn-floating btn-fb mx-1">
-                                    <i className="fab fa-facebook"> </i>
-                                </a>
-                            </li>
-                            <li className="list-inline-item">
-                                <a className="btn-floating btn-tw mx-1">
-                                    <i className="fab fa-twitter"> </i>
-                                </a>
-                            </li>
-                            <li className="list-inline-item">
-                                <a className="btn-floating btn-gplus mx-1">
-                                    <i className="fab fa-google-plus-g"> </i>
-                                </a>
-                            </li>
-                            <li className="list-inline-item">
-                                <a className="btn-floating btn-li mx-1">
+                                <a href="https://www.linkedin.com/in/gmadec42/" className="btn-floating btn-li mx-1">
                                     <i className="fab fa-linkedin-in"> </i>
                                 </a>
                             </li>
                             <li className="list-inline-item">
-                                <a className="btn-floating btn-dribbble mx-1">
-                                    <i className="fab fa-dribbble"> </i>
-                                </a>
-                            </li>
-                            <li className="list-inline-item">
-                                <a className="btn-floating btn-dribbble mx-1">
+                                <a href="https://github.com/guyb27" className="btn-floating btn-dribbble mx-1" style={{color:"black"}}>
                                     <i className="fab fa-github"></i>
                                 </a>
                             </li>
@@ -52,8 +32,8 @@ const Footer: FunctionComponent = () => {
                     </div>
                     <hr className="clearfix w-100 d-md-none pb-3"/>
                     <div className="col-md-6 mt-md-0 mt-3  text-center">
-                        <h5 className="text-uppercase font-weight-bold">Phillipe Cachin</h5>
-                        <p>Réalisation de la partie back-end et base de donnée en python avec flask et Mysql</p>
+                        <h5 className="text-uppercase font-weight-bold">Kevin Azoulay</h5>
+                        <p>Réalisation de la partie back-end et base de donnée en python avec flask et MariaDB</p>
                         <ul className="list-unstyled list-inline text-center">
                             <li className="list-inline-item">
                                 <a className="btn-floating btn-fb mx-1">
@@ -71,17 +51,12 @@ const Footer: FunctionComponent = () => {
                                 </a>
                             </li>
                             <li className="list-inline-item">
-                                <a className="btn-floating btn-li mx-1">
+                                <a href="https://www.linkedin.com/in/kevin-azoulay/" className="btn-floating btn-li mx-1">
                                     <i className="fab fa-linkedin-in"> </i>
                                 </a>
                             </li>
                             <li className="list-inline-item">
-                                <a className="btn-floating btn-dribbble mx-1">
-                                    <i className="fab fa-dribbble"> </i>
-                                </a>
-                            </li>
-                            <li className="list-inline-item">
-                                <a className="btn-floating btn-dribbble mx-1">
+                                <a href="https://github.com/Karocyt" className="btn-floating btn-dribbble mx-1" style={{color:"black"}}>
                                     <i className="fab fa-github"></i>
                                 </a>
                             </li>

@@ -1,6 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
 //import { useSelector, useDispatch } from 'react-redux';
-
 type Props = {
     login: (email:String, password:String) => void;
     signup: (
@@ -9,9 +8,10 @@ type Props = {
         firstname:String,
         lastname:String
     ) => void;
+    forget_password: (email:String) => void;
 };
 
-const Home: FunctionComponent<Props> = ({login, signup}) => {
+const Home: FunctionComponent<Props> = ({login, signup, forget_password}) => {
     //console.log(login);
     const [signinUsername, setSigninUsername] = useState('');
     const [signinPassword, setSigninPassword] = useState('');
@@ -20,6 +20,34 @@ const Home: FunctionComponent<Props> = ({login, signup}) => {
     const [signupFirstname, setSignupFirstname] = useState('');
     const [signupLastname, setSignupLastname] = useState('');
     const [signupPassword, setSignupPassword] = useState('');
+    const [signupSecondPassword, setSignupSecondPassword] = useState('');
+    const [signupErrorMail, setErrorSignupMail] = useState('');
+    const [signupTouchSecondPassword, setSignupTouchSecondPassword] = useState(false);
+    const [signupPasswordSecurity, setSignupPasswordSecurity] = useState(0);
+    //(mail', 'test2@gmail.com') ('password', 'blabla234567')
+
+    function testSecurity(password: string)
+    {
+        var value = 0, length = 0;
+        if (password.length > 6)
+            value += 20;
+        length += (password.match(/[A-Z]/g) || []).length;
+        if ((password.match(/[A-Z]/g) || []).length > 0)
+            value += 20;
+        length += (password.match(/[a-z]/g) || []).length;
+        if ((password.match(/[a-z]/g) || []).length > 0)
+            value += 20;
+        length += (password.match(/[0-9]/g) || []).length;
+        if ((password.match(/[0-9]/g) || []).length > 0)
+            value += 20;
+        if (length != password.length)
+            value += 20;
+        setSignupPasswordSecurity(value);
+    }
+    function emailIsValid (email: string) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+      }
+
   return (
     <div>
         <br/>
@@ -42,8 +70,12 @@ const Home: FunctionComponent<Props> = ({login, signup}) => {
                                     <br/>
                                     <input onChange={(e) => setSigninPassword(e.target.value)} type="password" className="form-control" placeholder="Mot de passe" name="password"/>
                                     <br/>
+                                <div>
+                                    Se souvenir de moi <input type="checkbox" ></input>
+                                </div>
                             </div>
                             <div className="modal-footer">
+                                <button onClick={() => forget_password(signinUsername)} type="button" className="btn btn-warning" data-dismiss="modal">Mot de passe oublié</button>
                                 <button onClick={() => login(signinUsername, signinPassword)} type="button" className="btn btn-success" data-dismiss="modal">Valider</button>
                             </div> 
                         </div>
@@ -112,10 +144,17 @@ const Home: FunctionComponent<Props> = ({login, signup}) => {
                             <form>
                                 <div className="form-row">
                                     <div className="col">
-                                        <input onChange={(e) => setSignupMail(e.target.value)} type="text" className="form-control" placeholder="Email" name="email"/>
+                                        <input onBlur={(e) => {if (!emailIsValid(e.target.value)) {setErrorSignupMail("Ton email est invalide !")} else setErrorSignupMail("")}} onChange={(e) => {setSignupMail(e.target.value); if (signupErrorMail != '' && emailIsValid(e.target.value)) setErrorSignupMail('')}} type="text" className="form-control" placeholder="Email" name="email"/>
                                     </div>
                                     <div className="col">
                                         <input onChange={(e) => setSignupUsername(e.target.value)} type="text" className="form-control" placeholder="Nom d'utilisateur" name="userName"/>
+                                    </div>
+                                </div>
+                                <div className="form-row">
+                                    <div className="col">
+                                        <p style={{color:"red"}}>{signupErrorMail}</p>
+                                    </div>
+                                    <div className="col">
                                     </div>
                                 </div>
                                 <br/>
@@ -130,16 +169,32 @@ const Home: FunctionComponent<Props> = ({login, signup}) => {
                                 <br/>
                                 <div className="form-row">
                                     <div className="col">
-                                        <input onChange={(e) => setSignupPassword(e.target.value)} type="text" className="form-control" placeholder="Mot de passe" name="firstPassword"/>
+                                        <input onChange={(e) => {setSignupPassword(e.target.value);testSecurity(e.target.value)}} type="password" className="form-control" placeholder="Mot de passe" name="firstPassword"/>
                                     </div>
                                     <div className="col">
-                                        <input type="text" className="form-control" placeholder="Retapper le mot de passe" name="lastPassword"/>
+                                        <input onBlur={() => setSignupTouchSecondPassword(true)} onChange={(e) => setSignupSecondPassword(e.target.value)} type="password" className="form-control" placeholder="Retapper le mot de passe" name="lastPassword"/>
                                     </div>
+                                </div>
+                                <div className="form-row">
+                                    <div className="col">
+                                        &nbsp;
+                                    </div>
+                                    <div className="col">
+                                        {signupTouchSecondPassword && signupPassword == signupSecondPassword ?
+                                            <p>✅ Mot de passe identique</p> :
+                                            signupTouchSecondPassword ?
+                                            <p style={{color:"red"}}>❌ Mot de passe non identique</p> :
+                                            <p>&nbsp;</p>
+                                        }
+                                    </div>
+                                </div>
+                                <div className="form-row progress">
+                                    <div className={signupPasswordSecurity < 60 ? "progress-bar bg-danger" : signupPasswordSecurity < 81 ? "progress-bar bg-warning" : "progress-bar bg-success"} style={{width:signupPasswordSecurity + "%"}}></div>
                                 </div>
                             </form> 
                         </div>
                         <div className="modal-footer">
-                            <button onClick={() => signup(signupMail, signupPassword, signupFirstname, signupLastname)} type="button" className="btn btn-success" data-dismiss="modal">Valider</button>
+                            <button onClick={() => signup(signupMail, signupPassword, signupFirstname, signupLastname)} data-toggle="tooltip" data-placement="top" title={signupPassword == signupSecondPassword && signupPasswordSecurity == 100 ? "" : "Remplis tout les champs pour valider !"} disabled={signupPassword == signupSecondPassword && signupPasswordSecurity == 100 && emailIsValid(signupMail) && signupUsername != '' && signupFirstname != '' && signupLastname != '' ? false : true} type="button" className="btn btn-success" data-dismiss="modal">Valider</button>
                         </div>
                     </div>
                 </div>
