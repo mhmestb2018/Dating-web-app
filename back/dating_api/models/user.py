@@ -323,7 +323,6 @@ class User():
             FROM users u
             INNER JOIN blocks b
                 ON b.user_id = ?
-            ORDER BY v.date DESC;
             """
         rows = db.fetch(query, (self.id,))
         return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
