@@ -63,6 +63,12 @@ def test_blocks():
     login(user1)
     login(user2)
 
+    response = user1["session"].get(f"{url}/blocked")
+    print(response.json(), flush=True)
+    assert response.status_code == 200
+    users_count = len(response.json()["users"])
+    assert users_count == 0
+
     response = user1["session"].post(f"{url}/users")
     print(response.json(), flush=True)
     assert response.status_code == 200
@@ -75,6 +81,12 @@ def test_blocks():
     assert response.status_code == 200
     new_users_count = len(response.json()["users"])
     assert new_users_count == users_count - 1
+    
+    response = user2["session"].get(f"{url}/blocked")
+    print(response.json(), flush=True)
+    assert response.status_code == 200
+    users_count = len(response.json()["users"])
+    assert users_count == 1
 
     response = block(user2, user1)
     assert response.status_code == 400

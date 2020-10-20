@@ -322,7 +322,8 @@ class User():
                 u.*
             FROM users u
             INNER JOIN blocks b
-                ON b.user_id = ?
+                ON b.user_id = u.id
+            WHERE u.id = ?
             """
         rows = db.fetch(query, (self.id,))
         return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
