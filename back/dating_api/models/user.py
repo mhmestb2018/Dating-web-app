@@ -322,8 +322,7 @@ class User():
                 u.*
             FROM users u
             INNER JOIN blocks b
-            ON u.id = ?
-                AND b.blocked = ?
+                ON u.id = ?
             ORDER BY v.date DESC;
             """
         rows = db.fetch(query, (self.id,))
