@@ -44,7 +44,10 @@ const App: FunctionComponent = () => {
               // console.log(error.response.data);
               // console.log(error.response.status);
               console.log(error);
-            toast.error("Identifiant incorrect ! On t'a reconnu Marc !");
+              if (error.response.data)
+                toast.error(error.response.data.error);
+              else
+                toast.error("Erreur de connection avec le serveur");
           });
     }
 
@@ -76,7 +79,10 @@ const App: FunctionComponent = () => {
               // console.log(error.response.data);
               // console.log(error.response.status);
               console.log(error);
-            toast.error("Identifiant incorrect ! On t'a reconnu Marc !");
+              if (error.response.data)
+                toast.error(error.response.data.error);
+              else
+                toast.error("Erreur de connection avec le serveur");
           });
     }
 
@@ -92,7 +98,10 @@ const App: FunctionComponent = () => {
               // console.log(error.response.data);
               // console.log(error.response.status);
               console.log(error);
-            toast.error("Problème de déconnexion");
+              if (error.response.data)
+                toast.error(error.response.data.error);
+              else
+                toast.error("Erreur de connection avec le serveur");
           });
     }
     const signup = (email:String, password:String, firstname:String, lastname:String) => {
@@ -139,11 +148,15 @@ const App: FunctionComponent = () => {
         else
           toast.success("Vous avez bien enlevé le like :)");
     })
-    .catch(function (error) {
+    .catch(error => {
           // console.log(error.response.data);
           // console.log(error.response.status);
-          console.log(error);
-        toast.error(error);
+          //console.log(error);
+          //alert(error.response.data.error)
+      if (error.response.data)
+        toast.error(error.response.data.error);
+      else
+        toast.error("Erreur de connection avec le serveur");
         //toast.error("error");
       });
   }
@@ -179,9 +192,9 @@ const App: FunctionComponent = () => {
                     <Route exact path="/" component={() => !IsLogged&&<Home login={login} forget_password={forget_password} signup={signup}/>||<UserList/>}/>
                     <Route exact path="/my_profile" component={() => IsLogged && <MyProfile toast={toast} /> || <Home login={login} signup={signup} forget_password={forget_password}/>}/>
                     <Route exact path="/users" component={() => IsLogged && <UserList/> || <Home login={login} signup={signup} forget_password={forget_password} />}/>
-                    <Route path="/users/:id" component={() => IsLogged && <UserDetail like_management={like_management}/> || <Home login={login} signup={signup} forget_password={forget_password} /> }/>
+                    <Route path="/users/:id" component={() => IsLogged && <UserDetail like_management={like_management}  toast={toast}/> || <Home login={login} signup={signup} forget_password={forget_password} /> }/>
                     <Route exact path="/mailbox" component={() => IsLogged && <Mailbox /> || <Home login={login} signup={signup} forget_password={forget_password}/>}/>
-                    <Route exact path="/my_account" component={() => IsLogged && <My_account /> || <Home login={login} signup={signup} forget_password={forget_password}/>}/>
+                    <Route exact path="/my_account" component={() => IsLogged && <My_account toast={toast}/> || <Home login={login} signup={signup} forget_password={forget_password}/>}/>
                     <Route component={PageNotFound}/>
                 </Switch>
                 {IsLogged && <Chat_widget />}

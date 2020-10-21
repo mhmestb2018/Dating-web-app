@@ -136,7 +136,7 @@ const User_page = ({ user, my_profile, loader, detail, get_user }) => {
                     )}
                   </div>
                   <div className="col-lg-2" style={{ textAlign: "center" }}>
-                    <button type="button" className="btn btn-danger">
+                    <button onClick={() => detail.block_person(user[0].id, user[0].first_name + " " + user[0].lastname)} type="button" className="btn btn-danger">
                       Bloquer
                     </button>
                   </div>
