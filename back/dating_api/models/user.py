@@ -482,8 +482,8 @@ class User():
                         AND b.user_id=?)
                     ON u.id = a.user_id
                 LEFT OUTER JOIN blocks
-                    ON u.id = blocks.user_id
-                    AND blocks.blocked=?
+                    ON (u.id = blocks.user_id AND blocks.blocked=?)
+                        OR (u.id = blocks.blocked AND blocks.user_id=?)
                 LEFT JOIN user_tags ut
                     ON ut.user_id = u.id
                 LEFT JOIN tags t
@@ -510,7 +510,7 @@ class User():
             query += " AND (" + junc.join(tags_query) + ")"
 
 
-        rows = db.fetch(query, (self.id, self.id, self.id, age_min, age_max, self.lat, self.lon, distance_max, score_min, score_max, *tags))
+        rows = db.fetch(query, (self.id, self.id, self.id, self.id, age_min, age_max, self.lat, self.lon, distance_max, score_min, score_max, *tags))
 
         return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
         
@@ -535,7 +535,7 @@ class User():
                 INNER JOIN messages m
                 ON (m.from_id=u.id OR m.to_id=u.id)
             WHERE
-                u.id != ? 
+                u.id != ?
         """
         rows = db.fetch(query, (self.id, self.id, self.id,))
         return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
