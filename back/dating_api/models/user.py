@@ -125,7 +125,7 @@ class User():
             del new_values["pictures"]
         if "tags" in new_values:
             if len(new_values["tags"]) > 0:
-                self.update_tags(new_values["tags"])
+                self.update_tags(list(dict.fromkeys(new_values["tags"])))
             del new_values["tags"]
 
         for k in new_values.keys():
