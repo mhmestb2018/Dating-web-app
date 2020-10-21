@@ -36,6 +36,15 @@ const MyProfile = ({toast}) => {
         console.log(error)
         alert("error_get_users");
     })
+    axios.get('/tags')
+    .then(res => {
+      setSuggestions(res.data.tags);
+        console.log(res)
+    })
+    .catch(function (error) {
+        console.log(error)
+        alert("error_get_tags");
+    })
     setLoader(false);
   }
 
@@ -49,6 +58,9 @@ const [sex, setSex] = useState("");
 const [pictures, setPictures] = useState([]);
 const [tags, setTags] = useState([]);
 const [ismodify, setIsmodify] = useState(false);
+const [suggestions, setSuggestions] = useState([]);
+const [newTag, setNewTag] = useState("");
+
 
 
 const send_picture = (picture) => {
@@ -119,9 +131,26 @@ const delete_picture = (picture) => {
     setLoader(false);
   }
 
+  const send_tags = () => {
+    setLoader(true);
+    axios.post("/tags",
+    {
+      "tags": [newTag]
+    })
+    .then((res) => {
+      setTags([...tags, newTag])
+      console.log(res)
+      alert('123');
+    })
+    .catch(function (error) {
+      alert("ERROR")
+    });
+    setLoader(false);
+  }
+
   return (
     <div>
-      <User_page user={[{first_name, last_name, age, bio, sex, pictures, tags}]} detail={false} my_profile={{delete_picture, send_picture, setFirst_name, setLast_name, setAge, setBio, setSex, setPictures, setTags, send_modification, ismodify, setIsmodify}} loader={loader} get_user={get_user}/>
+      <User_page user={[{first_name, last_name, age, bio, sex, pictures, tags}]} detail={false} my_profile={{send_tags, setNewTag, newTag, suggestions, delete_picture, send_picture, setFirst_name, setLast_name, setAge, setBio, setSex, setPictures, setTags, send_modification, ismodify, setIsmodify}} loader={loader} get_user={get_user}/>
     </div>
   );
 }
