@@ -85,10 +85,11 @@ def test_blocks():
     assert new_users_count == users_count - 1
     
     response = user2["session"].get(f"{url}/blocked")
-    # print(response.json(), flush=True)
+    print(response.json(), flush=True)
     assert response.status_code == 200
     new_users_count = len(response.json()["users"])
     assert new_users_count == 1
+    assert response.json()["users"][0]["id"] != user2["id"]
 
     response = block(user2, user1)
     assert response.status_code == 400

@@ -19,7 +19,7 @@ def user_actions(user_id, user, payload):
     if not found or user.id in found.blocklist:
         return error("Utilisateur cible introuvable", 404)
     if found.id == user.id:
-        return error("You narcicist fuck.", 418)
+        return error("You narcissist fuck.", 418)
     if "block" in payload:
         if payload["block"] == True:
             if not user.block(found):
