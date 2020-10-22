@@ -122,6 +122,10 @@ class User():
                 path = Validator.path(path)
                 new_values[f"picture_{i+1}"] = path
                 self.pictures.append(path)
+            tot_pictures = len(pictures)
+            while tot_pictures < 5: # HARDCODED LIMIT
+                new_values[f"picture_{len(pictures)+1}"] = None
+                tot_pictures += 1
             del new_values["pictures"]
         if "tags" in new_values:
             if len(new_values["tags"]) > 0:
