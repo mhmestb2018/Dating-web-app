@@ -13,7 +13,7 @@ messages = Blueprint("messages", __name__)
 @jsonify_output
 @user_required
 def get_conversations(user):
-    return {"users": user.conversations}
+    return user.conversations_json
 
 @messages.route("/messages", methods=["POST"])
 @jsonify_output
@@ -21,7 +21,9 @@ def get_conversations(user):
 @user_required
 @catcher
 def get_messages(user, payload):
-    return {'messages': [m.dict for m in Message.list(user.id, payload["user"])]}
+    res = {'messages': [m.dict for m in Message.list(user.id, payload["user"])]}
+    user.read_messages_with(payload["user"])
+    return res
 
 @messages.route("/new_message", methods=["POST"])
 @jsonify_output
