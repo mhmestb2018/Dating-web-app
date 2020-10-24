@@ -21,44 +21,81 @@ import 'react-toastify/dist/ReactToastify.css';
 import { JSDocUnknownType } from 'typescript';
 
 
-const App: FunctionComponent = () => {
-    const login = (email:String, password:String) => {
-      //alert("SEND")
-        axios.post('/login',
-          {
-            'email':email,
-            'password':password,
-            "remember_me": false
-          }
-        )
-        //axios.get('/debug')
-        .then(res => {
 
-        setIsLogged(true);
-            //alert('123');
-            console.log(res);
-            console.log(res.data);
+const App: FunctionComponent = () => {
+
+  /*function getPosition(position) {
+    setGeoloc_pos(Array(position.coords.latitude, position.coords.longitude))
+  }*/
+    const login = (email:String, password:String) => {
+      if (navigator.geolocation) {
+        let getPosition: any;
+        //navigator.geolocation.getCurrentPosition(getPosition);
+        navigator.geolocation.getCurrentPosition((position: any) => {
+          axios.post('/login',
+            {
+              'email':email,
+              'password':password,
+              "remember_me": false,
+              "lat": position.coords.latitude,
+              "lon": position.coords.longitude
+            }
+          )
+          .then(res => {
+            setIsLogged(true);
             toast.success("Vous êtes connécté :)");
-        })
-        .catch(function (error) {
-              // console.log(error.response.data);
-              // console.log(error.response.status);
-              console.log(error);
+          })
+          .catch(function (error) {
               if (error.response.data)
                 toast.error(error.response.data.error);
               else
                 toast.error("Erreur de connection avec le serveur");
           });
+        }, () => {
+          axios.get('https://cors-anywhere.herokuapp.com/http://api.ipify.org/?format=json')
+          .then(res => {
+              axios.get(`https://cors-anywhere.herokuapp.com/http://ip-api.com/json/${res.data.ip}`)
+              .then(res => {
+                axios.post('/login',
+                  {
+                    'email':email,
+                    'password':password,
+                    "remember_me": false,
+                    "lat": res.data.lat,
+                    "lon": res.data.lon
+                  }
+                )
+                .then(res => {
+                  setIsLogged(true);
+                  toast.success("Vous êtes connécté :)");
+                })
+                .catch(function (error) {
+                    if (error.response.data)
+                      toast.error(error.response.data.error);
+                    else
+                      toast.error("Erreur de connection avec le serveur");
+                });
+              })
+              .catch(function (error) {
+                toast.error("Veuillez aciver la Geolocalisation pour continuer");
+              });
+          })
+          .catch(function (error) {
+            toast.error("Veuillez aciver la Geolocalisation pour continuer");
+          });
+        });
+      }
+      else
+      {
+        toast.error("Veuillez mettre à jour votre navigateur");
+      }
     }
-
     const forget_password = (email:String) => {
-      //alert("SEND")
         axios.post('/reset',
           {
             'email':email
           }
         )
-        //axios.get('/debug')
         .then(res => {
 
         setIsLogged(true);
@@ -90,14 +127,9 @@ const App: FunctionComponent = () => {
         axios.post('/logout')
         .then(res => {
           setIsLogged(false);
-            console.log(res);
-            console.log(res.data);
             toast.success("Vous êtes bien déconnécté :)");
         })
         .catch(function (error) {
-              // console.log(error.response.data);
-              // console.log(error.response.status);
-              console.log(error);
               if (error.response.data)
                 toast.error(error.response.data.error);
               else
@@ -105,7 +137,6 @@ const App: FunctionComponent = () => {
           });
     }
     const signup = (email:String, password:String, firstname:String, lastname:String) => {
-      //axios.post('http://app:5000/login', { 'email':'gdssgs', 'password':'sgsssg' })
       axios.post('/signup',
         {
            'email':email,
@@ -149,18 +180,12 @@ const App: FunctionComponent = () => {
           toast.success("Vous avez bien enlevé le like :)");
     })
     .catch(error => {
-          // console.log(error.response.data);
-          // console.log(error.response.status);
-          //console.log(error);
-          //alert(error.response.data.error)
       if (error.response.data)
         toast.error(error.response.data.error);
       else
         toast.error("Erreur de connection avec le serveur");
-        //toast.error("error");
       });
   }
-
     const [IsLogged, setIsLogged] = useState<Boolean>(false);
     const [IsLoad, setIsLoad] = useState<Boolean>(false);
 
