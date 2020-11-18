@@ -227,7 +227,7 @@ const get_custom_user_list = (path) => {
                 }
               </div>
               : frame == 2 ?
-                <Map center={geoloc_pos} zoom={12} width={600} height={400}>
+                <Map center={geoloc_pos} zoom={10} width={600} height={400}>
                 <Marker anchor={geoloc_pos} payload={1} onClick={({ event, anchor, payload }) => {}} />
             
                 <Overlay anchor={geoloc_pos} offset={[120, 79]}>

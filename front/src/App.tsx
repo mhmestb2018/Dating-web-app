@@ -113,14 +113,11 @@ const App: FunctionComponent = () => {
             toast.success("ReSeT PaSsWoRd :)");
         })
         .catch(function (error) {
-              // console.log(error.response.data);
-              // console.log(error.response.status);
-              console.log(error);
-              if (error.response.data)
-                toast.error(error.response.data.error);
-              else
-                toast.error("Erreur de connection avec le serveur");
-          });
+          if (error.response.data)
+            toast.error(error.response.data.error);
+          else
+            toast.error("Erreur de connection avec le serveur");
+        });
     }
 
     const logout = () => {

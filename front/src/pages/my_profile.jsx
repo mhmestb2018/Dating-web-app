@@ -133,14 +133,12 @@ const delete_picture = (picture) => {
 
   const send_tags = () => {
     setLoader(true);
-    axios.post("/tags",
+    axios.put("/profile",
     {
-      "tags": [newTag]
+      "tags": [...tags, newTag]
     })
     .then((res) => {
       setTags([...tags, newTag])
-      console.log(res)
-      alert('123');
     })
     .catch(function (error) {
       alert("ERROR")
@@ -154,5 +152,5 @@ const delete_picture = (picture) => {
     </div>
   );
 }
-  
+
 export default MyProfile;
