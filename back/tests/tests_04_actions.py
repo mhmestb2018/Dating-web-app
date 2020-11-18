@@ -65,41 +65,47 @@ def test_blocks():
     login(user1)
     login(user2)
 
+    # check list is empty at start
     response = user1["session"].get(f"{url}/blocked")
-    # print(response.json(), flush=True)
     assert response.status_code == 200
     users_count = len(response.json()["users"])
     assert users_count == 0
 
+    # check database is not empty and count other users
     response = user1["session"].post(f"{url}/users")
-    # print(response.json(), flush=True)
     assert response.status_code == 200
-    users_count = len(response.json()["users"])
-    assert users_count > 0
+    full_count = len(response.json()["users"])
+    assert full_count > 0
 
+    # user2 blocks user1 and sees one less user
     response = block(user2, user1)
     assert response.status_code == 200
     response = user1["session"].post(f"{url}/users")
     assert response.status_code == 200
     new_users_count = len(response.json()["users"])
-    assert new_users_count == users_count - 1
+    assert new_users_count == full_count - 1
     
+    # user2 should see 1 user in /blocked, which should not be self
     response = user2["session"].get(f"{url}/blocked")
-    # print(response.json(), flush=True)
     assert response.status_code == 200
-    new_users_count = len(response.json()["users"])
-    assert new_users_count == 1
+    blocked_count = len(response.json()["users"])
+    print(blocked_count)
+    assert blocked_count == 1
+    assert response.json()["users"][0]["id"] != user2["id"]
 
+    # user 2 cannot block user1 twice
     response = block(user2, user1)
     assert response.status_code == 400
 
+    # user2 unblocks user1
     response = unblock(user2, user1)
     assert response.status_code == 200
     response = user1["session"].post(f"{url}/users")
     assert response.status_code == 200
-    print(f"{len(response.json()['users'])}/{users_count}", response.json(), flush=True)
-    assert len(response.json()["users"]) == users_count
+    # print(f"{len(response.json()['users'])}/{users_count}", response.json(), flush=True)
+    assert len(response.json()["users"]) == full_count
 
+    # user2 cannot unblock user1 twice
     response = unblock(user2, user1)
     assert response.status_code == 400
 

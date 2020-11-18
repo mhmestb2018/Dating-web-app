@@ -122,10 +122,14 @@ class User():
                 path = Validator.path(path)
                 new_values[f"picture_{i+1}"] = path
                 self.pictures.append(path)
+            tot_pictures = len(pictures)
+            while tot_pictures < 5: # HARDCODED LIMIT
+                new_values[f"picture_{len(pictures)+1}"] = None
+                tot_pictures += 1
             del new_values["pictures"]
         if "tags" in new_values:
             if len(new_values["tags"]) > 0:
-                self.update_tags(new_values["tags"])
+                self.update_tags(list(dict.fromkeys(new_values["tags"])))
             del new_values["tags"]
 
         for k in new_values.keys():
@@ -318,12 +322,12 @@ class User():
     @property
     def blocked_list(self):
         query = """
-            SELECT
+            SELECT DISTINCT
                 u.*
             FROM users u
-            INNER JOIN blocks b
-                ON b.user_id = u.id
-            WHERE u.id = ?
+                INNER JOIN blocks b
+                    ON b.blocked=u.id
+            WHERE b.user_id = ?
             """
         rows = db.fetch(query, (self.id,))
         return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
@@ -515,10 +519,11 @@ class User():
         return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
         
     @property
-    def conversations(self):
+    def conversations_json(self):
         query = """
             SELECT DISTINCT
-                u.*
+                u.*,
+                (SELECT SUM(unread) FROM messages INNER JOIN users ON messages.to_id = users.id WHERE users.id = ?)
             FROM
                 users u
                 -- boilerplate start
@@ -537,5 +542,20 @@ class User():
             WHERE
                 u.id != ?
         """
-        rows = db.fetch(query, (self.id, self.id, self.id,))
-        return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
+        rows = db.fetch(query, (self.id, self.id, self.id, self.id,))
+        users = [{
+                    "user" : User.build_from_db_tuple(t[:-1]).intro_as(self),
+                    "unread": int(t[-1]) if t[-1] != None else 0
+                } for t in rows]
+        return {"conversations": users}
+
+    def read_messages_with(self, sender_id):
+        query = """
+            UPDATE
+                messages m
+            SET
+                unread = 0
+            WHERE
+                m.from_id=? and m.to_id=?
+        """
+        rows = db.exec(query, (sender_id, self.id,))

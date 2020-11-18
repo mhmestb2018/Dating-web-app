@@ -636,28 +636,34 @@ Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0
 HTTP/1.1 200 OK
 Content-Type: application/json
 {
-    "users":  [
+    "conversations":  [
         {
-            "blocked": false,
-            "first_name": "roger",
-            "id": 2,
-            "liked": true,
-            "matches": false,
-            "pictures": [],
-            "sex": "m",
-            "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
-            "age": 21
+            "user": {
+                "blocked": false,
+                "first_name": "roger",
+                "id": 2,
+                "liked": true,
+                "matches": false,
+                "pictures": [],
+                "sex": "m",
+                "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+                "age": 21
+            },
+            "unread": 3,
         },
         {
-            "blocked": false,
-            "first_name": "bertrand",
-            "id": 7,
-            "liked": false,
-            "matches": false,
-            "pictures": [],
-            "sex": "m",
-            "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
-            "age": 21
+            "user": {
+                "blocked": false,
+                "first_name": "bertrand",
+                "id": 7,
+                "liked": false,
+                "matches": false,
+                "pictures": [],
+                "sex": "m",
+                "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+                "age": 21
+            },
+            "unread": 0,
         }
     ],
 }
@@ -688,12 +694,14 @@ Content-Type: application/json
             "to": 51,
             "content": "Ton daron a voler toute lé étoile du cielle pr lé metre dans t yeu",
             "date": "Tue, 29 Sep 2000 00:00:00 GMT",
+            "unread": true,
         },
         {
             "from": 42,
             "to": 51,
             "content": "Pk tu répon pa?",
             "date": "Tue, 29 Sep 2000 00:00:14 GMT",
+            "unread": false,
         },
     ],
 }
@@ -702,7 +710,7 @@ Content-Type: application/json
 ## Send a message
 
 **You send:**  Your `session` cookie, the user_id of the receiver as `user` and a `content` string
-**You get:** A JSON encoded list of validated unmatched users
+**You get:** The json encoded message and its read status
 
 **Request:**
 ```json
@@ -724,6 +732,7 @@ Content-Type: application/json
         "to": 42,
         "content": "Toi tu sais parler aux femmes.",
         "date": "Tue, 29 Sep 2000 00:00:23 GMT",
+        "unread": true,
     }
 }
 ```

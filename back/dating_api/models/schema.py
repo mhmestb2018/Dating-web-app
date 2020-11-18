@@ -194,6 +194,7 @@ class Schema:
         to_id int NOT NULL,
         content text NOT NULL,
         date timestamp(6) DEFAULT NOW() NOT NULL,
+        unread int DEFAULT 1,
         
         PRIMARY KEY (date),
         FOREIGN KEY (from_id) REFERENCES users(id) ON DELETE CASCADE,

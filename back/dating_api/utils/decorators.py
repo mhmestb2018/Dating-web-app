@@ -1,4 +1,4 @@
-import types, datetime
+import types, datetime, mariadb
 from flask import session, request, jsonify, make_response
 
 from ..models.user import User

@@ -75,6 +75,13 @@ def test_tags():
     data = response.json()
     assert data["tags"] == ["cigares"]
 
+    # Check duplicate tag has no weird effects
+    response = update(user1, {"tags": ["tag", "tag"]})
+    assert response.status_code == 200
+    response = user1["session"].get(f"{url}/profile")
+    data = response.json()
+    assert data["tags"] == ["tag"]
+
     delete(user1)
     delete(user2)
     logout(user1)
