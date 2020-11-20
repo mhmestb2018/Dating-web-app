@@ -5,7 +5,54 @@ import { textChangeRangeIsUnchanged } from "typescript";
 import Map from 'pigeon-maps'
 import Marker from 'pigeon-marker'
 import Overlay from 'pigeon-overlay'
-const MyAccount = () => {
+
+import axios from 'axios';
+const MyAccount = ({toast}) => {
+
+    const [blocked_persons, setBlocked_persons] = useState([]);
+
+    const unblock_person = (user_id, name) => {
+        axios.post('/users/' + user_id,
+        {
+          "block" : false
+        })
+        .then(res => {
+            console.log(res);
+            console.log(res.data);
+              toast.success("Vous avez bien débloqué " + name + " :)");
+        })
+        .catch(error => {
+              // console.log(error.response.data);
+              // console.log(error.response.status);
+              //console.log(error);
+              //alert(error.response.data.error)
+          if (error.response.data)
+            toast.error(error.response.data.error);
+          else
+            toast.error("Erreur de connection avec le serveur");
+            //toast.error("error");
+          });
+    }
+
+    const get_blocked_persons = () => {
+        axios.get('/blocked')
+        .then(res => {
+            console.log(res);
+            setBlocked_persons(res.data.users);
+        })
+        .catch(error => {
+              // console.log(error.response.data);
+              // console.log(error.response.status);
+              //console.log(error);
+              //alert(error.response.data.error)
+            //toast.error("error");
+          });
+      }
+
+  useEffect(() => {
+    get_blocked_persons();
+  }, []);
+
   return (
     <div>
       <div className="container-fluid" style={{ top: "50px" }}>
@@ -54,42 +101,23 @@ const MyAccount = () => {
                   Mes personnes bloquées
                 </h5>
                 <div className="card-body">
-                  <div className="row">
-                    <div className="col-lg-6">Pierre</div>
-                    <div className="col-lg-6" style={{textAlign:"center"}}>
-                      <button type="button" className="btn btn-success">
-                        Débloquer
-                      </button>
-                    </div>
-                  </div>
-                  <br />
-                  <div className="row">
-                    <div className="col-lg-6">Marie</div>
-                    <div className="col-lg-6" style={{textAlign:"center"}}>
-                      <button type="button" className="btn btn-success">
-                        Débloquer
-                      </button>
-                    </div>
-                  </div>
-                  <br />
-                  <div className="row">
-                    <div className="col-lg-6">Diego</div>
-                    <div className="col-lg-6" style={{textAlign:"center"}}>
-                      <button type="button" className="btn btn-success">
-                        Débloquer
-                      </button>
-                    </div>
-                  </div>
-                  <br />
-                  <div className="row">
-                    <div className="col-lg-6">Madonna</div>
-                    <div className="col-lg-6" style={{textAlign:"center"}}>
-                      <button type="button" className="btn btn-success">
-                        Débloquer
-                      </button>
-                    </div>
-                  </div>
-                  <br />
+                    {
+                        blocked_persons.map((person) => {
+                            return (
+                                <div>
+                                    <div className="row">
+                            <div className="col-lg-6">{person.first_name}{" "}{person.last_name}</div>
+                                            <div className="col-lg-6" style={{textAlign:"center"}}>
+                                                <button type="button" onClick={() => unblock_person(person.id, person.first_name + " " + person.last_name)} className="btn btn-success">
+                                                Débloquer
+                                                </button>
+                                            </div>
+                                        </div>
+                                    <br />
+                                </div>
+                            )
+                        })
+                    }
                 </div>
               </div>
             </div>

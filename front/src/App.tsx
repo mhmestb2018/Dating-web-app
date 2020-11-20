@@ -21,41 +21,81 @@ import 'react-toastify/dist/ReactToastify.css';
 import { JSDocUnknownType } from 'typescript';
 
 
+
 const App: FunctionComponent = () => {
+
+  /*function getPosition(position) {
+    setGeoloc_pos(Array(position.coords.latitude, position.coords.longitude))
+  }*/
     const login = (email:String, password:String) => {
-      //alert("SEND")
-        axios.post('/login',
-          {
-            'email':email,
-            'password':password,
-            "remember_me": false
-          }
-        )
-        //axios.get('/debug')
-        .then(res => {
-
-        setIsLogged(true);
-            //alert('123');
-            console.log(res);
-            console.log(res.data);
+      if (navigator.geolocation) {
+        let getPosition: any;
+        //navigator.geolocation.getCurrentPosition(getPosition);
+        navigator.geolocation.getCurrentPosition((position: any) => {
+          axios.post('/login',
+            {
+              'email':email,
+              'password':password,
+              "remember_me": false,
+              "lat": position.coords.latitude,
+              "lon": position.coords.longitude
+            }
+          )
+          .then(res => {
+            setIsLogged(true);
             toast.success("Vous êtes connécté :)");
-        })
-        .catch(function (error) {
-              // console.log(error.response.data);
-              // console.log(error.response.status);
-              console.log(error);
-            toast.error("Identifiant incorrect ! On t'a reconnu Marc !");
+          })
+          .catch(function (error) {
+              if (error.response.data)
+                toast.error(error.response.data.error);
+              else
+                toast.error("Erreur de connection avec le serveur");
           });
+        }, () => {
+          axios.get('https://cors-anywhere.herokuapp.com/http://api.ipify.org/?format=json')
+          .then(res => {
+              axios.get(`https://cors-anywhere.herokuapp.com/http://ip-api.com/json/${res.data.ip}`)
+              .then(res => {
+                axios.post('/login',
+                  {
+                    'email':email,
+                    'password':password,
+                    "remember_me": false,
+                    "lat": res.data.lat,
+                    "lon": res.data.lon
+                  }
+                )
+                .then(res => {
+                  setIsLogged(true);
+                  toast.success("Vous êtes connécté :)");
+                })
+                .catch(function (error) {
+                    if (error.response.data)
+                      toast.error(error.response.data.error);
+                    else
+                      toast.error("Erreur de connection avec le serveur");
+                });
+              })
+              .catch(function (error) {
+                toast.error("Veuillez aciver la Geolocalisation pour continuer");
+              });
+          })
+          .catch(function (error) {
+            toast.error("Veuillez aciver la Geolocalisation pour continuer");
+          });
+        });
+      }
+      else
+      {
+        toast.error("Veuillez mettre à jour votre navigateur");
+      }
     }
-
     const forget_password = (email:String) => {
-      //alert("SEND")
         axios.post('/reset',
           {
             'email':email
           }
         )
-        //axios.get('/debug')
         .then(res => {
 
         setIsLogged(true);
@@ -73,30 +113,27 @@ const App: FunctionComponent = () => {
             toast.success("ReSeT PaSsWoRd :)");
         })
         .catch(function (error) {
-              // console.log(error.response.data);
-              // console.log(error.response.status);
-              console.log(error);
-            toast.error("Identifiant incorrect ! On t'a reconnu Marc !");
-          });
+          if (error.response.data)
+            toast.error(error.response.data.error);
+          else
+            toast.error("Erreur de connection avec le serveur");
+        });
     }
 
     const logout = () => {
         axios.post('/logout')
         .then(res => {
           setIsLogged(false);
-            console.log(res);
-            console.log(res.data);
             toast.success("Vous êtes bien déconnécté :)");
         })
         .catch(function (error) {
-              // console.log(error.response.data);
-              // console.log(error.response.status);
-              console.log(error);
-            toast.error("Problème de déconnexion");
+              if (error.response.data)
+                toast.error(error.response.data.error);
+              else
+                toast.error("Erreur de connection avec le serveur");
           });
     }
     const signup = (email:String, password:String, firstname:String, lastname:String) => {
-      //axios.post('http://app:5000/login', { 'email':'gdssgs', 'password':'sgsssg' })
       axios.post('/signup',
         {
            'email':email,
@@ -139,15 +176,13 @@ const App: FunctionComponent = () => {
         else
           toast.success("Vous avez bien enlevé le like :)");
     })
-    .catch(function (error) {
-          // console.log(error.response.data);
-          // console.log(error.response.status);
-          console.log(error);
-        toast.error(error);
-        //toast.error("error");
+    .catch(error => {
+      if (error.response.data)
+        toast.error(error.response.data.error);
+      else
+        toast.error("Erreur de connection avec le serveur");
       });
   }
-
     const [IsLogged, setIsLogged] = useState<Boolean>(false);
     const [IsLoad, setIsLoad] = useState<Boolean>(false);
 
@@ -179,9 +214,9 @@ const App: FunctionComponent = () => {
                     <Route exact path="/" component={() => !IsLogged&&<Home login={login} forget_password={forget_password} signup={signup}/>||<UserList/>}/>
                     <Route exact path="/my_profile" component={() => IsLogged && <MyProfile toast={toast} /> || <Home login={login} signup={signup} forget_password={forget_password}/>}/>
                     <Route exact path="/users" component={() => IsLogged && <UserList/> || <Home login={login} signup={signup} forget_password={forget_password} />}/>
-                    <Route path="/users/:id" component={() => IsLogged && <UserDetail like_management={like_management}/> || <Home login={login} signup={signup} forget_password={forget_password} /> }/>
+                    <Route path="/users/:id" component={() => IsLogged && <UserDetail like_management={like_management}  toast={toast}/> || <Home login={login} signup={signup} forget_password={forget_password} /> }/>
                     <Route exact path="/mailbox" component={() => IsLogged && <Mailbox /> || <Home login={login} signup={signup} forget_password={forget_password}/>}/>
-                    <Route exact path="/my_account" component={() => IsLogged && <My_account /> || <Home login={login} signup={signup} forget_password={forget_password}/>}/>
+                    <Route exact path="/my_account" component={() => IsLogged && <My_account toast={toast}/> || <Home login={login} signup={signup} forget_password={forget_password}/>}/>
                     <Route component={PageNotFound}/>
                 </Switch>
                 {IsLogged && <Chat_widget />}

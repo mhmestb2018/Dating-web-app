@@ -178,10 +178,9 @@ const get_custom_user_list = (path) => {
                     <div className="col-7"><input value={tags} onChange={(e) => setTags(e.target.value)} type="text"></input></div>
                   </div>
                   <div className="row">
-
-                  <div className="col-12">
-                    <button type="button" onClick={() => get_custom_user_list("/users")} className="btn btn-success">Enregistrer</button>
-                  </div>
+                    <div className="col-12">
+                      <button style={{textAlign:"center"}} type="button" onClick={() => get_custom_user_list("/users")} className="btn btn-success">Enregistrer</button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -228,7 +227,7 @@ const get_custom_user_list = (path) => {
                 }
               </div>
               : frame == 2 ?
-                <Map center={geoloc_pos} zoom={12} width={600} height={400}>
+                <Map center={geoloc_pos} zoom={10} width={600} height={400}>
                 <Marker anchor={geoloc_pos} payload={1} onClick={({ event, anchor, payload }) => {}} />
             
                 <Overlay anchor={geoloc_pos} offset={[120, 79]}>

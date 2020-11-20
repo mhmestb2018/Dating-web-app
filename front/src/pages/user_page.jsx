@@ -136,7 +136,7 @@ const User_page = ({ user, my_profile, loader, detail, get_user }) => {
                     )}
                   </div>
                   <div className="col-lg-2" style={{ textAlign: "center" }}>
-                    <button type="button" className="btn btn-danger">
+                    <button onClick={() => detail.block_person(user[0].id, user[0].first_name + " " + user[0].lastname)} type="button" className="btn btn-danger">
                       Bloquer
                     </button>
                   </div>
@@ -168,21 +168,26 @@ const User_page = ({ user, my_profile, loader, detail, get_user }) => {
                         }
                         {
                           my_profile &&
-                          <div className="row">
-                            <div className="col-sm-6 col-lg-6" style={{textAlign:"center"}}>
-                              <input type="text" value="Nouveau Tag"/>
+                            <div className="input-group">
+                              <input type="text" value={my_profile.newTag} onChange={(e) => my_profile.setNewTag(e.target.value)}  placeholder="Nouveau tag" className="form-control" aria-label="Text input with segmented dropdown button"/>
+                              <div class="input-group-append">
+                                <button type="button" className="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  Suggestions{" "}
+                                  <span className="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <div className="dropdown-menu">
+                                  {
+                                    my_profile.suggestions[0] ?
+                                    my_profile.suggestions.map( suggestion => {
+                                    return <a style={{cursor:"pointer"}} onClick={(e) => my_profile.setNewTag(suggestion)} className="dropdown-item">{ suggestion }</a>
+                                    })
+                                    :
+                                    <a className="dropdown-item">Aucun tag a affiché</a>
+                                  }
+                                </div>
+                                <button type="button" onClick={() => my_profile.send_tags()} className="btn btn-success">Ajouter</button>
+                              </div>
                             </div>
-                            <div className="col-sm-6 col-lg-6" style={{textAlign:"center"}}>
-                              <button
-                                type="button"
-                                onClick={() => history.push("/users")}
-                                className="btn btn-success btn-block"
-                                style={{ width: "150px", margin: "auto" }}
-                              >
-                                Ajouter
-                              </button>
-                          </div>
-                      </div>
                         }
                       </div>
                     </div>
