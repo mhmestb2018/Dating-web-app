@@ -62,6 +62,7 @@ const get_custom_user_list = (path) => {
   });
 }
 
+const [geoloc_pos, setGeoloc_pos] = useState([]);
   useEffect(() => {
     (async function () {
       get_custom_user_list("/users");
@@ -82,11 +83,14 @@ const get_custom_user_list = (path) => {
     })();
   }, []);
 
-  const [geoloc_pos, setGeoloc_pos] = useState([]);
   const [frame, setFrame] = useState(0);
 
 
-
+  function mapTilerProvider (x, y, z, dpr) {
+    return `https://a.tile.openstreetmap.org/${z}/${x}/${y}.png`
+    // `https://a.tile.openstreetmap.fr/osmfr/${z}/${x}/${y}.png` pour une carte localisée fr (icone de baguette pour les boulangeries par exemple)
+    // Dans les 2 cas, 3 serveurs existent, "a", "b" et "c" (début d'url), à vérifier si ça revient bien au même ou si y'a des différences de style/qualité
+  }
   return (
     <div className="container-fluid">
       <div className="row">
@@ -227,13 +231,20 @@ const get_custom_user_list = (path) => {
                 }
               </div>
               : frame == 2 ?
-                <Map center={geoloc_pos} zoom={10} width={600} height={400}>
+              <Map center={["2.5167", "0.7667"]} zoom={1} width={600} height={400} provider={mapTilerProvider} >
+              <Marker anchor={["2.5167", "0.7667"]} payload={1} onClick={({ event, anchor, payload }) => {}} />
+              <Overlay anchor={["2.5167", "0.7667"]} offset={[120, 79]}>
+              <img src='https://cdn.intra.42.fr/users/medium_pcachin.jpg' width={24} height={15} alt='' />
+              </Overlay>
+              </Map>
+              /*
+                <Map center={geoloc_pos} zoom={10} width={600} height={400} provider={mapTilerProvider}  dprs={[1, 2]} >
                 <Marker anchor={geoloc_pos} payload={1} onClick={({ event, anchor, payload }) => {}} />
             
                 <Overlay anchor={geoloc_pos} offset={[120, 79]}>
                   <img src='https://cdn.intra.42.fr/users/medium_pcachin.jpg' width={24} height={15} alt='' />
                 </Overlay>
-              </Map>
+              </Map>*/
               : frame == 3 ?
               <div className="row">
                 {users && users.map((user) => (

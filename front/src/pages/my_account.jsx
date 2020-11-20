@@ -11,6 +11,11 @@ const MyAccount = ({toast}) => {
 
     const [blocked_persons, setBlocked_persons] = useState([]);
 
+    function mapTilerProvider (x, y, z, dpr) {
+      return `https://a.tile.openstreetmap.org/${z}/${x}/${y}.png`
+      // `https://a.tile.openstreetmap.fr/osmfr/${z}/${x}/${y}.png` pour une carte localisée fr (icone de baguette pour les boulangeries par exemple)
+      // Dans les 2 cas, 3 serveurs existent, "a", "b" et "c" (début d'url), à vérifier si ça revient bien au même ou si y'a des différences de style/qualité
+    }
     const unblock_person = (user_id, name) => {
         axios.post('/users/' + user_id,
         {
@@ -131,7 +136,7 @@ const MyAccount = ({toast}) => {
                             Mes infos de connexion
                         </h5>
                         <div className="card-body" style={{textAlign:"center"}}>
-                            <Map center={["45.75", "4.85"]} zoom={12} width={600} height={400}>
+                            <Map center={["45.75", "4.85"]} zoom={10} width={600} height={400} provider={mapTilerProvider} >
                                 <Marker anchor={["45.75", "4.85"]} payload={1} onClick={({ event, anchor, payload }) => {}} />
                                 <Overlay anchor={["45.75", "4.85"]} offset={[120, 79]}>
                                 <img src='https://cdn.intra.42.fr/users/medium_pcachin.jpg' width={24} height={15} alt='' />
