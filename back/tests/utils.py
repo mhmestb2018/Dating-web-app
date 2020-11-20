@@ -20,7 +20,9 @@ def login(users):
         payload = {
             'email': u["email"],
             'password': u["password"],
-            'remember_me': True
+            'remember_me': True,
+            "lat": u["lat"],
+            "lon": u["lon"]
         }
         response = u["session"].post(f"{url}/login", data=payload)
     # print(response)

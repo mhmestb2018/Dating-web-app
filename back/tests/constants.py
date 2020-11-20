@@ -16,7 +16,9 @@ user1 = {
     "validated": 1,
     "password": "blabla123456",
     "banned": 0,
-    "session": requests.Session() 
+    "session": requests.Session(),
+    "lat": 45.763420,
+    "lon": 4.834277
 }
 
 user2 = {
@@ -33,5 +35,7 @@ user2 = {
     "validated": 1,
     "password": "blabla234567",
     "banned": 0,
-    "session": requests.Session() 
+    "session": requests.Session(),
+    "lat": 45.763420,
+    "lon": 4.834277
 }

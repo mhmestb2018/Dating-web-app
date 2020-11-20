@@ -18,7 +18,9 @@ def test_base_content():
         "lat": 42.0,
         "lon": -1.01,
         "password": "blabla123456",
-        "session": requests.Session() 
+        "session": requests.Session(),
+        "lat": 45.763420,
+        "lon": 4.834277
     }
     import copy
     check = copy.deepcopy(tmp)
