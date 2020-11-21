@@ -13,6 +13,7 @@ import axios from "axios";
 
 const UserList = () => {
   const [users, setUSers] = useState([]);
+  const [profile, setProfile] = useState([]);
 
 
   const [ageMin, setAgeMin] = useState(18);
@@ -62,19 +63,20 @@ const get_custom_user_list = (path) => {
   });
 }
 
-const [geoloc_pos, setGeoloc_pos] = useState([]);
-  useEffect(() => {
-    (async function () {
-      get_custom_user_list("/users");
-    })();
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(getPosition);
-    }
-  }, []);
-  function getPosition(position) {
-    setGeoloc_pos(Array(position.coords.latitude, position.coords.longitude))
-  }
-
+function get_profile()//RECUPERE LA POSITION DU USER ET TOUT !
+{
+  axios.get("/profile")
+  .then((res) => {
+    //console.log("SuCcEsS:");
+    console.log(res)
+    setUSers(res.data.users);
+    const [profile, setProfile] = useState(null);
+  })
+  .catch(function (error) {
+    console.log(error);
+    //alert("error_get_users");
+  });
+}
 
   //const [users, setUSers] = useState([]);
   useEffect(() => {
@@ -232,7 +234,7 @@ const [geoloc_pos, setGeoloc_pos] = useState([]);
               </div>
               : frame == 2 ?
               <Map center={[49.5167, 5.7667]} zoom={10} width={600} height={400} provider={mapTilerProvider} >
-                <Marker anchor={["2.5167", "0.7667"]} payload={1} onClick={({ event, anchor, payload }) => {}} />
+                <Marker anchor={[49.5167, 5.7667]} payload={1} onClick={({ event, anchor, payload }) => {}} />
                 <Overlay anchor={[49.5167, 5.7667]} offset={[120, 79]}>
                 <img src='https://cdn.intra.42.fr/users/medium_pcachin.jpg' width={24} height={15} alt='' />
                 </Overlay>

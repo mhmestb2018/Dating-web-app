@@ -133,19 +133,19 @@ const Mailbox = () => {
                 //return <div className="card" key={message.date}><div className="card-body">{message.content}</div></div>
                 if (message.from == userSelected.id)
                 return (
-                  <div key={message.date} style={{ textAlign:"right", border: "2px solid #dedede", backgroundColor: "#f1f1f1", borderRadius: "5px", padding: "10px", margin: "10px 0"}}>
-                  {/*<img src="/w3images/bandmember.jpg" alt="Avatar" style="width:100%;"/>*/}
-                  <p>{message.content}</p>
-                  <span >{message.date}</span>
-                </div>
-                )
-                else
-                  return (
                     <div key={message.date} style={{  border: "2px solid #ccc", backgroundColor: "#ddd", borderRadius: "5px", padding: "10px", margin: "10px 0"}}>
                     {/*<img src={userSelected.user.pictures[0]} alt="Avatar" style="width:100%;"/>*/}
                     <p>{message.content}</p>
                     <span >{message.date}</span>
                   </div>
+                )
+                else
+                  return (
+                  <div key={message.date} style={{ textAlign:"right", border: "2px solid #dedede", backgroundColor: "#f1f1f1", borderRadius: "5px", padding: "10px", margin: "10px 0"}}>
+                  {/*<img src="/w3images/bandmember.jpg" alt="Avatar" style="width:100%;"/>*/}
+                  <p>{message.content}</p>
+                  <span >{message.date}</span>
+                </div>
                   )
             })
           }
