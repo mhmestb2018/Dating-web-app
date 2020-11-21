@@ -209,7 +209,7 @@ const [geoloc_pos, setGeoloc_pos] = useState([]);
                 <a className={frame == 3 ? "nav-link active" : "nav-link"} style={{cursor: "pointer"}} onClick={() => {setFrame(3);get_user_list("/liked_by")}} >Mes likes</a>
               </li>
               <li className="nav-item">
-                <a className={frame == 4 ? "nav-link active" : "nav-link"} style={{cursor: "pointer"}} onClick={() => {setFrame(4);get_user_list("/users")}} >Mes personnes blockées</a>
+                <a className={frame == 4 ? "nav-link active" : "nav-link"} style={{cursor: "pointer"}} onClick={() => {setFrame(4);get_user_list("/blocked")}} >Mes personnes blockées</a>
               </li>
             </ul> 
             <br/>
