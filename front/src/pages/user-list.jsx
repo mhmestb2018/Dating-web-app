@@ -231,11 +231,11 @@ const [geoloc_pos, setGeoloc_pos] = useState([]);
                 }
               </div>
               : frame == 2 ?
-              <Map center={["2.5167", "0.7667"]} zoom={1} width={600} height={400} provider={mapTilerProvider} >
-              <Marker anchor={["2.5167", "0.7667"]} payload={1} onClick={({ event, anchor, payload }) => {}} />
-              <Overlay anchor={["2.5167", "0.7667"]} offset={[120, 79]}>
-              <img src='https://cdn.intra.42.fr/users/medium_pcachin.jpg' width={24} height={15} alt='' />
-              </Overlay>
+              <Map center={[49.5167, 5.7667]} zoom={10} width={600} height={400} provider={mapTilerProvider} >
+                <Marker anchor={["2.5167", "0.7667"]} payload={1} onClick={({ event, anchor, payload }) => {}} />
+                <Overlay anchor={[49.5167, 5.7667]} offset={[120, 79]}>
+                <img src='https://cdn.intra.42.fr/users/medium_pcachin.jpg' width={24} height={15} alt='' />
+                </Overlay>
               </Map>
               /*
                 <Map center={geoloc_pos} zoom={10} width={600} height={400} provider={mapTilerProvider}  dprs={[1, 2]} >
