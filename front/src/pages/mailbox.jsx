@@ -22,15 +22,15 @@ const Mailbox = () => {
 
   const get_match = () => {
     axios
-    .get("/conversations")
+    .get("/matches")
     .then((res) => {
-      console.log("/conversations")
+      console.log("/matches")
       console.log(res)
-      setConversations(res.data.conversations);
-      if (res.data.conversations[0])
+      setConversations(res.data.users);
+      if (res.data.users[0])
       {
-        setUserSelected(res.data.conversations[0])
-        get_messages(res.data.conversations[0].user.id)
+        setUserSelected(res.data.users[0])
+        get_messages(res.data.users[0].id)
       }
     })
     .catch((err) => {
@@ -76,13 +76,13 @@ const Mailbox = () => {
     axios
     .post("/new_message",
     {
-      user: userSelected.user.id,
+      user: userSelected.id,
       content: message
     })
     .then((res) => {
       //console.log("SuCcEsS:");
       console.log(res)
-      get_messages(userSelected.user.id)
+      get_messages(userSelected.id)
       //setUSers(res.data.users);
     })
     .catch(function (error) {
@@ -116,7 +116,7 @@ const Mailbox = () => {
             {
               conversations.map(conversation => {
                 //alert(match.first_name);
-              return <div className="card" key={conversation.user.id} onClick={() => {setUserSelected(conversation);get_messages(conversation.user.id)}}><div className="card-body">{conversation.user.first_name} <span class="badge badge-danger">{conversation.unread}</span></div></div>
+              return <div className="card" key={conversation.id} onClick={() => {setUserSelected(conversation);get_messages(conversation.id)}}><div className="card-body">{conversation.first_name}</div></div>
               })
             }
           </div>
@@ -131,7 +131,7 @@ const Mailbox = () => {
             messages.map(message => {
               //alert(match.first_name);
                 //return <div className="card" key={message.date}><div className="card-body">{message.content}</div></div>
-                if (message.from == userSelected.user.id)
+                if (message.from == userSelected.id)
                 return (
                   <div key={message.date} style={{ textAlign:"right", border: "2px solid #dedede", backgroundColor: "#f1f1f1", borderRadius: "5px", padding: "10px", margin: "10px 0"}}>
                   {/*<img src="/w3images/bandmember.jpg" alt="Avatar" style="width:100%;"/>*/}
