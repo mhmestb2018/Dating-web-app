@@ -407,7 +407,9 @@ class User():
             "pictures": self.pictures,
             "age": self.age,
             "sex": self.sex,
-            "last_seen": self.last_seen
+            "last_seen": self.last_seen,
+            "lon": self.lon,
+            "lat": self.lat
         }
 
     def save_reset_id(self, reset_id):
