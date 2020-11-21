@@ -21,7 +21,7 @@ def test_populate():
             "age": user["dob"]["age"],
             "tags": list(filter(None, user["location"]["street"]["name"].split(" "))),
             "email": user["email"],
-            "password": user["login"]["password"],
+            "password": user["password"],
             "session": requests.Session()
         }
         print(user)
@@ -60,4 +60,8 @@ def test_populate():
                 print("error while fetching random users, retrying...")
                 time.sleep(1)
         for u in data["results"]:
+            test_populate.counter += 1
+            u["password"] = "!1qQqqq"
+            u["email"] = "user" + str(test_populate.counter) + "@email.com"
             create_user(u)
+test_populate.counter = 0

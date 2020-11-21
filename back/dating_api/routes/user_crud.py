@@ -26,7 +26,10 @@ def login(payload):
         return error("Utilisateur introuvable", 404)
     if not user.check_password(payload["password"]):
         return error("Mot de passe incorrect", 400)
+    if not "lat" in payload or not "lon" in payload:
+        return error("Position manquante", 400)
     session["user"] = user.id
+    user.update({"lat": payload["lat"], "lon": payload["lon"]})
     if payload["remember_me"] == True:
         session.permanent = True
     delattr(user, "password")

@@ -10,7 +10,7 @@ import axios from 'axios';
 const MyAccount = ({toast}) => {
 
     const [blocked_persons, setBlocked_persons] = useState([]);
-    const [myProfile, setMyProfile] = useState([]);
+    const [myProfile, setMyProfile] = useState(null);
 
 
     function mapTilerProvider (x, y, z, dpr) {
@@ -82,7 +82,7 @@ const MyAccount = ({toast}) => {
                 <div className="card-body">
                   <div className="row">
                     <div className="col-lg-4">Adresse email:</div>
-                    <div className="col-lg-4">address@email.com</div>
+                    <div className="col-lg-4">{myProfile && myProfile.email || "Aucune information ..."}</div>
                     <div className="col-lg-4" style={{ textAlign: "center" }}>
                       <button type="button" className="btn btn-success">
                         Modifier
@@ -146,20 +146,14 @@ const MyAccount = ({toast}) => {
                         <div className="card-body" style={{textAlign:"center"}}>
                           {
                             myProfile &&
-                          <Map center={[ parseFloat(myProfile.lat), parseFloat(myProfile.lon)]} zoom={10} width={600} height={400} provider={mapTilerProvider} >
+                          <Map center={[ myProfile.lat, myProfile.lon]} zoom={10} width={600} height={400} provider={mapTilerProvider} >
                             <Marker anchor={[myProfile.lat, myProfile.lon]} payload={1} onClick={({ event, anchor, payload }) => {}} />
-                            <Overlay anchor={[49.5167, 5.7667]} offset={[120, 79]}>
+                            <Overlay anchor={[myProfile.lat, myProfile.lon]} offset={[120, 79]}>
                             <img src='https://cdn.intra.42.fr/users/medium_pcachin.jpg' width={24} height={15} alt='' />
                             </Overlay>
                           </Map> ||
                             <div>Aucune info de connexion ...</div>
                           }
-                            <br/>
-                            <br/>
-                            <br/>
-                            <button type="button" className="btn btn-success">
-                                Modifier ma position
-                            </button>
                             <br/>
                             <br/>
                             <br/>
