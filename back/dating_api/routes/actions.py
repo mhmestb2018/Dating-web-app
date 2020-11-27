@@ -1,6 +1,7 @@
 from flask import Blueprint
 
 from ..models.user import User
+from ..models.notification import Notification
 from ..utils import error, success
 from ..utils.decorators import payload_required, jsonify_output, validated_required
 
@@ -65,4 +66,5 @@ def user_profile(user_id, user):
         return error("Utilisateur introuvable", 404)
     if user.id != found.id:
         user.visit(found)
+    Notification.emit(user_id, user.id, "visit")
     return success(found.public_as(user))

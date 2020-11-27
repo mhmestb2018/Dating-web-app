@@ -16,8 +16,10 @@ def test_messages():
     users_list = response.json()["conversations"]
     assert len(users_list) == 0
 
-    # MISSING TEST (match required not implemented yet):
-    #   Check 403 on new_message before/between likes 
+    # user2 send to user1 before like
+    response = user2["session"].post(f"{url}/new_message", json={"user": user1["id"], "content": test_content})
+    print(response.status_code)
+    assert response.status_code == 403
 
     # mutual like to allow messages
     like(user1, user2)
@@ -62,6 +64,7 @@ def test_messages():
     assert len(messages_list) == 2
     assert messages_list[0]["content"] == test_content
     assert messages_list[0]["unread"] == True
+    assert response.json()["unread"] > 0
 
     # user 1 should be able to fetch 2 messages, wich should now be READ
     response = user1["session"].post(f"{url}/messages", json={"user": user2["id"]})
@@ -70,6 +73,7 @@ def test_messages():
     assert len(messages_list) == 2
     assert messages_list[0]["content"] == test_content
     assert messages_list[0]["unread"] == False
+    assert response.json()["unread"] == 0
 
     # user1 has no unread messages anymore
     response = user1["session"].get(f"{url}/conversations")

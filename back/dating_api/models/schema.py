@@ -32,6 +32,7 @@ class Schema:
         self.create_tags_table()
         self.create_user_tags_table()
         self.create_messages_table()
+        self.create_notifications_table()
 
     def create_users_table(self):
 
@@ -203,7 +204,26 @@ class Schema:
         """
 
         self.cur.execute(query)
-        pass
+
+    def create_notifications_table(self):
+
+        query = """
+        CREATE TABLE IF NOT EXISTS notifications (
+        from_id int NOT NULL,
+        user_id int NOT NULL,
+        type varchar(64) NOT NULL,
+        date timestamp(6) DEFAULT NOW() NOT NULL,
+        unread int DEFAULT 1,
+        
+        PRIMARY KEY (date),
+        FOREIGN KEY (from_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        ) ENGINE=InnoDB;
+        """
+
+        self.cur.execute(query)
+
+# from_id, user_id, type, unread, date
 
     @retry(retry_on_exception=retry_on_db_error, wait_fixed=1000, stop_max_attempt_number=3)
     def exec(self, query, args=()):
