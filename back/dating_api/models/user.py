@@ -177,6 +177,11 @@ class User():
             return False
         query = "INSERT INTO likes (user_id, liked) VALUES (?, ?)"
         db.exec(query, (self.id, user.id))
+        from .notification import Notification
+        if self.matches_with(user):
+            Notification.emit(user.id, self.id, "match")
+        else:
+            Notification.emit(user.id, self.id, "like")
         return True
 
     def report(self, user):
@@ -551,13 +556,3 @@ class User():
                 } for t in rows]
         return {"conversations": users}
 
-    def read_messages_with(self, sender_id):
-        query = """
-            UPDATE
-                messages m
-            SET
-                unread = 0
-            WHERE
-                m.from_id=? and m.to_id=?
-        """
-        rows = db.exec(query, (sender_id, self.id,))

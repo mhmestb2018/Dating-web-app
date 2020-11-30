@@ -3,6 +3,7 @@ from flask import jsonify
 from datetime import datetime
 
 from .. import db
+from .notification import Notification
 
 class Message():
     
@@ -19,6 +20,7 @@ class Message():
                 """
             values = db.fetch(query, (from_id, to_id,))
             self.date = values[0][0]
+            Notification.emit(to_id, from_id, "message")
         if type(self.date) is str:
             self.date = datetime.strptime(self.date, "%a, %d %b %Y %H:%M:%S GMT")
 
@@ -46,3 +48,15 @@ class Message():
             'content': self.content,
             'unread': self.unread,
         }
+
+    @staticmethod
+    def read_messages_with(user_id, sender_id):
+        query = """
+            UPDATE
+                messages m
+            SET
+                unread = 0
+            WHERE
+                m.from_id=? and m.to_id=?
+        """
+        rows = db.exec(query, (sender_id, user_id,))

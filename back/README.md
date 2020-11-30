@@ -14,6 +14,7 @@ This API uses `POST` request to communicate and HTTP [response codes](https://en
 201: Ressource created
 400: Bad request
 401: Unauthorized
+403: Forbidden
 404: Cannot be found
 405: Method not allowed 
 418: I'm a teapot
@@ -81,7 +82,9 @@ Content-Type: application/json
 {
     "email": "foo@bar.fr",
     "password": "1234567",
-    "remember_me: true 
+    "remember_me": true,
+    "lat": 14.51,
+    "lon": 42.101
 }
 ```
 **Successful Response:**
@@ -704,6 +707,7 @@ Content-Type: application/json
             "unread": false,
         },
     ],
+    "uread": 1
 }
 ```
 
@@ -734,6 +738,64 @@ Content-Type: application/json
         "date": "Tue, 29 Sep 2000 00:00:23 GMT",
         "unread": true,
     }
+}
+```
+
+## Get notifications
+
+**You send:**  Your `session` cookie
+**You get:** A JSON encoded list of notifications
+
+**Request:**
+```json
+GET /notifications HTTP/1.1
+Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
+Content-Type: application/json
+```
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+    "notifications":  [
+        {
+            "from": {
+                "blocked": false,
+                "first_name": "bertrand",
+                "id": 7,
+                "liked": false,
+                "matches": false,
+                "pictures": [],
+                "sex": "m",
+                "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
+                "age": 21
+            },
+            "type": "visit",
+            "date": "Tue, 29 Sep 2000 00:00:00 GMT",
+            "unread": true,
+        }
+    ],
+    "uread": 1
+}
+```
+
+## Read notifications
+
+**You send:**  Your `session` cookie
+**You get:** A success code. Your notifications will now be read
+
+**Request:**
+```json
+PUT /notifications HTTP/1.1
+Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
+Content-Type: application/json
+```
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+    "pcachin": "true",
 }
 ```
 
