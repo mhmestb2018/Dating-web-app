@@ -1,6 +1,8 @@
 import types
 
 from .errors import InvalidData
+from ..models.sexs import Sexs
+from ..models.orientations import Orientations
 
 def printable(fun):
     """
@@ -52,29 +54,23 @@ class Validator():
     @printable
     def orientation(val:str):
         val = val.lower()
-        if val in ("straight", "hetero", "hétéro", "heterosexual", "heterosexuel", "hétérosexuel", "hétérosexuelle", "heterosexuelle"):
-            return "heterosexual"
-        if val in ("homosexual", "homosexuel", "homosexuelle", "gay", "lesbienne", "homo", "goudou"):
-            return "homosexual"
-        if val in ("bisexuel", "bisexual", "bi"):
-            return "bisexual"
-        if val in ("asexual", "asexuel"):
-            return "asexual"
-        if val in ("autre", "other"):
-            return "other"
-        raise InvalidData(f"{val} is an uncommon sex")
+
+        for k in Orientations.available:
+            if val in Orientations.available[k]["accepted"]:
+                return k
+
+        raise InvalidData(f'{val} is an uncommon orientation, please use "other" if nothing else fits')
 
     @staticmethod
     @printable
     def sex(val:str):
         val = val.lower()
-        if val in ("m", "h", "homme", "male", "mec", "guy", "pelo", "bite", "phallus", "penis"):
-            return "m"
-        if val in ("f", "female", "femme", "meuf", "boobs", "chatte", "fouffe", "teucha"):
-            return "f"
-        if val in ("autre", "other"):
-            return "other"
-        raise InvalidData(f"{val} is an uncommon sex")
+
+        for k in Sexs.available:
+            if val in Sexs.available[k]["accepted"]:
+                return k
+
+        raise InvalidData(f'{val} is an uncommon sex, please use "other" if nothing else fits')
 
     @staticmethod
     @printable
@@ -137,4 +133,3 @@ class Validator():
     @staticmethod
     def tag(val):
         return Validator.name(val, limit=99).lower()
-        

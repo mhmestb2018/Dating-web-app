@@ -512,7 +512,7 @@ Content-Type: application/json
 }
 ```
 
-## Visits
+## Blocked users
 
 **You send:**  Your `session` cookie.  
 **You get:** A list of users you blocked
@@ -520,6 +520,25 @@ Content-Type: application/json
 **Request:**
 ```json
 GET /blocked HTTP/1.1
+Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
+```
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+    "users":  [...],
+}
+```
+
+## Suggested users
+
+**You send:**  Your `session` cookie.  
+**You get:** A list of users you blocked
+
+**Request:**
+```json
+GET /suggested HTTP/1.1
 Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
 ```
 **Successful Response:**

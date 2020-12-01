@@ -6,6 +6,7 @@ from .. import db
 from ..utils import Validator
 from .tag import Tag
 from ..utils.errors import InvalidData
+from .orientations import Orientations
 
 class User():
     __fields__ = (
@@ -15,31 +16,6 @@ class User():
         "validated", "banned", "last_seen", "age", "lat", "lon")
     __restricted_fields__ = ("id", "validated", "views_count", "likes_count", "last_seen")
     __private_fields__ = ("last_seen", "banned")
-
-    def list_users(self):
-        query = """
-            SELECT
-                *
-            FROM
-                users
-                LEFT OUTER JOIN (likes a
-                    INNER JOIN likes b
-                        ON a.user_id = b.liked
-                        AND a.liked = b.user_id
-                        AND b.user_id=?)
-                    ON users.id = a.user_id
-                LEFT OUTER JOIN blocks
-                    ON users.id = blocks.user_id
-                    AND blocks.blocked=?
-            WHERE
-                blocks.user_id IS NULL
-                AND b.user_id IS NULL
-                AND users.validated=1
-                AND users.id != ?
-            """
-        rows = db.fetch(query, (self.id, self.id, self.id))
-
-        return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
 
     @staticmethod
     def build_from_db_tuple(values):
@@ -297,19 +273,6 @@ class User():
         rows = db.fetch(query, (self.id,))
         return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
     
-    # @property
-    # def liked_list(self):
-    #     query = """
-    #         SELECT
-    #             *
-    #         FROM users
-    #         INNER JOIN likes
-    #         ON users.id = likes.user_id
-    #             AND likes.liked = ?
-    #         """
-    #     rows = db.fetch(query, (self.id,))
-    #     return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
-    
     @property
     def visits_list(self):
         query = """
@@ -462,7 +425,7 @@ class User():
         # print(params, [t.name for t in tags])
         db.exec(query, params)
 
-    def search(self, payload):
+    def search(self, payload=None):
         age_min = 18
         age_max = 99
         score_min = 0
@@ -555,4 +518,87 @@ class User():
                     "unread": int(t[-1]) if t[-1] != None else 0
                 } for t in rows]
         return {"conversations": users}
+
+    # def list_users(self):
+    #     query = """
+    #         SELECT
+    #             *
+    #         FROM
+    #             users
+    #             LEFT OUTER JOIN (likes a
+    #                 INNER JOIN likes b
+    #                     ON a.user_id = b.liked
+    #                     AND a.liked = b.user_id
+    #                     AND b.user_id=?)
+    #                 ON users.id = a.user_id
+    #             LEFT OUTER JOIN blocks
+    #                 ON users.id = blocks.user_id
+    #                 AND blocks.blocked=?
+    #         WHERE
+    #             blocks.user_id IS NULL
+    #             AND b.user_id IS NULL
+    #             AND users.validated=1
+    #             AND users.id != ?
+    #         """
+    #     rows = db.fetch(query, (self.id, self.id, self.id))
+
+    #     return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
+
+    @property
+    def suggested(self):
+        return self.search()
+        # everything = 0
+        # opposite = -1
+
+        # target_sex = 0
+        # target_orientation = self.orientation
+        # if self.orientation != "bisexual":
+        #     if self.orientation == "heterosexual":
+        #         target_sex = opposite
+        #     else:
+        #         target_sex = self.sex
+
+        # query = """
+        #     SELECT DISTINCT
+        #         u.*
+        #     FROM
+        #         users u
+        #         LEFT OUTER JOIN (likes a
+        #             INNER JOIN likes b
+        #                 ON a.user_id = b.liked
+        #                 AND a.liked = b.user_id
+        #                 AND b.user_id=?)
+        #             ON u.id = a.user_id
+        #         LEFT OUTER JOIN blocks
+        #             ON (u.id = blocks.user_id AND blocks.blocked=?)
+        #                 OR (u.id = blocks.blocked AND blocks.user_id=?)
+        #         LEFT JOIN user_tags ut
+        #             ON ut.user_id = u.id
+        #         LEFT JOIN tags t
+        #             ON t.id = ut.tag_id
+        #     WHERE
+        #         blocks.user_id IS NULL
+        #         AND b.user_id IS NULL
+        #         AND u.validated=1
+        #         AND u.id != ?
+        #         AND u.age >= ?
+        #         AND u.age <= ?
+        #         AND u.validated=1
+        #         AND st_distance(POINT(u.lat, u.lon), POINT(?, ?)) * 111 <= ?
+        #         AND u.likes_count / (0.5 * ((u.views_count + 1) + ABS(u.views_count - 1))) >= ?
+        #         AND u.likes_count / (0.5 * ((u.views_count + 1) + ABS(u.views_count - 1))) <= ?
+        #     """
+        # if len(tags) > 0:
+        #     tags_query = []
+        #     junc = " "
+        #     for t in tags:
+        #         tags_query.append("t.name=?")
+        #     if len(tags) > 1:
+        #         junc = " OR "
+        #     query += " AND (" + junc.join(tags_query) + ")"
+
+
+        # rows = db.fetch(query, (self.id, self.id, self.id, self.id, age_min, age_max, self.lat, self.lon, distance_max, score_min, score_max, *tags))
+
+        # return [User.build_from_db_tuple(t).intro_as(self) for t in rows]
 
