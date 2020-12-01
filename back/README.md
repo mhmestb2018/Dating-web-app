@@ -818,5 +818,42 @@ Content-Type: application/json
 }
 ```
 
+## Get available values for sex and orientation fields
+
+**You send:**  Your `session` cookie
+**You get:** A list of fields for which only certain values are possible, as well as the different wordings accepted
+
+**Request:**
+```json
+GET /fields HTTP/1.1
+Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
+Content-Type: application/json
+```
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+    "orientation": {
+        "heterosexual": {
+            "accepted": ["hetero", "straight", ...]
+        },
+        "homosexual": {
+            "accepted": ["homo", "lesbian", ...]
+        },
+        ...
+    },
+    "sex": {
+        "cis-male": {
+            "accepted": ["h", "male",...]
+        },
+        "trans-female": {
+            "accepted": ["trans-female", "shemale"...]
+        },
+        ...
+    },
+}
+```
+
 ## Author
 * **Kevin Azoulay** @ 42 Lyon
