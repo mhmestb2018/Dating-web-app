@@ -46,14 +46,14 @@ class Sexs():
     
     @staticmethod
     def get():
-        return Sexs.available.keys
+        return Sexs.available.keys()
 
     @staticmethod
     def same(name):
         res = []
-        if name in Sexs.available.keys:
+        if name in Sexs.get():
             gender = Sexs.available[name].gender_type
-            for k in Sexs.available.keys:
+            for k in Sexs.get():
                 if Sexs.available[k].gender_type == gender:
                     res.append(k)
         if len(res) == 0:
@@ -63,9 +63,9 @@ class Sexs():
     @staticmethod
     def opposite(name):
         res = []
-        if name in Sexs.available.keys:
+        if name in Sexs.get():
             gender = Sexs.available[name].gender_type
-            for k in Sexs.available.keys:
+            for k in Sexs.get():
                 if Sexs.available[k].gender_type != gender:
                     res.append(k)
         if len(res) == 0:

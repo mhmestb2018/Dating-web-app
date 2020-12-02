@@ -44,27 +44,26 @@ class Orientations():
     
     @staticmethod
     def get():
-        return Orientations.available.keys
+        return Orientations.available.keys()
 
     @staticmethod
     def target(sex, orientation):
-        if orientation not in Orientations.keys:
-            return None
-
         target_sex = None
-        if Orientations.available[orientation]["target_sex"] == TargetSex.SAME:
+        if Orientations.available[orientation]["target_sex"] == Orientations.TargetSex.SAME:
             target_sex = Sexs.same(sex)
-        elif Orientations.available[orientation]["target_sex"] == TargetSex.OPPOSITE:
+        elif Orientations.available[orientation]["target_sex"] == Orientations.TargetSex.OPPOSITE:
             target_sex = Sexs.opposite(sex)
+        elif Orientations.available[orientation]["target_sex"] == Orientations.TargetSex.ALL:
+            target_sex = Sexs.get()
 
         target_orientation = None
-        if Orientations.available[orientation]["target_orientation"] == TargetOrientation.HETERO:
-            target_orientation = [Orientations.available.keys[0]]
-        elif Orientations.available[orientation]["target_orientation"] == TargetOrientation.HOMO:
-            target_orientation = [Orientations.available.keys[1]]
-        elif Orientations.available[orientation]["target_orientation"] == TargetOrientation.ALL:
-            target_orientation = Orientations.available.keys
+        if Orientations.available[orientation]["target_orientation"] == Orientations.TargetOrientation.HETERO:
+            target_orientation = [Orientations.get()[0]]
+        elif Orientations.available[orientation]["target_orientation"] == Orientations.TargetOrientation.HOMO:
+            target_orientation = [Orientations.get()[1]]
+        elif Orientations.available[orientation]["target_orientation"] == Orientations.TargetOrientation.ALL:
+            target_orientation = Orientations.get()
         else:
-            target_orientation = [Orientations.available.keys[-1]]
+            target_orientation = [Orientations.get()[-1]]
 
         return {"sexs": target_sex, "orientations": target_orientation}
