@@ -59,10 +59,31 @@ const UsersDetail = ({ like_management, toast }) => {
   }, []);
 
   const [loader, setLoader] = useState(true);
-
+  const report_person = (user_id, name) => {
+    axios.post('/users/' + user_id,
+    {
+      "report" : true
+    })
+    .then(res => {
+        console.log(res);
+        console.log(res.data);
+          toast.success("Vous avez bien reporté " + name + " :)");
+    })
+    .catch(error => {
+          // console.log(error.response.data);
+          // console.log(error.response.status);
+          //console.log(error);
+          //alert(error.response.data.error)
+      if (error.response.data)
+        toast.error(error.response.data.error);
+      else
+        toast.error("Erreur de connection avec le serveur");
+        //toast.error("error");
+      });
+}
   return (
     <div>
-      <User_page user={user} my_profile={false} loader={loader} detail={{match_id, like_management, block_person}} get_user={get_user}/>
+      <User_page user={user} my_profile={false} loader={loader} detail={{match_id, like_management, block_person, report_person}} get_user={get_user}/>
     </div>
   );
 };

@@ -33,6 +33,14 @@ const User_page = ({ user, my_profile, loader, detail, get_user }) => {
                 </div>
               </div>
             }
+              <div className="row">
+                <div className="col-sm-6 col-lg-6" style={{textAlign:"center"}}>
+                  Score :
+                </div>
+                <div className="col-sm-6 col-lg-6" style={{textAlign:"center"}}>
+                  {user[0].score}
+                </div>
+              </div>
             <div className="card">
               <div className="card-body">
                 <div className="card-image">
@@ -106,7 +114,7 @@ const User_page = ({ user, my_profile, loader, detail, get_user }) => {
                 <div className="row">
                   <div className="col-lg-3"></div>
                   <div className="col-lg-2" style={{ textAlign: "center" }}>
-                    <button type="button" className="btn btn-warning">
+                    <button onClick={() => detail.report_person(user[0].id, user[0].first_name + " " + (user[0].lastname ? user[0].lastname : ""))}  type="button" className="btn btn-warning">
                       Dénoncer un abus
                     </button>
                   </div>

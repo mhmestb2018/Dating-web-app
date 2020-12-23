@@ -219,6 +219,7 @@ const App: FunctionComponent = () => {
                     <Route exact path="/my_account" component={() => IsLogged && <My_account toast={toast}/> || <Home login={login} signup={signup} forget_password={forget_password}/>}/>
                     <Route component={PageNotFound}/>
                 </Switch>
+                <br/><br/>
                 {IsLogged && <Chat_widget />}
                 <Footer/>
             </div>

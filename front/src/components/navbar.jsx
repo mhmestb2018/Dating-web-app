@@ -1,11 +1,37 @@
-import React,{ FunctionComponent } from 'react';
+import React,{ FunctionComponent, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'
+import axios from 'axios';
+//import { time } from 'console';
 
-type Props = {
-    logout: () => void;
-};
 
-const Navbar: FunctionComponent<Props> = ({logout}) => {
+const Navbar = ({logout}) => {
+    
+    const [notif, setNotif] = useState([]);
+    const get_notifs = () => {
+        axios.get('/notifications')
+        .then(res => {
+            //alert('notifications');
+            console.log('notifications');
+            console.log(res);
+            console.log("OK")
+            setNotif(res.data.notifications)
+            console.log(notif.length)
+        })
+        .catch(error => {
+            // console.log(error.response.data);
+            // console.log(error.response.status);
+            //console.log(error);
+            //alert(error.response.data.error)
+            //toast.error("error");
+        });
+        setTimeout(() => {
+            get_notifs()
+        }, 8000);
+    }
+    useEffect(() => {
+        get_notifs()
+    }, []);
+    
     return (
         <nav className="navbar sticky-top navbar-expand-md navbar-dark bg-dark">
             <Link to="/" className="navbar-brand">
@@ -29,10 +55,16 @@ const Navbar: FunctionComponent<Props> = ({logout}) => {
                             </a>
                     </li>
                     <li className="nav-item">
-                        <a href="#" className="nav-link">
-                            <i className="fa fa-bell"> </i>
-                            {/*<i className="fa fa-bell-slash"> </i>*/}
-                        </a>
+                        {
+                            notif && notif.length > 0 ?
+                                <a href="#" className="nav-link" style={{color:"red"}}>
+                                    <i onClick={() => axios.put('/notifications').then(res => {alert('notifications lu')}).catch( res => alert('12'))} className="fa fa-bell"> </i>
+                                </a>
+                            :
+                                <a href="#" className="nav-link" >
+                                    {<i className="fa fa-bell-slash"> </i>}
+                                </a>
+                        }
                     </li>
                 </ul>
             </div>

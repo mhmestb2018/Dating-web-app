@@ -26,6 +26,9 @@ const Mailbox = () => {
     .then((res) => {
       console.log("/matches")
       console.log(res)
+      res.data.users.map(conversation => {
+        conversation.color = "white"
+      })
       setConversations(res.data.users);
       if (res.data.users[0])
       {
@@ -48,9 +51,7 @@ const Mailbox = () => {
     })
     .catch(function (error) {
       console.log(error);
-
       alert('error')
-      //alert("error_get_users");
     });
   }
 
@@ -115,8 +116,8 @@ const Mailbox = () => {
           <div className="list-group" style={{ paddingBottom: "15px" }}>
             {
               conversations.map(conversation => {
-                //alert(match.first_name);
-              return <div className="card" key={conversation.id} onClick={() => {setUserSelected(conversation);get_messages(conversation.id)}}><div className="card-body">{conversation.first_name}</div></div>
+              return userSelected.id == conversation.id && <div className="card" style={{backgroundColor:"red"}} key={conversation.id} onClick={() => {setUserSelected(conversation);get_messages(conversation.id)}}><div className="card-body">{conversation.first_name}</div></div> ||
+              <div className="card" style={{backgroundColor:conversation.color}} key={conversation.id} onClick={() => {setUserSelected(conversation);get_messages(conversation.id)}}><div className="card-body">{conversation.first_name}</div></div>
               })
             }
           </div>

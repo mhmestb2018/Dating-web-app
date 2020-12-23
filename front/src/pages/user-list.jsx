@@ -81,7 +81,7 @@ function get_profile()//RECUPERE LA POSITION DU USER ET TOUT !
   //const [users, setUSers] = useState([]);
   useEffect(() => {
     (async function () {
-      get_user_list("/matches");
+      get_custom_user_list("/users")
     })();
   }, []);
 
@@ -202,6 +202,9 @@ function get_profile()//RECUPERE LA POSITION DU USER ET TOUT !
                 <a className={frame == 0 ? "nav-link active" : "nav-link"} style={{cursor: "pointer"}} onClick={() => {setFrame(0);get_custom_user_list("/users")}}>Vue globales</a>
               </li>
               <li className="nav-item">
+                <a className={frame == 5 ? "nav-link active" : "nav-link"} style={{cursor: "pointer"}} onClick={() => {setFrame(5);get_user_list("/visits")}} >Mes visites</a>
+              </li>
+              <li className="nav-item">
                 <a className={frame == 1 ? "nav-link active" : "nav-link"} style={{cursor: "pointer"}} onClick={() => {setFrame(1);get_user_list("/matches")}}>Mes matchs</a>
               </li>
               <li className="nav-item">
@@ -216,23 +219,7 @@ function get_profile()//RECUPERE LA POSITION DU USER ET TOUT !
             </ul> 
             <br/>
             {
-              frame == 0 ?
-              <div className="row">
-                {users && users.map((user) => (
-                      <UserCard user={user} key={user.id} borderColorHover={getGenderColor(user.sex)}/>
-                    )
-                  )  || <div>No UsEr !</div>
-                }
-              </div>
-              : frame == 1 ?
-              <div className="row">
-                {users && users.map((user) => (
-                      <UserCard user={user} key={user.id} borderColorHover={getGenderColor(user.sex)}/>
-                    )
-                  )  || <div>No UsEr !</div>
-                }
-              </div>
-              : frame == 2 ?
+              frame == 2 ?
               <Map center={[49.5167, 5.7667]} zoom={10} width={600} height={400} provider={mapTilerProvider} >
                 <Marker anchor={[49.5167, 5.7667]} payload={1} onClick={({ event, anchor, payload }) => {}} />
                 <Overlay anchor={[49.5167, 5.7667]} offset={[120, 79]}>
@@ -247,14 +234,6 @@ function get_profile()//RECUPERE LA POSITION DU USER ET TOUT !
                   <img src='https://cdn.intra.42.fr/users/medium_pcachin.jpg' width={24} height={15} alt='' />
                 </Overlay>
               </Map>*/
-              : frame == 3 ?
-              <div className="row">
-                {users && users.map((user) => (
-                      <UserCard user={user} key={user.id} borderColorHover={getGenderColor(user.sex)}/>
-                    )
-                  )  || <div>No UsEr !</div>
-                }
-              </div>
               :
               <div className="row">
                 {users && users.map((user) => (

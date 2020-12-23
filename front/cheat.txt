@@ -1,0 +1,11 @@
+remplacer un element d une classe:
+    form: {name:"Guillaume", Age:2}
+    secondForm:{name:"Guillaume", Age:12}
+
+    setForm(...form, ...secondForm)
+
+    Resultat:
+    form:{name:"Guillaume", Age:12}
+
+le e de e.target.value est de type: (ceci n est pas une blague)
+    React.FormEvent<HTMLFormElement>
