@@ -24,7 +24,7 @@ def create_app():
         print(f"{os.environ['FLASK_GMAIL']} email configured", flush=True)
     app.app_context().push() 
 
-    from .routes import actions, user_crud, users_list, reset_password, healthcheck, list_tags, private_pictures, messages, notifications
+    from .routes import actions, user_crud, users_list, reset_password, healthcheck, list_tags, private_pictures, messages, notifications, fields
     app.register_blueprint(actions)
     app.register_blueprint(healthcheck)
     app.register_blueprint(user_crud)
@@ -34,6 +34,7 @@ def create_app():
     app.register_blueprint(private_pictures)
     app.register_blueprint(messages)
     app.register_blueprint(notifications)
+    app.register_blueprint(fields)
 
     socketio.init_app(app)
    

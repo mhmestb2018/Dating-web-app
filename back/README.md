@@ -367,6 +367,7 @@ Content-Type: application/json
     "first_name": "roger",
     "id": 2,
     "liked": true,
+    "liked_by": false,
     "matches": false,
     "orientation": "asexual",
     "pictures": [],
@@ -422,6 +423,7 @@ Content-Type: application/json
             "first_name": "roger",
             "id": 2,
             "liked": true,
+            "liked_by": false,
             "matches": true,
             "pictures": [],
             "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
@@ -432,6 +434,7 @@ Content-Type: application/json
             "first_name": "bertrand",
             "id": 7,
             "liked": true,
+            "liked_by": false,
             "matches": true,
             "pictures": [],
             "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
@@ -461,6 +464,7 @@ Content-Type: application/json
             "first_name": "roger",
             "id": 2,
             "liked": true,
+            "liked_by": false,
             "matches": true,
             "pictures": [],
             "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
@@ -471,6 +475,7 @@ Content-Type: application/json
             "first_name": "bertrand",
             "id": 7,
             "liked": false,
+            "liked_by": false,
             "matches": false,
             "pictures": [],
             "last_seen": "Tue, 29 Sep 2020 00:00:00 GMT",
@@ -512,7 +517,7 @@ Content-Type: application/json
 }
 ```
 
-## Visits
+## Blocked users
 
 **You send:**  Your `session` cookie.  
 **You get:** A list of users you blocked
@@ -520,6 +525,25 @@ Content-Type: application/json
 **Request:**
 ```json
 GET /blocked HTTP/1.1
+Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
+```
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+    "users":  [...],
+}
+```
+
+## Suggested users
+
+**You send:**  Your `session` cookie.  
+**You get:** A list of users you blocked
+
+**Request:**
+```json
+GET /suggested HTTP/1.1
 Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
 ```
 **Successful Response:**
@@ -565,6 +589,7 @@ Content-Type: application/json
             "first_name": "roger",
             "id": 2,
             "liked": true,
+            "liked_by": false,
             "matches": false,
             "pictures": [],
             "sex": "m",
@@ -576,6 +601,7 @@ Content-Type: application/json
             "first_name": "bertrand",
             "id": 7,
             "liked": false,
+            "liked_by": false,
             "matches": false,
             "pictures": [],
             "sex": "m",
@@ -646,6 +672,7 @@ Content-Type: application/json
                 "first_name": "roger",
                 "id": 2,
                 "liked": true,
+                "liked_by": false,
                 "matches": false,
                 "pictures": [],
                 "sex": "m",
@@ -660,6 +687,7 @@ Content-Type: application/json
                 "first_name": "bertrand",
                 "id": 7,
                 "liked": false,
+                "liked_by": false,
                 "matches": false,
                 "pictures": [],
                 "sex": "m",
@@ -764,6 +792,7 @@ Content-Type: application/json
                 "first_name": "bertrand",
                 "id": 7,
                 "liked": false,
+            "liked_by": false,
                 "matches": false,
                 "pictures": [],
                 "sex": "m",
@@ -796,6 +825,43 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 {
     "pcachin": "true",
+}
+```
+
+## Get available values for sex and orientation fields
+
+**You send:**  Your `session` cookie
+**You get:** A list of fields for which only certain values are possible, as well as the different wordings accepted
+
+**Request:**
+```json
+GET /fields HTTP/1.1
+Cookie: session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyIjoxfQ.X1Uwog.BBHCto1CAuJj_9RLJ0g5kPHgtbU
+Content-Type: application/json
+```
+**Successful Response:**
+```json
+HTTP/1.1 200 OK
+Content-Type: application/json
+{
+    "orientation": {
+        "heterosexual": {
+            "accepted": ["hetero", "straight", ...]
+        },
+        "homosexual": {
+            "accepted": ["homo", "lesbian", ...]
+        },
+        ...
+    },
+    "sex": {
+        "cis-male": {
+            "accepted": ["h", "male",...]
+        },
+        "trans-female": {
+            "accepted": ["trans-female", "shemale"...]
+        },
+        ...
+    },
 }
 ```
 

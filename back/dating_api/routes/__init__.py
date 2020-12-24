@@ -7,3 +7,4 @@ from .list_tags import list_tags
 from .pictures import private_pictures
 from .messages import messages
 from .notifications import notifications
+from .fields import fields

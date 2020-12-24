@@ -62,3 +62,13 @@ def get_blocked(user):
     List blocked users as an array of full json encoded profiles
     """
     return {"users": user.blocked_list}
+
+@users_list.route("/suggested", methods=["GET"])
+@jsonify_output
+@validated_required
+def get_suggested(user):
+    """
+    List suggested users as an array of full json encoded profiles
+    """
+    payload = request.get_json()
+    return {"users": user.suggested(payload)}
