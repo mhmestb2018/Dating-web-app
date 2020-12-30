@@ -1,6 +1,9 @@
 /* eslint-disable */
 import React, { FunctionComponent, useState, useEffect } from "react";
 import User from "../models/user";
+
+import Select from 'react-select';
+import makeAnimated from 'react-select/animated';
 //import USER_LIST from '../models/mock-user';
 import UserCard from "../components/user-card";
 import getGenderColor from "../helpers/get-gender-color";
@@ -11,10 +14,15 @@ import Overlay from 'pigeon-overlay'
 
 import axios from "axios";
 
+const animatedComponents = makeAnimated();
+
 const UserList = () => {
   const [users, setUSers] = useState([]);
   const [profile, setProfile] = useState([]);
 
+
+  const [allTags, setAllTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
 
   const [ageMin, setAgeMin] = useState(18);
   const [ageMax, setAgeMax] = useState(100);
@@ -23,6 +31,35 @@ const UserList = () => {
   const [distanceMax, setDistanceMax] = useState(50000);
   const [tags, setTags] = useState("");
 
+  const colourOptions = [
+    { value: 'ocean', label: 'Ocean', color: '#00B8D9', isFixed: true },
+    { value: 'blue', label: 'Blue', color: '#0052CC', isDisabled: true },
+    { value: 'purple', label: 'Purple', color: '#5243AA' },
+    { value: 'red', label: 'Red', color: '#FF5630', isFixed: true },
+    { value: 'orange', label: 'Orange', color: '#FF8B00' },
+    { value: 'yellow', label: 'Yellow', color: '#FFC400' },
+    { value: 'green', label: 'Green', color: '#36B37E' },
+    { value: 'forest', label: 'Forest', color: '#00875A' },
+    { value: 'slate', label: 'Slate', color: '#253858' },
+    { value: 'silver', label: 'Silver', color: '#666666' },
+  ];
+
+
+  const get_all_tags = () => {
+    axios
+    .get("/tags")
+    .then((res) => {
+      console.log(res.data.tags)
+      let tmp = []
+      res.data.tags.map(tag => {
+        tmp.push({value:tag, label:tag, color:""})
+      })
+      setAllTags(tmp);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
 
 const get_user_list = (path) => {
   axios
@@ -38,6 +75,7 @@ const get_user_list = (path) => {
   });
 }
 
+
 const get_custom_user_list = (path) => {
   axios.post(path,
     {
@@ -50,7 +88,7 @@ const get_custom_user_list = (path) => {
         "max": scoreMax
       },
       "distance": distanceMax,
-      "tags" : tags.split(' ') == "" ? [] : tags.split(' ')
+      "tags" : selectedTags
     })
   .then((res) => {
     //console.log("SuCcEsS:");
@@ -82,6 +120,7 @@ function get_profile()//RECUPERE LA POSITION DU USER ET TOUT !
   useEffect(() => {
     (async function () {
       get_custom_user_list("/users")
+      get_all_tags()
     })();
   }, []);
 
@@ -95,7 +134,7 @@ function get_profile()//RECUPERE LA POSITION DU USER ET TOUT !
   }
   return (
     <div className="container-fluid">
-      <div className="row">
+      <div className="row" style={{textAlign:"center"}}>
         <div className="col-lg-3" style={{ top: "50px" }}>
           <div className="list-group" style={{ paddingBottom: "15px" }}>
             <div className="card">
@@ -140,7 +179,6 @@ function get_profile()//RECUPERE LA POSITION DU USER ET TOUT !
                     <i className="fa fa-suitcase" aria-hidden="true"></i>{" "}
                     Popularité min: {scoreMin}
                   </a>
-
                   <div className="row">
                     <div className="col-4">0</div>
                     <div className="col-4">
@@ -173,17 +211,37 @@ function get_profile()//RECUPERE LA POSITION DU USER ET TOUT !
                       ></input>
                     </div>
                     <div className="col-4">100</div>
-                  </div>
-                  <div className="row">
-                    <div className="col-5">Distance max</div>
-                    <div className="col-7"><input value={distanceMax} onChange={(e) => setDistanceMax(parseInt(e.target.value))} type="text"></input></div>
+                    <br/>
                   </div>
                   <br/>
-                  <div className="row">
-                    <div className="col-5">Tags</div>
-                    <div className="col-7"><input value={tags} onChange={(e) => setTags(e.target.value)} type="text"></input></div>
+                  <div className="row" style={{width:"100%"}}>
+                    <div className="col-12" style={{textAlign:"center"}}>Distance max</div>
+                    <br/>
                   </div>
+                  <div className="row" style={{width:"100%"}}>
+                    <div className="col-12"><input value={distanceMax} onChange={(e) => setDistanceMax(parseInt(e.target.value))} type="text"></input></div>
+                    <br/>
+                  </div>
+                  <br/>
+                  <div className="row" style={{width:"100%"}}>
+                    <div className="col-12">
+                      <Select
+                      closeMenuOnSelect={false}
+                      components={animatedComponents}
+                      //defaultValue={[colourOptions[4], colourOptions[5]]}
+                      isMulti
+                      options={allTags}
+                      //options={colourOptions}
+                      onChange={(values) => {let tmp = [];if (values) values.map(value => {tmp.push(value.value)});setSelectedTags(tmp)}}
+                    />
+                    <br/>
+                  </div>
+                  <br/>
+                  </div>
+                  <br/>
+                  <br/><br/>
                   <div className="row">
+                    <br/>
                     <div className="col-12">
                       <button style={{textAlign:"center"}} type="button" onClick={() => get_custom_user_list("/users")} className="btn btn-success">Enregistrer</button>
                     </div>

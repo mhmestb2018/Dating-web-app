@@ -1,8 +1,10 @@
-FROM python:3.7
+FROM python:3.7.8-buster
 
 WORKDIR /app
 
 COPY ./requirements.txt /app
+
+#RUN apt update && apt install libmariadb3
 
 RUN pip3 install -r requirements.txt
 

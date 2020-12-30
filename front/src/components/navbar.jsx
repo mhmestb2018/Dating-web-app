@@ -58,7 +58,7 @@ const Navbar = ({logout}) => {
                         {
                             notif && notif.length > 0 ?
                                 <a href="#" className="nav-link" style={{color:"red"}}>
-                                    <i onClick={() => axios.put('/notifications').then(res => {alert('notifications lu')}).catch( res => alert('12'))} className="fa fa-bell"> </i>
+                                    <i onClick={() => axios.put('/notifications').then(res => {console.log(res); alert('notifications lu')}).catch( res => alert('12'))} className="fa fa-bell"> </i>
                                 </a>
                             :
                                 <a href="#" className="nav-link" >
