@@ -45,6 +45,7 @@ class Schema:
         password varchar(255) NOT NULL,
         sex varchar(63) DEFAULT 'other',
         orientation varchar(63) DEFAULT 'bisexual',
+        room varchar(24) NOT NULL,
         bio text DEFAULT '' NOT NULL,
         views_count int DEFAULT 0 NOT NULL,
         likes_count int DEFAULT 0 NOT NULL,

@@ -1,6 +1,7 @@
 import mariadb, datetime
 from flask import jsonify
 from werkzeug.security import check_password_hash
+import os
 
 from .. import db
 from ..utils import Validator
@@ -11,7 +12,7 @@ from .orientations import Orientations
 class User():
     __fields__ = (
         "id", "first_name", "last_name", "email", "password", "sex",
-        "orientation", "bio", "views_count", "likes_count",
+        "orientation", "room", "bio", "views_count", "likes_count",
         "picture_1", "picture_2", "picture_3", "picture_4", "picture_5",
         "validated", "banned", "last_seen", "age", "lat", "lon")
     __restricted_fields__ = ("id", "validated", "views_count", "likes_count", "last_seen")
@@ -19,6 +20,7 @@ class User():
 
     @staticmethod
     def build_from_db_tuple(values):
+        # print(values)
         values = zip(User.__fields__, values)
         user = User(empty=True)
         for f, v in values:
@@ -53,7 +55,7 @@ class User():
     
         return User.build_from_db_tuple(rows[0])
 
-    def __init__(self, user_id=None, first_name=None, last_name=None, email=None, password=None, empty=False):
+    def __init__(self, user_id=None, first_name=None, last_name=None, email=None, password=None, empty=False, room=os.urandom(12).hex()):
         self.pictures = []
         self.orientation = None
         self.sex = None
@@ -63,6 +65,7 @@ class User():
         self.lon = 0
         self.lat = 0
         self.last_seen = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+        self.room = room
         if not empty:
             self.first_name = Validator.name(first_name)
             self.last_name = Validator.name(last_name)
@@ -74,8 +77,8 @@ class User():
     def create_user(first_name, last_name, email, hashed_password, validation_id):
 
         user = User(0, first_name, last_name, email, hashed_password)
-        query = "INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)"
-        user.id = db.exec(query, (first_name, last_name, email, hashed_password))
+        query = "INSERT INTO users (first_name, last_name, email, password, room) VALUES (?, ?, ?, ?, ?)"
+        user.id = db.exec(query, (first_name, last_name, email, hashed_password, user.room))
 
         query = "INSERT INTO validations (user_id, validation_id) VALUES (?, ?)"
         db.exec(query, (user.id, validation_id))
@@ -155,9 +158,9 @@ class User():
         db.exec(query, (self.id, user.id))
         from .notification import Notification
         if self.matches_with(user):
-            Notification.emit(user.id, self.id, "match")
+            Notification.emit_notification(user.id, self.id, "match", user.room)
         else:
-            Notification.emit(user.id, self.id, "like")
+            Notification.emit_notification(user.id, self.id, "like", user.room)
         return True
 
     def report(self, user):

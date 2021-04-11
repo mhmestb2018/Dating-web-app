@@ -49,7 +49,7 @@ def logout():
 @user_crud.route("/signup", methods=["POST"])
 @jsonify_output
 @payload_required
-@catcher
+# @catcher
 def signup(payload):
     """
     Register a new user.
@@ -62,7 +62,12 @@ def signup(payload):
         return error("Vous êtes déjà connecté", 400)
     if not "email" in payload or not "first_name" in payload or not "last_name" in payload or not "password" in payload:
         return error("Saisie incomplète", 400)
-    if User.get_user(email=payload["email"]) is not None:
+    try:
+        user_exists = User.get_user(email=payload["email"]) is not None
+    except Exception as e:
+        return error(f"{e}", 400)
+
+    if user_exists:
         return error("L'utilisateur existe déjà", 409)
     if len(payload["password"]) < 4: ######## Was for randomuser.me, TO REMOVE / REPLACE ###############################################################
         return error("Mot de passe trop court", 400)
@@ -71,7 +76,10 @@ def signup(payload):
 
     validation_id = os.urandom(12).hex()
 
-    user = User.create_user(payload["first_name"], payload["last_name"], payload["email"], hashed_password, validation_id)
+    try:
+        user = User.create_user(payload["first_name"], payload["last_name"], payload["email"], hashed_password, validation_id)
+    except Exception as e:
+        return error(f"Failed to create user: {e}", 400)
 
     if mail:
         print(f"Sending validation email to {payload['email']}", flush=True)

@@ -45,6 +45,7 @@ def reset(users, picture=True):
 
 def create(user, checks=True, picture=False):
     response = signup(user)
+    print(response)
     if checks:
         assert response.status_code == 201
     data = response.json()
