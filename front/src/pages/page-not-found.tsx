@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { useHistory } from 'react-router-dom'
   
-const PageNotFound: FunctionComponent = () => {
+const PageNotFound = () => {
     const history = useHistory()
 
     const goToAccueil = () => {

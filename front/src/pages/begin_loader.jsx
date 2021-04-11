@@ -3,7 +3,7 @@ import React, { FunctionComponent, useState } from 'react';
 
 import Loader from 'react-loader-spinner'
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
-const Begin_loader: FunctionComponent = () => {
+const Begin_loader = () => {
   return (
     <div style={{lineHeight: "400px", height: "600px", textAlign: "center"}}>
       <Loader type="Hearts" color="red" height={200} width={200} />

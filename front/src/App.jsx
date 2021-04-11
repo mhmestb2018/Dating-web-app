@@ -9,6 +9,7 @@ import Begin_loader from './pages/begin_loader'
 import Chat_widget from './pages/chat_widget'
 import Home from './pages/home'
 import Mailbox from './pages/mailbox'
+export const AppContext = React.createContext('toto');
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 import My_account from './pages/my_account'
@@ -22,16 +23,16 @@ import { JSDocUnknownType } from 'typescript';
 
 
 
-const App: FunctionComponent = () => {
+const App = () => {
 
   /*function getPosition(position) {
     setGeoloc_pos(Array(position.coords.latitude, position.coords.longitude))
   }*/
-    const login = (email:String, password:String) => {
+    const login = (email, password) => {
       if (navigator.geolocation) {
-        let getPosition: any;
+        let getPosition;
         //navigator.geolocation.getCurrentPosition(getPosition);
-        navigator.geolocation.getCurrentPosition((position: any) => {
+        navigator.geolocation.getCurrentPosition((position) => {
           axios.post('/login',
             {
               'email':email,
@@ -42,8 +43,12 @@ const App: FunctionComponent = () => {
             }
           )
           .then(res => {
+    //        console.log("res")
+  //          console.log(res)
+//            alert("LOG");
+            setMyLogin(res.data);
             setIsLogged(true);
-            toast.success("Vous êtes connécté :)");
+            toast.success(`Vous êtes connécté : ${res}`);
           })
           .catch(function (error) {
               if (error.response.data)
@@ -52,7 +57,7 @@ const App: FunctionComponent = () => {
                 toast.error("Erreur de connection avec le serveur");
           });
         }, () => {
-          axios.get('https://cors-anywhere.herokuapp.com/http://api.ipify.org/?format=json')
+          axios.get('https://cors-anywhere.herokuapp.com/http://api.ipify.org/?format=json') //Se connecter avant sur : https://cors-anywhere.herokuapp.com/http://api.ipify.org/?format=json
           .then(res => {
               axios.get(`https://cors-anywhere.herokuapp.com/http://ip-api.com/json/${res.data.ip}`)
               .then(res => {
@@ -67,6 +72,10 @@ const App: FunctionComponent = () => {
                 )
                 .then(res => {
                   setIsLogged(true);
+                  //console.log("CONNECT:")
+                  //console.log(res.data)
+                  //alert('CONNECT');
+                  setMyLogin(res.data);
                   toast.success("Vous êtes connécté :)");
                 })
                 .catch(function (error) {
@@ -77,11 +86,11 @@ const App: FunctionComponent = () => {
                 });
               })
               .catch(function (error) {
-                toast.error("Veuillez aciver la Geolocalisation pour continuer");
+                toast.error("Veuillez activer la Geolocalisation pour continuer ou autoriser la demo sur: https://cors-anywhere.herokuapp.com/http://api.ipify.org/?format=json");
               });
           })
           .catch(function (error) {
-            toast.error("Veuillez aciver la Geolocalisation pour continuer");
+            toast.error("Veuillez activer la Geolocalisation pour continuer ou autoriser la demo sur: https://cors-anywhere.herokuapp.com/http://api.ipify.org/?format=json");
           });
         });
       }
@@ -90,7 +99,7 @@ const App: FunctionComponent = () => {
         toast.error("Veuillez mettre à jour votre navigateur");
       }
     }
-    const forget_password = (email:String) => {
+    const forget_password = (email) => {
         axios.post('/reset',
           {
             'email':email
@@ -127,13 +136,13 @@ const App: FunctionComponent = () => {
             toast.success("Vous êtes bien déconnécté :)");
         })
         .catch(function (error) {
-              if (error.response.data)
-                toast.error(error.response.data.error);
-              else
+              //if (error && error.response && error.response.data)
+                //toast.error(error.response.data.error);
+              //else
                 toast.error("Erreur de connection avec le serveur");
           });
     }
-    const signup = (email:String, password:String, firstname:String, lastname:String) => {
+    const signup = (email, password, firstname, lastname) => {
       axios.post('/signup',
         {
            'email':email,
@@ -146,24 +155,22 @@ const App: FunctionComponent = () => {
       .then(res => {
         console.log(res);
         alert("SUCCESS_signup");
-        axios.post('/validate/' + res.data.validation_id,
-      )
-      .then(res => {
-        console.log(res);
-        alert("SUCCESS_validate");
+        axios.post('/validate/' + res.data.validation_id)
+        .then(res => {
+          console.log(res);
+          alert("SUCCESS_validate");
+        })
+        .catch(function (error) {
+              console.log(error);
+              alert("ERROR_validate");
+          });
       })
       .catch(function (error) {
-            console.log(error);
-            alert("ERROR_validate");
-        });
-      })
-      .catch(function (error) {
-            console.log(error);
-            alert("ERROR_signup");
+            toast.error(error.response.data.error);
         });
   }
 
-  const like_management = (user_id : String, like: Boolean) => {
+  const like_management = (user_id, like) => {
     axios.post('/users/' + user_id,
     {
       "like" : like
@@ -183,8 +190,9 @@ const App: FunctionComponent = () => {
         toast.error("Erreur de connection avec le serveur");
       });
   }
-    const [IsLogged, setIsLogged] = useState<Boolean>(false);
-    const [IsLoad, setIsLoad] = useState<Boolean>(false);
+    const [IsLogged, setIsLogged] = useState(false);
+    const [myLogin, setMyLogin] = useState(false);
+    const [IsLoad, setIsLoad] = useState(false);
 
       axios.get('/profile')
       .then(res => {
@@ -207,6 +215,7 @@ const App: FunctionComponent = () => {
           draggable
           pauseOnHover
           />
+          <AppContext.Provider value={myLogin}>
           {IsLogged && <Navbar logout={logout} />}
           {IsLoad &&
             <div>
@@ -226,6 +235,7 @@ const App: FunctionComponent = () => {
             ||
             <Begin_loader />
           }
+          </AppContext.Provider>
         </Router>
     )
 }

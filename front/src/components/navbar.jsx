@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom'
 import axios from 'axios';
 //import { time } from 'console';
 
+import { useContext } from 'react';
+import { AppContext } from '../App.jsx';
 
 const Navbar = ({logout}) => {
     
+    const context_value = useContext(AppContext);
     const [notif, setNotif] = useState([]);
     const get_notifs = () => {
         axios.get('/notifications')
@@ -72,7 +75,9 @@ const Navbar = ({logout}) => {
                 <ul className="navbar-nav ml-auto">
                     <li className="nav-item dropdown">
                         <a className="nav-link dropdown-toggle" id="navbarDropdownMenuLink-4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i className="fa fa-newspaper-o"></i> 
-                        <i className="fa fa-user-circle"> </i> </a>
+                            {context_value.first_name}{" "}
+                            <i className="fa fa-user-circle"> </i>
+                        </a>
                         <div className="dropdown-menu dropdown-menu-right dropdown-cyan" aria-labelledby="navbarDropdownMenuLink-4">
                             <a className="dropdown-item" href="/my_profile">Mon profil</a>
                             <a className="dropdown-item" href="/my_account">Mon compte</a>

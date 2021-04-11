@@ -1,17 +1,9 @@
 import React, { FunctionComponent, useState } from 'react';
 //import { useSelector, useDispatch } from 'react-redux';
-type Props = {
-    login: (email:String, password:String) => void;
-    signup: (
-        email:String,
-        username:String,
-        firstname:String,
-        lastname:String
-    ) => void;
-    forget_password: (email:String) => void;
-};
+import { useContext } from 'react';
+import { AppContext } from '../App.jsx';
 
-const Home: FunctionComponent<Props> = ({login, signup, forget_password}) => {
+const Home = ({login, signup, forget_password}) => {
     //console.log(login);
     const [signinUsername, setSigninUsername] = useState('');
     const [signinPassword, setSigninPassword] = useState('');
@@ -24,9 +16,10 @@ const Home: FunctionComponent<Props> = ({login, signup, forget_password}) => {
     const [signupErrorMail, setErrorSignupMail] = useState('');
     const [signupTouchSecondPassword, setSignupTouchSecondPassword] = useState(false);
     const [signupPasswordSecurity, setSignupPasswordSecurity] = useState(0);
+    const context_value = useContext(AppContext);
     //(mail', 'test2@gmail.com') ('password', 'blabla234567')
 
-    function testSecurity(password: string)
+    function testSecurity(password)
     {
         var value = 0, length = 0;
         if (password.length > 6)
@@ -44,7 +37,7 @@ const Home: FunctionComponent<Props> = ({login, signup, forget_password}) => {
             value += 20;
         setSignupPasswordSecurity(value);
     }
-    function emailIsValid (email: string) {
+    function emailIsValid (email) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
       }
 
@@ -54,7 +47,7 @@ const Home: FunctionComponent<Props> = ({login, signup, forget_password}) => {
         <div className="text-center row">
             <div className="col">
                 <img src={process.env.PUBLIC_URL + '/asset/matcha.png'} width="60" height="60" alt="Matcha" className="d-inline-block align-top" style={{marginTop:-10}}/>
-                <h1  className="d-inline-block align-top">atcha </h1>
+                <h1  className="d-inline-block align-top">atcha {context_value ? context_value.age : "KO"}</h1>
             </div>
             <div className="col">
                 <button type="button" className="btn btn-danger" data-toggle="modal" data-target="#modal_login">Connecte-toi !</button>
