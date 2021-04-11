@@ -2,6 +2,7 @@ import React,{ FunctionComponent, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'
 import axios from 'axios';
 //import { time } from 'console';
+import openSocket from 'socket.io-client';
 
 import { useContext } from 'react';
 import { AppContext } from '../App.jsx';
@@ -10,6 +11,16 @@ const Navbar = ({logout}) => {
     
     const context_value = useContext(AppContext);
     const [notif, setNotif] = useState([]);
+    const [sock_notif, setSock_notif] = useState("");
+    const socket = openSocket('0.0.0.0:3000');
+    
+    socket.on('join', timestamp => setSock_notif(timestamp));
+    if (sock_notif !== "")
+    {
+        console.log(sock_notif);
+        alert("SOCKNOTIF")
+    }
+        //socket.emit('subscribeToTimer', 1000);
     const get_notifs = () => {
         axios.get('/notifications')
         .then(res => {
