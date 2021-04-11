@@ -10,7 +10,10 @@ import Chat_widget from './pages/chat_widget'
 import Home from './pages/home'
 import Mailbox from './pages/mailbox'
 export const AppContext = React.createContext('toto');
+export const sock_notif = React.createContext('sock_notif');
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+
+import openSocket from 'socket.io-client';
 
 import My_account from './pages/my_account'
 
@@ -28,6 +31,9 @@ const App = () => {
   /*function getPosition(position) {
     setGeoloc_pos(Array(position.coords.latitude, position.coords.longitude))
   }*/
+
+
+    const [notif, setNotif] = useState("");
     const login = (email, password) => {
       if (navigator.geolocation) {
         let getPosition;
@@ -48,7 +54,10 @@ const App = () => {
 //            alert("LOG");
             setMyLogin(res.data);
             setIsLogged(true);
+            const socket = openSocket('0.0.0.0:3000');
+            socket.on('join', timestamp => setNotif(timestamp));
             toast.success(`Vous êtes connécté : ${res}`);
+
           })
           .catch(function (error) {
               if (error.response.data)
@@ -76,6 +85,8 @@ const App = () => {
                   //console.log(res.data)
                   //alert('CONNECT');
                   setMyLogin(res.data);
+                  const socket = openSocket('0.0.0.0:3000');
+                  socket.on('join', timestamp => setNotif(timestamp));
                   toast.success("Vous êtes connécté :)");
                 })
                 .catch(function (error) {
@@ -221,6 +232,7 @@ const App = () => {
           pauseOnHover
           />
           <AppContext.Provider value={myLogin}>
+          <sock_notif.Provider value={notif}>
           {IsLogged && <Navbar logout={logout} />}
           {IsLoad &&
             <div>
@@ -240,6 +252,7 @@ const App = () => {
             ||
             <Begin_loader />
           }
+          </sock_notif.Provider>
           </AppContext.Provider>
         </Router>
     )
