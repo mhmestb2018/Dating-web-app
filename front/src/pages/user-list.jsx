@@ -14,11 +14,17 @@ import Overlay from 'pigeon-overlay'
 
 import axios from "axios";
 
+
+import { useContext } from 'react';
+import { AppContext } from '../App.jsx';
+
 const animatedComponents = makeAnimated();
 
 const UserList = () => {
   const [users, setUSers] = useState([]);
   const [profile, setProfile] = useState([]);
+
+  const context_value = useContext(AppContext);
 
 
   const [allTags, setAllTags] = useState([]);
@@ -135,124 +141,127 @@ function get_profile()//RECUPERE LA POSITION DU USER ET TOUT !
   return (
     <div className="container-fluid">
       <div className="row" style={{textAlign:"center"}}>
-        <div className="col-lg-3" style={{ top: "50px" }}>
-          <div className="list-group" style={{ paddingBottom: "15px" }}>
-            <div className="card">
-              <div className="card-body">
-                <div id="menulinks" className="nav nav-pills">
-                  <a style={{ width: "100%" }} className="nav-link ">
-                    <i className="fa fa-home" aria-hidden="true"></i> Age min:
-                    {ageMin}
-                  </a>
-                  <div className="row">
-                    <div className="col-4">18</div>
-                    <div className="col-4">
-                      <input
-                        type="range"
-                        min="18"
-                        max="100"
-                        className="custom-range"
-                        value={ageMin}
-                        onChange={(e) => setAgeMin(parseInt(e.target.value))}
-                      ></input>
-                    </div>
-                    <div className="col-4">100</div>
-                  </div>
-                  <a style={{ width: "100%" }} className="nav-link ">
-                    <i className="fa fa-line-chart" aria-hidden="true"></i> Age max: {ageMax}
-                  </a>
-                  <div className="row">
-                    <div className="col-4">18</div>
-                    <div className="col-4">
-                      <input
-                        type="range"
-                        min="18"
-                        max="100"
-                        className="custom-range"
-                        value={ageMax}
-                        onChange={(e) => setAgeMax(parseInt(e.target.value))}
-                      ></input>
-                    </div>
-                    <div className="col-4">100</div>
-                  </div>
-                  <a style={{ width: "100%" }} className="nav-link ">
-                    <i className="fa fa-suitcase" aria-hidden="true"></i>{" "}
-                    Popularité min: {scoreMin}
-                  </a>
-                  <div className="row">
-                    <div className="col-4">0</div>
-                    <div className="col-4">
-                      <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        className="custom-range"
-                        value={scoreMin}
-                        onChange={(e) => setScoreMin(parseInt(e.target.value))}
-                      ></input>
-                    </div>
-                    <div className="col-4">100</div>
-                  </div>
-                  <a style={{ width: "100%" }} className="nav-link ">
-                    <i className="fa fa-sign-out" aria-hidden="true"></i>{" "}
-                    Popularité max: {scoreMax}
-                  </a>
+        {
+          context_value.pictures.length > 0 &&
+            <div className="col-lg-3" style={{ top: "50px" }}>
+              <div className="list-group" style={{ paddingBottom: "15px" }}>
+                <div className="card">
+                  <div className="card-body">
+                    <div id="menulinks" className="nav nav-pills">
+                      <a style={{ width: "100%" }} className="nav-link ">
+                        <i className="fa fa-home" aria-hidden="true"></i> Age min:
+                        {ageMin}
+                      </a>
+                      <div className="row">
+                        <div className="col-4">18</div>
+                        <div className="col-4">
+                          <input
+                            type="range"
+                            min="18"
+                            max="100"
+                            className="custom-range"
+                            value={ageMin}
+                            onChange={(e) => setAgeMin(parseInt(e.target.value))}
+                          ></input>
+                        </div>
+                        <div className="col-4">100</div>
+                      </div>
+                      <a style={{ width: "100%" }} className="nav-link ">
+                        <i className="fa fa-line-chart" aria-hidden="true"></i> Age max: {ageMax}
+                      </a>
+                      <div className="row">
+                        <div className="col-4">18</div>
+                        <div className="col-4">
+                          <input
+                            type="range"
+                            min="18"
+                            max="100"
+                            className="custom-range"
+                            value={ageMax}
+                            onChange={(e) => setAgeMax(parseInt(e.target.value))}
+                          ></input>
+                        </div>
+                        <div className="col-4">100</div>
+                      </div>
+                      <a style={{ width: "100%" }} className="nav-link ">
+                        <i className="fa fa-suitcase" aria-hidden="true"></i>{" "}
+                        Popularité min: {scoreMin}
+                      </a>
+                      <div className="row">
+                        <div className="col-4">0</div>
+                        <div className="col-4">
+                          <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            className="custom-range"
+                            value={scoreMin}
+                            onChange={(e) => setScoreMin(parseInt(e.target.value))}
+                          ></input>
+                        </div>
+                        <div className="col-4">100</div>
+                      </div>
+                      <a style={{ width: "100%" }} className="nav-link ">
+                        <i className="fa fa-sign-out" aria-hidden="true"></i>{" "}
+                        Popularité max: {scoreMax}
+                      </a>
 
-                  <div className="row">
-                    <div className="col-4">0</div>
-                    <div className="col-4">
-                      <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        className="custom-range"
-                        value={scoreMax}
-                        onChange={(e) => setScoreMax(parseInt(e.target.value))}
-                      ></input>
-                    </div>
-                    <div className="col-4">100</div>
-                    <br/>
-                  </div>
-                  <br/>
-                  <div className="row" style={{width:"100%"}}>
-                    <div className="col-12" style={{textAlign:"center"}}>Distance max</div>
-                    <br/>
-                  </div>
-                  <div className="row" style={{width:"100%"}}>
-                    <div className="col-12"><input value={distanceMax} onChange={(e) => setDistanceMax(parseInt(e.target.value))} type="text"></input></div>
-                    <br/>
-                  </div>
-                  <br/>
-                  <div className="row" style={{width:"100%"}}>
-                    <div className="col-12">
-                      <Select
-                      closeMenuOnSelect={false}
-                      components={animatedComponents}
-                      //defaultValue={[colourOptions[4], colourOptions[5]]}
-                      isMulti
-                      options={allTags}
-                      //options={colourOptions}
-                      onChange={(values) => {let tmp = [];if (values) values.map(value => {tmp.push(value.value)});setSelectedTags(tmp)}}
-                    />
-                    <br/>
-                  </div>
-                  <br/>
-                  </div>
-                  <br/>
-                  <br/><br/>
-                  <div className="row">
-                    <br/>
-                    <div className="col-12">
-                      <button style={{textAlign:"center"}} type="button" onClick={() => get_custom_user_list("/users")} className="btn btn-success">Enregistrer</button>
+                      <div className="row">
+                        <div className="col-4">0</div>
+                        <div className="col-4">
+                          <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            className="custom-range"
+                            value={scoreMax}
+                            onChange={(e) => setScoreMax(parseInt(e.target.value))}
+                          ></input>
+                        </div>
+                        <div className="col-4">100</div>
+                        <br/>
+                      </div>
+                      <br/>
+                      <div className="row" style={{width:"100%"}}>
+                        <div className="col-12" style={{textAlign:"center"}}>Distance max</div>
+                        <br/>
+                      </div>
+                      <div className="row" style={{width:"100%"}}>
+                        <div className="col-12"><input value={distanceMax} onChange={(e) => setDistanceMax(parseInt(e.target.value))} type="text"></input></div>
+                        <br/>
+                      </div>
+                      <br/>
+                      <div className="row" style={{width:"100%"}}>
+                        <div className="col-12">
+                          <Select
+                          closeMenuOnSelect={false}
+                          components={animatedComponents}
+                          //defaultValue={[colourOptions[4], colourOptions[5]]}
+                          isMulti
+                          options={allTags}
+                          //options={colourOptions}
+                          onChange={(values) => {let tmp = [];if (values) values.map(value => {tmp.push(value.value)});setSelectedTags(tmp)}}
+                        />
+                        <br/>
+                      </div>
+                      <br/>
+                      </div>
+                      <br/>
+                      <br/><br/>
+                      <div className="row">
+                        <br/>
+                        <div className="col-12">
+                          <button style={{textAlign:"center"}} type="button" onClick={() => get_custom_user_list("/users")} className="btn btn-success">Enregistrer</button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+        }
 
-        <div className="col-lg-9" style={{ top: "50px" }}>
+        <div className="col" style={{ top: "50px" }}>
           <div className="card">
             <div className="card-body">
             <ul className="nav nav-tabs">

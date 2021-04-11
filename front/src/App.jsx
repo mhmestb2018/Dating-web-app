@@ -194,8 +194,13 @@ const App = () => {
     const [myLogin, setMyLogin] = useState(false);
     const [IsLoad, setIsLoad] = useState(false);
 
+    if (IsLoad === false)
       axios.get('/profile')
       .then(res => {
+        console.log("/profile:")
+        console.log(res.data)
+        setMyLogin(res.data);
+        //alert("/profile");
         setIsLogged(true);
         setIsLoad(true);
       })
