@@ -54,8 +54,16 @@ const App = () => {
 //            alert("LOG");
             setMyLogin(res.data);
             setIsLogged(true);
-            const socket = openSocket('0.0.0.0:3000');
-            socket.on('join', timestamp => setNotif(timestamp));
+            const socket = io();
+
+            //socket.on('join', timestamp => setNotif(timestamp));
+
+            socket.emit("join", { "room" : res.data.room }, (response) => {
+              console.log(response.status); // ok
+              setNotif(response)
+              alert("JOIN")
+            });
+
             toast.success(`Vous êtes connécté : ${res}`);
 
           })

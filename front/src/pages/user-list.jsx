@@ -142,7 +142,7 @@ function get_profile()//RECUPERE LA POSITION DU USER ET TOUT !
     <div className="container-fluid">
       <div className="row" style={{textAlign:"center"}}>
         {
-          context_value.pictures.length > 0 &&
+          context_value && context_value.pictures && context_value.pictures.length > 0 &&
             <div className="col-lg-3" style={{ top: "50px" }}>
               <div className="list-group" style={{ paddingBottom: "15px" }}>
                 <div className="card">
