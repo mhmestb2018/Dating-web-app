@@ -28,6 +28,7 @@ const MyProfile = ({toast}) => {
         setBio(res.data.bio);
         setSex(res.data.sex);
         setPictures(res.data.pictures);
+        alert(res.data.pictures);
         setTags(res.data.tags);
         setIsmodify(false);
         console.log(res)
@@ -86,6 +87,8 @@ const send_picture = (picture) => {
     });
 }
 const delete_picture = (picture) => {
+  alert(`DEL: ${picture}`);
+  console.log(picture)
   axios({
     method: 'delete',
     url: picture,
@@ -97,11 +100,11 @@ const delete_picture = (picture) => {
       toast.success("Votre nouvelle photo a été supprimé avec succés !");
       setPictures(res.data.pictures);
   })
-  .catch(function (error) {
+  .catch(error => {
         // console.log(error.response.data);
         // console.log(error.response.status);
-        console.log(error);
-      toast.error(error);
+        //console.log(error);
+      toast.error("error");
     });
 }
 
