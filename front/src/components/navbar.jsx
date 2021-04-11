@@ -16,6 +16,7 @@ const Navbar = ({logout}) => {
     
     if (sock_notifi !== "")
     {
+        console.log("NAVBAR->SOCKNOTIF:")
         console.log(sock_notifi);
         alert("SOCKNOTIF")
     }

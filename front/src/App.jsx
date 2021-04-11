@@ -94,11 +94,27 @@ const App = () => {
                   //alert('CONNECT');
                   setMyLogin(res.data);
                   const socket = openSocket('0.0.0.0:3000');
-                  socket.on('join', timestamp => setNotif(timestamp));
+                  //socket.on('join', timestamp => setNotif(timestamp));
+
+                  
+                  //socket.on('join', timestamp => setNotif(timestamp));
+                  //const socket = io();
+                  ///*
+                  socket.emit("join", { "room" : res.data.room }, (response) => {
+                    console.log("JOIN:")
+                    console.log(response); // ok
+                    socket.on("notification", (response) => {
+                      console.log("notification:")
+                      console.log(response); // ok
+                      setNotif(response)
+                      alert("notification")
+                    });
+                  });
+                  //*/
                   toast.success("Vous êtes connécté :)");
                 })
                 .catch(function (error) {
-                    if (error.response.data)
+                    if (error && error.response && error.response.data)
                       toast.error(error.response.data.error);
                     else
                       toast.error("Erreur de connection avec le serveur");
