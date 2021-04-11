@@ -36,7 +36,10 @@ def test_base_content():
     profile = get_profile(tmp)
     check["id"] = profile["id"]
     for k in profile:
-        if k not in ["pictures", "last_seen", "lat", "lon", "score"]:
+        print(k)
+        if k not in ["pictures", "last_seen", "lat", "lon", "score", "room"]:
+            if check[k] != profile[k]:
+                print(check, profile)
             assert check[k] == profile[k]
     delete(tmp)
     logout(tmp)
@@ -62,7 +65,7 @@ def test_bad_create():
         'last_name': user1["last_name"]
     }
     response = user1["session"].post(f"{url}/signup", data=payload)
-    print(response.text)
+    print(response, response.text)
     assert response.status_code == 400
 
     payload = {
