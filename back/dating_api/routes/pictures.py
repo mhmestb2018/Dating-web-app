@@ -39,7 +39,7 @@ def new_picture(user):
     filename = secure_filename(pic.filename)
     new_name = f"{user.id}_{filename}"
     pic.save(os.path.join("/data", new_name))
-    pic_path = f"{public_host}/pictures/{new_name}"
+    pic_path = f"/pictures/{new_name}"
     pictures = user.pictures + [pic_path]
     user.update({'pictures': pictures})
     return success(user.dict, 201)
@@ -50,7 +50,7 @@ def del_picture(filename, user):
     """
     Delete a user picture
     """
-    pic_path = f"{public_host}/pictures/{filename}"
+    pic_path = f"/pictures/{filename}"
     pictures = user.pictures
     pictures.remove(pic_path)
     user.update({'pictures': pictures})
