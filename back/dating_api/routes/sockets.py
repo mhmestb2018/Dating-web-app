@@ -2,10 +2,15 @@ from .. import socketio
 from flask import render_template
 
 from flask_socketio import join_room, emit
+
 @socketio.on('connect')
 def on_connect():
     print("User Connected")
     emit('info', {'Info': "Vous êtes connecté."})
+
+@socketio.on('disconnect')
+def on_connect():
+    print("User Disconnected")
 
 @socketio.on('join')
 def on_join(data):
