@@ -66,5 +66,5 @@ def user_profile(user_id, user):
         return error("Utilisateur introuvable", 404)
     if user.id != found.id:
         user.visit(found)
-    Notification.emit_notification(user_id, user.id, "visit", room=found.room)
+        Notification.emit_notification(user_id, user.id, "visit", room=found.room)
     return success(found.public_as(user))
