@@ -10,6 +10,7 @@ def create_app():
     
     app.secret_key = "Blablabla"
     app.debug = True
+    async_mode = None
     
     app.config['MAIL_SERVER']='smtp.gmail.com'
     app.config['MAIL_PORT'] = 465
@@ -36,7 +37,9 @@ def create_app():
     app.register_blueprint(notifications)
     app.register_blueprint(fields)
 
-    socketio.init_app(app)
+    from .routes import sockets
+
+    socketio.init_app(app, async_mode=async_mode, cors_allowed_origins="*", logger=True, engineio_logger=True)
    
     return app
     

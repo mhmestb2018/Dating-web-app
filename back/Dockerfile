@@ -12,4 +12,4 @@ EXPOSE 5000
 
 ENTRYPOINT [ "gunicorn" ]
 
-CMD ["--bind", "0.0.0.0:5000", "--http-websockets", "-w", "2", "dating_api.wsgi:create_app()"]
+CMD ["--bind", "0.0.0.0:5000", "--worker-class eventlet", "-w", "1", "dating_api.wsgi:create_app()"]

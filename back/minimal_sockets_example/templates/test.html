@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <title>My Sockets Tests      
+    </title>
+  </head>
+  <body>
+
+    <h3 style='color: #ccc;font-size: 30px;'>No message yet..</h3>
+    <div class="message_holder"></div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.3/socket.io.js"></script>
+
+    <script type="text/javascript" charset="utf-8">
+        var socket = io('http://0.0.0.0:5000');
+        socket.on('connect', function() {
+          console.log('Connected')
+        });
+        socket.emit('my event', {data: 'I\'m connected!'}, () => {console.log('Event emitted')});
+        socket.on('notification', function() {
+          console.log('New notification!')
+        });
+    </script>
+
+    <!-- <script type="text/javascript">
+      var socket = io.connect('http://0.0.0.0:5000/socket');
+
+      socket.on('connect', function() {
+        socket.emit( 'join', {room: 'User Connected'} );
+      })
+      var form = $( 'form' ).on( 'submit', function( e ) {
+        e.preventDefault()
+        let msg = $( 'input.message' ).val()
+        console.log(msg)
+        socket.emit( 'test', {
+          'message' : msg
+        } );
+        $( 'input.message' ).val( '' ).focus();
+      } );
+      socket.on( 'notification', function( msg ) {
+        console.log( msg );
+        if( typeof msg.message!== 'undefined' ) {
+          $( 'h3' ).remove()
+          $( 'div.message_holder' ).append( '<div><b style="color: #000">'+msg.message+'</b></div>' )
+        };
+      });
+    </script> -->
+
+  </body>
+  </html>
