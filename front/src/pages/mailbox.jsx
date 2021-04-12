@@ -33,7 +33,7 @@ const Mailbox = () => {
       if (res.data.users[0])
       {
         setUserSelected(res.data.users[0])
-        get_messages(res.data.users[0].id)
+        //get_messages(res.data.users[0].id)
       }
     })
     .catch((err) => {

@@ -34,6 +34,7 @@ const App = () => {
 
 
     const [notif, setNotif] = useState("");
+    const [socket, setSocket] = useState(openSocket());
     const get_notifs = () => {
       axios.get('/notifications')
       .then(res => {
@@ -53,7 +54,6 @@ const App = () => {
       setIsLogged(true);
       setMyLogin(res.data);
       get_notifs();
-      const socket = openSocket();
       socket.emit("join", { "room" : res.data.room }, () => {
         console.log("JOIN")
       });
