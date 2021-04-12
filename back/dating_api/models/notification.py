@@ -63,7 +63,7 @@ class Notification():
     def dict(self):
         return {
             'from': User.get_user(user_id=self.from_id).intro_as(User.get_user(user_id=self.user_id)),
-            'date': self.date,
+            'date': self.date.strftime("%Y-%m-%d %H:%M:%S.%f"),
             'type': self.type,
             'unread': self.unread,
         }
