@@ -48,6 +48,7 @@ const Mailbox = () => {
       console.log("SuCcEsS:");
       console.log(res)
       //setUSers(res.data.users);
+      alert("CONV");
     })
     .catch(function (error) {
       console.log(error);
@@ -111,8 +112,13 @@ const Mailbox = () => {
               <div className="card-body">
             <div className="card-header" style={{textAlign: "center"}}>Messagerie</div>
 
+            <div className="row">
+              <div className="col-lg-3" style={{ top: "10px" }}>
+                <button className="btn btn-primary" disabled={false} onClick={() => {alert('12')}} >Nouvelle conversation</button>
+              </div>
+            </div>
       <div className="row">
-        <div className="col-lg-3" style={{ top: "50px" }}>
+        <div className="col-lg-3" style={{ top: "20px" }}>
           <div className="list-group" style={{ paddingBottom: "15px" }}>
             {
               conversations.map(conversation => {
@@ -122,7 +128,7 @@ const Mailbox = () => {
             }
           </div>
         </div>
-        <div className="col-lg-9" style={{ top: "50px" }}>
+        <div className="col-lg-9" style={{ top: "20px" }}>
           <div className="card">
             <div className="card-body">
                 Messages

@@ -7,7 +7,7 @@ def on_connect():
     print("User Connected")
     emit('notification', {'Info': "Vous êtes connecté."})
 
-@socketio.on('test')
+@socketio.on('join')
 def on_join(data):
     print("Room joined")
     room = data['room']

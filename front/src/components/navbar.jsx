@@ -9,43 +9,8 @@ import { AppContext, sock_notif } from '../App.jsx';
 const Navbar = ({logout}) => {
     
     const context_value = useContext(AppContext);
-    const sock_notifi = useContext(sock_notif);
-    const [notif, setNotif] = useState([]);
-    //const [sock_notif, setSock_notif] = useState("");
-    
-    
-    if (sock_notifi !== "")
-    {
-        console.log("NAVBAR->SOCKNOTIF:")
-        console.log(sock_notifi);
-        alert("SOCKNOTIF")
-    }
-        //socket.emit('subscribeToTimer', 1000);
-    const get_notifs = () => {
-        axios.get('/notifications')
-        .then(res => {
-            //alert('notifications');
-            console.log('notifications');
-            console.log(res);
-            console.log("OK")
-            setNotif(res.data.notifications)
-            console.log(notif.length)
-        })
-        .catch(error => {
-            // console.log(error.response.data);
-            // console.log(error.response.status);
-            //console.log(error);
-            //alert(error.response.data.error)
-            //toast.error("error");
-        });
-        setTimeout(() => {
-            get_notifs()
-        }, 8000);
-    }
-    useEffect(() => {
-        get_notifs()
-    }, []);
-    
+    const notif = useContext(sock_notif);
+
     return (
         <nav className="navbar sticky-top navbar-expand-md navbar-dark bg-dark">
             <Link to="/" className="navbar-brand">
@@ -84,7 +49,7 @@ const Navbar = ({logout}) => {
             </div>
             <div className="navbar-collapse collapse w-100 order-3 dual-collapse2">
                 <ul className="navbar-nav ml-auto">
-                    <li className="nav-item dropdown">
+                    <li className="nav-item dropdown"  style={{cursor: "pointer"}}>
                         <a className="nav-link dropdown-toggle" id="navbarDropdownMenuLink-4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i className="fa fa-newspaper-o"></i> 
                             {context_value.first_name}{" "}
                             <i className="fa fa-user-circle"> </i>
@@ -92,7 +57,7 @@ const Navbar = ({logout}) => {
                         <div className="dropdown-menu dropdown-menu-right dropdown-cyan" aria-labelledby="navbarDropdownMenuLink-4">
                             <a className="dropdown-item" href="/my_profile">Mon profil</a>
                             <a className="dropdown-item" href="/my_account">Mon compte</a>
-                            <a className="dropdown-item" style={{backgroundColor:"#ff0000", color:"white", cursor: "pointer"}} onClick={() => logout()}>Se déconnecter</a>
+                            <a className="dropdown-item" style={{backgroundColor:"#ff0000", color:"white"}} onClick={() => logout()}>Se déconnecter</a>
                         </div>
                     </li>
                 </ul>

@@ -34,6 +34,21 @@ const App = () => {
 
 
     const [notif, setNotif] = useState("");
+    const get_notifs = () => {
+      axios.get('/notifications')
+      .then(res => {
+          console.log('notifications');
+          console.log(res);
+          setNotif(res.data.notifications)
+      })
+      .catch(error => {
+          // console.log(error.response.data);
+          // console.log(error.response.status);
+          //console.log(error);
+          //alert(error.response.data.error)
+          //toast.error("error");
+      });
+  }
     const login = (email, password) => {
       if (navigator.geolocation) {
         let getPosition;
@@ -54,6 +69,7 @@ const App = () => {
 //            alert("LOG");
             setMyLogin(res.data);
             setIsLogged(true);
+            get_notifs();
             const socket = io();
 
             //socket.on('join', timestamp => setNotif(timestamp));
@@ -93,22 +109,22 @@ const App = () => {
                   //console.log(res.data)
                   //alert('CONNECT');
                   setMyLogin(res.data);
-                  const socket = openSocket('0.0.0.0:3000');
+                  get_notifs();
+                  const socket = openSocket();
                   //socket.on('join', timestamp => setNotif(timestamp));
 
                   
                   //socket.on('join', timestamp => setNotif(timestamp));
                   //const socket = io();
                   ///*
-                  socket.emit("join", { "room" : res.data.room }, (response) => {
-                    console.log("JOIN:")
+                  socket.emit("join", { "room" : res.data.room }, () => {
+                    console.log("JOIN")
+                  });
+                  socket.on("notification", (response) => {
+                    console.log("notification:")
                     console.log(response); // ok
-                    socket.on("notification", (response) => {
-                      console.log("notification:")
-                      console.log(response); // ok
-                      setNotif(response)
-                      alert("notification")
-                    });
+                    setNotif(response)
+                    alert("notification")
                   });
                   //*/
                   toast.success("Vous êtes connécté :)");
