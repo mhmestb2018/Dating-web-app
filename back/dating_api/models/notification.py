@@ -30,7 +30,7 @@ class Notification():
     @staticmethod
     def emit_notification(user_id, from_id, notification_type, room):
         notif = Notification(user_id, from_id, notification_type)
-        socketio.emit('notification', notif.dict, room=room)
+        socketio.emit('notification', notif.dict, room=room, broadcast=True)
         
     @staticmethod
     def read(user_id_1):
