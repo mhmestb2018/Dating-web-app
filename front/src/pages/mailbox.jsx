@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState, useEffect } from 'react';
 import User from '../models/user';
-
+//import {Helmet} from "react-helmet";
 //import formatDate from '../helpers/format-date'
 
 import { useHistory } from 'react-router-dom'
@@ -128,13 +128,11 @@ const Mailbox = () => {
             }
           </div>
         </div>
-        <div className="col-lg-9" style={{ top: "20px" }}>
+        <div className="col-lg-9" style={{ top: "20px"}}>
           <div className="card">
-            <div className="card-body">
-                Messages
-          <br/>
+            <div className="card-body" >
+          <div id="message_list" style={{ height: "600px", overflow:"auto" }}>
           {
-            
             messages.map(message => {
               //alert(match.first_name);
                 //return <div className="card" key={message.date}><div className="card-body">{message.content}</div></div>
@@ -143,7 +141,7 @@ const Mailbox = () => {
                     <div key={message.date} style={{  border: "2px solid #ccc", backgroundColor: "#ddd", borderRadius: "5px", padding: "10px", margin: "10px 0"}}>
                     {/*<img src={userSelected.user.pictures[0]} alt="Avatar" style="width:100%;"/>*/}
                     <p>{message.content}</p>
-                    <span >{message.date}</span>
+                    <span className="text-primary">{message.date}</span>
                   </div>
                 )
                 else
@@ -151,11 +149,15 @@ const Mailbox = () => {
                   <div key={message.date} style={{ textAlign:"right", border: "2px solid #dedede", backgroundColor: "#f1f1f1", borderRadius: "5px", padding: "10px", margin: "10px 0"}}>
                   {/*<img src="/w3images/bandmember.jpg" alt="Avatar" style="width:100%;"/>*/}
                   <p>{message.content}</p>
-                  <span >{message.date}</span>
+                  <span className="text-primary">{message.date}</span>
                 </div>
                   )
             })
           }
+            <script>
+              document.getElementById("message_list").scrollTop = document.getElementById("message_list").scrollHeight;
+            </script>
+          </div>
           <br/>
           <div className="input-group mb-3">
           <input type="text" className="form-control" value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="Nouveau message .."/>

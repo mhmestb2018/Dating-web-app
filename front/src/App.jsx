@@ -49,6 +49,22 @@ const App = () => {
           //toast.error("error");
       });
   }
+    const init_is_logged = (res) =>{
+      setIsLogged(true);
+      setMyLogin(res.data);
+      get_notifs();
+      const socket = openSocket();
+      socket.emit("join", { "room" : res.data.room }, () => {
+        console.log("JOIN")
+      });
+      socket.on("notification", (response) => {
+        console.log("notification:")
+        console.log(response); // ok
+        setNotif(response)
+        alert("notification")
+      });
+      toast.success("Vous êtes connécté :)");
+    }
     const login = (email, password) => {
       if (navigator.geolocation) {
         let getPosition;
@@ -63,26 +79,7 @@ const App = () => {
               "lon": position.coords.longitude
             }
           )
-          .then(res => {
-    //        console.log("res")
-  //          console.log(res)
-//            alert("LOG");
-            setMyLogin(res.data);
-            setIsLogged(true);
-            get_notifs();
-            const socket = io();
-
-            //socket.on('join', timestamp => setNotif(timestamp));
-
-            socket.emit("join", { "room" : res.data.room }, (response) => {
-              console.log(response.status); // ok
-              setNotif(response)
-              alert("JOIN")
-            });
-
-            toast.success(`Vous êtes connécté : ${res}`);
-
-          })
+          .then(res => init_is_logged(res))
           .catch(function (error) {
               if (error.response.data)
                 toast.error(error.response.data.error);
@@ -103,32 +100,7 @@ const App = () => {
                     "lon": res.data.lon
                   }
                 )
-                .then(res => {
-                  setIsLogged(true);
-                  //console.log("CONNECT:")
-                  //console.log(res.data)
-                  //alert('CONNECT');
-                  setMyLogin(res.data);
-                  get_notifs();
-                  const socket = openSocket();
-                  //socket.on('join', timestamp => setNotif(timestamp));
-
-                  
-                  //socket.on('join', timestamp => setNotif(timestamp));
-                  //const socket = io();
-                  ///*
-                  socket.emit("join", { "room" : res.data.room }, () => {
-                    console.log("JOIN")
-                  });
-                  socket.on("notification", (response) => {
-                    console.log("notification:")
-                    console.log(response); // ok
-                    setNotif(response)
-                    alert("notification")
-                  });
-                  //*/
-                  toast.success("Vous êtes connécté :)");
-                })
+                .then(res => init_is_logged(res))
                 .catch(function (error) {
                     if (error && error.response && error.response.data)
                       toast.error(error.response.data.error);
