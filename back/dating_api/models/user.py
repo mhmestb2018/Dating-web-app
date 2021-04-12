@@ -374,13 +374,16 @@ class User():
 
     @property
     def intro(self):
+        last_seen = self.last_seen
+        if type(last_seen) is not str and last_seen is not None:
+            last_seen = last_seen.strftime("%Y-%m-%d %H:%M:%S.%f")
         return {
             "first_name": self.first_name,
             "id": self.id,
             "pictures": self.pictures,
             "age": self.age,
             "sex": self.sex,
-            "last_seen": self.last_seen,
+            "last_seen": last_seen,
             "lon": self.lon,
             "lat": self.lat
         }

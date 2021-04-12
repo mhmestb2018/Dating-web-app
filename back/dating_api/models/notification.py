@@ -1,5 +1,6 @@
 from flask import jsonify, request
 from datetime import datetime
+import json
 
 from flask_socketio import send, emit
 
@@ -30,7 +31,7 @@ class Notification():
     @staticmethod
     def emit_notification(user_id, from_id, notification_type, room):
         notif = Notification(user_id, from_id, notification_type)
-        socketio.emit('notification', notif.dict, room=room, broadcast=True)
+        socketio.emit('notification', json.dumps(notif.to_dict), room=room)
         
     @staticmethod
     def read(user_id_1):
@@ -59,11 +60,14 @@ class Notification():
         values = db.fetch(query, (user_id_1,))
         return [Notification(*row) for row in values]
 
+    import json
     @property
-    def dict(self):
-        return {
+    def to_dict(self):
+        tmp = {
             'from': User.get_user(user_id=self.from_id).intro_as(User.get_user(user_id=self.user_id)),
             'date': self.date.strftime("%Y-%m-%d %H:%M:%S.%f"),
             'type': self.type,
             'unread': self.unread,
         }
+        print(tmp)
+        return tmp

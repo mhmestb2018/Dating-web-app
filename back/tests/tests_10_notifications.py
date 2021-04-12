@@ -23,6 +23,7 @@ def test_notifications():
     assert response.status_code == 201
     response = user1["session"].get(f"{url}/notifications")
     notifs_list = response.json()["notifications"]
+    print(notifs_list)
     assert len(notifs_list) == 2
     assert notifs_list[0]["type"] == "message"
     assert notifs_list[1]["type"] == "match"
