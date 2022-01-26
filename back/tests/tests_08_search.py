@@ -9,7 +9,7 @@ def test_search():
     response = user1["session"].post(f"{url}/users",
                                     json={'age': {'min': 18, 'max': 27}})
     assert response.status_code == 200
-    assert response.json()["users"][0]["age"] < 27
+    assert response.json()["users"][0]["age"] < 28
 
     response = user1["session"].post(f"{url}/users",
                                     json={'tags': ['street']})
